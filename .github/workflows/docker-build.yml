@@ -1,0 +1,136 @@
+# This workflow should be executed when a merge request to develop branch is accepted
+name: AutoPacker docker image build & publish 
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  
+  # Build and publish docker image for web app
+  build_web-app:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Build and push the web application docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+        repository: autopacker/webapp
+        tags: latest
+        path: ./web-application
+        
+  # Build and publish docker image for the user service
+  build_user-service:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: change config server bootstrap value
+      run: sed -i 's/localhost/stage.autopacker.no/' ./user-service/src/main/resources/bootstrap.yml
+      
+    - name: Build and push the user service docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+        repository: autopacker/userservice
+        tags: latest
+        path: ./user-service
+      
+  # Build and publish docker image for the server manager
+  build_server-manager:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: change config server bootstrap value
+      run: sed -i 's/localhost/stage.autopacker.no/' ./server-manager/src/main/resources/bootstrap.yml
+      
+    - name: Build and push the server manager docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+        repository: autopacker/servermanager
+        tags: latest
+        path: ./server-manager
+        
+  # Build and publish docker image for the general service
+  build_general-service:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: change config server bootstrap value
+      run: sed -i 's/localhost/stage.autopacker.no/' ./general-api/src/main/resources/bootstrap.yml
+      
+    - name: Build and push the general service docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+        repository: autopacker/general-api
+        tags: latest
+        path: ./general-api
+        
+        
+  # Build and publish docker image for the file service
+  build_file-delivery:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: change config server bootstrap value
+      run: sed -i 's/localhost/stage.autopacker.no/' ./file-delivery-api/src/main/resources/bootstrap.yml
+      
+    - name: Build and push the file service docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+        repository: autopacker/fsapi
+        tags: latest
+        path: ./file-delivery-api
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      

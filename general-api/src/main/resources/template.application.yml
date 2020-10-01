@@ -1,0 +1,63 @@
+# @formatter:off
+
+###########
+# General #
+###########
+
+server:
+  port: 8082
+
+############
+# KeyCloak #
+############
+
+keycloak:
+  realm: ${KEYCLOAK_REALM}
+  auth-server-url: ${AUTHORIZATION_SERVER_URL}
+  ssl-required: ${SSL_REQUIRED} # default: external
+  resource: ${GENERAL_API_RESOURCE_ID}
+  credentials:
+    secret: ${GENERAL_API_RESOURCE_SECRET}
+  use-resource-role-mappings: ${USE_RESOURCE_ROLE_MAPPINGS} # default: true
+  bearer-only: ${BEARER_ONLY} # default: true
+
+########################
+# Spring Configuration #
+########################
+
+spring:
+  ########
+  # Mail #
+  ########
+  mail:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT}
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  ############
+  # Database #
+  ############
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/${GENERAL_API_DATABASE_NAME}
+    username: ${GENERAL_API_DATABASE_USERNAME}
+    password: ${GENERAL_API_DATABASE_PASSWORD}
+
+#########################
+# Application Constants #
+#########################
+
+api:
+  root-url: ${API_ROOT_URL}
+
+# @formatter:on

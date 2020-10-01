@@ -1,0 +1,53 @@
+# docker-compose for local development
+version: "3.1"
+
+services:
+    ###################
+    # Web Application #
+    ###################
+
+    web-app:
+        image: autopacker/webapp
+
+    ####################
+    # Backend Services #
+    ####################
+
+    # Authentication Server
+    user-service:
+        image: autopacker/userservice
+
+    # General API
+    general-api:
+        image: autopacker/general-api
+
+    # Server Manager
+    server-manager:
+        image: autopacker/servermanager
+
+    # File Delivery API
+    fdapi:
+        image: autopacker/fsapi
+
+    #############
+    # Databases #
+    #############
+
+    fdapi-mongo:
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME}
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
+
+    mysql-backend:
+        environment:
+            MYSQL_DATABASE: ${MYSQLDB_DATABASE}
+            MYSQL_USER: ${MYSQLDB_USERNAME}
+            MYSQL_PASSWORD: ${MYSQLDB_PASSWORD}
+            MYSQL_RANDOM_ROOT_PASSWORD: ${MYSQLDB_RANDOM_ROOT_PASSWORD}
+
+    ############
+    # Keycloak #
+    ############
+
+    keycloak:
+        image: autopacker/staging-keycloak

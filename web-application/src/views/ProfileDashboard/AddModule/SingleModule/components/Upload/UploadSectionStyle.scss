@@ -1,0 +1,44 @@
+.upload-wrapper {
+	margin: 30px auto;
+}
+
+.upload-card {
+	height: auto;
+	max-width: 150px;
+	transition: transform 0.2s; /* Animation */
+	border: 2px solid #009adb !important;
+	border-radius: 10px !important;
+	color: #009adb !important;
+}
+
+.upload-card-disabled {
+	height: auto;
+	max-width: 150px;
+	transition: transform 0.2s; /* Animation */
+	border: 2px solid #646464 !important;
+	border-radius: 10px !important;
+	color: #646464 !important;
+	background: #d3d3d3 !important;
+	cursor: not-allowed;
+}
+
+.upload-card:hover {
+	cursor: pointer;
+	transform: scale(1.1);
+	background-color: #009adb !important;
+	color: white !important;
+}
+
+.upload-card-active {
+	height: auto;
+	max-width: 150px;
+	background-color: #009adb !important;
+	border: 2px solid #009adb !important;
+	color: white !important;
+	transform: scale(1.1) !important;
+	border-radius: 10px !important;
+}
+
+.upload-card-active:hover {
+	cursor: pointer;
+}

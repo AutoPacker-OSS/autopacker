@@ -1,0 +1,32 @@
+.banner {
+	background-color: rgb(91, 122, 245);
+	width: 100%;
+	min-height: 300px;
+}
+
+.banner-title {
+	z-index: 1;
+	text-align: center;
+	margin-top: 210px;
+}
+
+/* Registration form styling */
+
+.login-form {
+	max-width: 300px;
+	width: 100%;
+	min-width: 200px;
+}
+
+.login-form-forgot {
+	float: right;
+}
+
+.login-form-button {
+	width: 100%;
+}
+
+.banner-content-wrapper {
+	margin: 0 auto;
+	max-width: 900px;
+}

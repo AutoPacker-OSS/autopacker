@@ -1,0 +1,32 @@
+.module-wrapper {
+	margin: 30px auto;
+}
+
+.module-card {
+	height: auto;
+	min-height: 140px;
+	max-width: 150px;
+	transition: transform 0.2s; /* Animation */
+	border: 2px solid #009adb !important;
+	border-radius: 10px !important;
+	color: #009adb !important;
+}
+
+.module-card-disabled {
+	height: auto;
+	min-height: 140px;
+	max-width: 150px;
+	transition: transform 0.2s; /* Animation */
+	border: 2px solid #646464 !important;
+	border-radius: 10px !important;
+	color: #646464 !important;
+	background: #d3d3d3 !important;
+	cursor: not-allowed;
+}
+
+.module-card:hover {
+	cursor: pointer;
+	transform: scale(1.1);
+	background-color: #009adb !important;
+	color: white !important;
+}

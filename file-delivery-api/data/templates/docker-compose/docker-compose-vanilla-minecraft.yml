@@ -1,0 +1,8 @@
+  # Module: vanilla minecraft server
+  ${CONTAINER_NAME}:
+    container_name: ${CONTAINER_NAME}
+    image: itzg/minecraft-server
+    environment:
+      EULA: "TRUE"
+    ports:
+      - ${PORT}:25565

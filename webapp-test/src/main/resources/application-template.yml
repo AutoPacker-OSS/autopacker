@@ -1,0 +1,14 @@
+!!no.autopacker.webtests.TestConfig
+# This first line tells that this config should be interpreted as a TestConfig object
+
+# Save this file as application.yml in the resources folder, set the necessary values
+
+# Credentials for AutoPacker user to use for SignIn
+username: testusername
+password: testpassword
+
+# Base URL of the web-app
+url: http://localhost:3000
+
+# Set this to true in environments where visual browser display is not necessary (docker)
+headless: false

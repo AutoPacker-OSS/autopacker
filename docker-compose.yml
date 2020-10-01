@@ -1,0 +1,133 @@
+# docker-compose for local development
+version: "3.1"
+
+services:
+    ###################
+    # Web Application #
+    ###################
+
+    web-app:
+        container_name: web-app
+        depends_on:
+            - keycloak
+        ports:
+            - 80:80
+
+    ####################
+    # Backend Services #
+    ####################
+
+    # Authentication Server
+    user-service:
+        container_name: user-service
+        depends_on:
+            - mysql-backend
+            - keycloak
+        restart: on-failure:10
+        ports:
+            - 8081:8081
+        networks:
+            - backend-network
+        volumes:
+            - user-mvn:/root/.m2/repository
+
+    # General API
+    general-api:
+        container_name: general-api
+        depends_on:
+            - mysql-backend
+            - keycloak
+        restart: on-failure:10
+        ports:
+            - 8083:8083
+        networks:
+            - backend-network
+        volumes:
+            - general-mvn:/root/.m2/repository
+
+    # Server Manager
+    server-manager:
+        container_name: servermanager
+        depends_on:
+            - mysql-backend
+            - keycloak
+        restart: on-failure:10
+        ports:
+            - 8082:8082
+        networks:
+            - backend-network
+        volumes:
+            - servers-mvn:/root/.m2/repository
+
+    # File Delivery API
+    fdapi:
+        container_name: fdapi
+        ports:
+            - "8090:8090"
+        depends_on:
+            - mysql-backend
+            - fdapi-mongo
+            - keycloak
+        restart: on-failure:10
+        networks:
+            - backend-network
+        volumes:
+            - ap-fs:/opt/fs/
+            - fdapi-mvn:/root/.m2/repository
+            - /var/run/docker.sock:/var/run/docker.sock
+
+    #############
+    # Databases #
+    #############
+
+    fdapi-mongo:
+        container_name: fdapi-mongodb
+        image: mongo:4.2.8
+        expose:
+            - "27017"
+        depends_on:
+            - keycloak
+        networks:
+            - backend-network
+        volumes:
+            - fdapi-mongo:/var/lib/mongodb
+
+    mysql-backend:
+        image: mysql:8.0.16
+        container_name: mysql-backend
+        expose: # Exposes the port to other containers within same network
+            - "3306"
+        depends_on:
+            - keycloak
+        networks:
+            - backend-network
+        volumes:
+            - mysql-backend:/var/lib/mysql
+
+    ############
+    # Keycloak #
+    ############
+
+    keycloak:
+        container_name: keycloak
+        ports:
+            - 8080:8080
+        networks:
+            - backend-network
+
+######################
+# Networks & Volumes #
+######################
+
+networks:
+    frontend-network:
+    backend-network:
+
+volumes:
+    servers-mvn:
+    general-mvn:
+    user-mvn:
+    fdapi-mvn:
+    ap-fs:
+    mysql-backend:
+    fdapi-mongo:

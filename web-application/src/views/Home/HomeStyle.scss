@@ -1,0 +1,26 @@
+.whos-using-row {
+	padding-top: 40px;
+	padding-bottom: 40px;
+	background: url("../../assets/image/nature_wallpaper.jpg");
+}
+
+.ant-carousel .slick-dots {
+	margin-top: 25px !important;
+	position: initial !important;
+}
+
+.ant-carousel .slick-dots li button {
+	background: #5b7af5 !important;
+	opacity: 0.4 !important;
+}
+
+.ant-carousel .slick-dots li.slick-active button {
+	opacity: 1 !important;
+	background: #5b7af5 !important;
+}
+
+.carousel-shadow {
+	-webkit-box-shadow: -9px 18px 62px -27px rgba(0, 0, 0, 0.68);
+	-moz-box-shadow: -9px 18px 62px -27px rgba(0, 0, 0, 0.68);
+	box-shadow: -9px 18px 62px -27px rgba(0, 0, 0, 0.68);
+}

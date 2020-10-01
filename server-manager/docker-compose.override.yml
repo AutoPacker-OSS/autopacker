@@ -1,0 +1,26 @@
+# docker-compose for local development
+version: '3.1'
+
+services:
+  servermanager:
+    depends_on:
+      - servers-db
+    ports:
+      - 8081:8081
+    volumes:
+      - mvn:/root/.m2/repository
+
+  servers-db:
+    environment:
+      MYSQL_DATABASE: 'servers'
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: ''
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    expose: # Exposes the port to other containers within same network
+      - "3306"
+    volumes:
+      - servers-db:/var/lib/mysql/data
+
+volumes:
+  servers-db:
+  mvn:

@@ -1,0 +1,6 @@
+  # Module staticsite
+  ${CONTAINER_NAME}:
+    container_name: ${CONTAINER_NAME}
+    image: ${IMAGE_NAME}
+    ports:
+      - ${PORT}:80

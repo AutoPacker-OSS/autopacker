@@ -1,0 +1,12 @@
+# docker-compose things that are common for all
+version: '3.1'
+
+services:
+  userservice:
+    container_name: userservice
+    image: autopacker/userservice
+
+  user-db:
+    image: mysql:8.0
+    container_name: user-db
+
