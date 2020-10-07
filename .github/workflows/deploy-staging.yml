@@ -27,5 +27,5 @@ jobs:
         script: |
           cd ./AutoPacker
           docker-compose down
-          docker-compose pull
+          docker-compose -f docker-compose.yml -f docker-compose.stage.yml pull
           docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d
