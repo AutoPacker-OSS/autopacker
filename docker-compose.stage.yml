@@ -28,6 +28,8 @@ services:
     # File Delivery API
     fdapi:
         image: autopacker/fsapi
+        volumes:
+            - fdapi_data:/usr/src/fdapi/data
 
     #############
     # Databases #
@@ -51,3 +53,6 @@ services:
 
     keycloak:
         image: autopacker/staging-keycloak
+
+volumes:
+    fdapi_data:
