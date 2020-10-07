@@ -14,7 +14,6 @@ function NewServer() {
 	const [desc, setDesc] = React.useState("");
 	const [ip, setIp] = React.useState("");
 	const [username, setUsername] = React.useState("");
-	const [password, setPassword] = React.useState("");
 	const [sshKey, setSSHKey] = React.useState("");
 	const [radioChecked, setRadioChecked] = React.useState(false);
 	// Conditional rendering
@@ -68,7 +67,10 @@ function NewServer() {
 		if (keycloak.idTokenParsed.email_verified) {
 			axios({
 				method: "post",
-				url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_SERVER_MANAGER + "/server/new-server",
+				url:
+					process.env.REACT_APP_APPLICATION_URL +
+					process.env.REACT_APP_SERVER_MANAGER +
+					"/server/new-server",
 				headers: {
 					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 				},
@@ -77,7 +79,6 @@ function NewServer() {
 					desc: desc,
 					ip: ip,
 					username: username,
-					password: password,
 					ssh: sshKey,
 				},
 			})
@@ -98,7 +99,7 @@ function NewServer() {
 					dispatch(
 						createAlert(
 							"Failed to add server",
-							"You can't name the server the same as another server. Also double check that the IP, username and password are correct.",
+							"You can't name the server the same as another server",
 							"error",
 							true
 						)
@@ -130,7 +131,9 @@ function NewServer() {
 		} else {
 			setValidName(false);
 			setNameValidStatus("error");
-			setNameHelpText("Only letters, numbers and dashes are allowed. Spaces and special characters not allowed");
+			setNameHelpText(
+				"Only letters, numbers and dashes are allowed. Spaces and special characters not allowed"
+			);
 		}
 		setTitle(value);
 	};
@@ -173,7 +176,10 @@ function NewServer() {
 					>
 						<Input onChange={(e) => validateName(e.target.value)} />
 					</Form.Item>
-					<Form.Item label="Server Description" style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}>
+					<Form.Item
+						label="Server Description"
+						style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}
+					>
 						<TextArea onChange={(e) => setDesc(e.target.value)} />
 					</Form.Item>
 					<Form.Item
@@ -216,39 +222,6 @@ function NewServer() {
 					>
 						<Input onChange={(e) => setUsername(e.target.value)} />
 					</Form.Item>
-					<p
-						style={{
-							color: "red",
-							marginLeft: "auto",
-							marginRight: "auto",
-							maxWidth: 350,
-							textAlign: "center",
-							marginTop: -10,
-							MarginBottom: -10,
-						}}
-					>
-						NB! Password is stored in clear text for the time being
-					</p>
-					<Form.Item
-						name="password"
-						label={
-							<span>
-								Password&nbsp;
-								<Tooltip title="Password for accessing the server">
-									<QuestionCircleOutlined />
-								</Tooltip>
-							</span>
-						}
-						style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}
-						rules={[
-							{
-								required: true,
-								message: "Please input your password!",
-							},
-						]}
-					>
-						<Input.Password onChange={(e) => setPassword(e.target.value)} />
-					</Form.Item>
 					{/* // TODO Uncomment when SSH key feature is implemented */}
 					{/* <Form.Item
 						label="SSH?"
@@ -277,13 +250,19 @@ function NewServer() {
 						</Radio.Group>
 					</Form.Item> */}
 					{sshEnabled ? (
-						<Form.Item label="SSH Key" style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}>
+						<Form.Item
+							label="SSH Key"
+							style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}
+						>
 							<TextArea onChange={(e) => setSSHKey(e.target.value)} />
 						</Form.Item>
 					) : (
 						<div />
 					)}
-					<div style={{ width: "100%", textAlign: "center" }} onClick={(e) => handleSubmit(e)}>
+					<div
+						style={{ width: "100%", textAlign: "center" }}
+						onClick={(e) => handleSubmit(e)}
+					>
 						{loading ? (
 							<div>
 								<Spin
@@ -300,7 +279,7 @@ function NewServer() {
 						) : (
 							<Button
 								disabled={
-									!validName || ip.length <= 0 || username.length <= 0 || password.length <= 0
+									!validName || ip.length <= 0 || username.length <= 0
 									// || !radioChecked
 								}
 								type="primary"
