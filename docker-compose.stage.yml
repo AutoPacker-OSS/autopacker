@@ -31,6 +31,10 @@ services:
         volumes:
             - fdapi_data:/usr/src/fdapi/data
 
+    # Gateway API
+    gateway:
+        image: autopacker/gateway-api
+
     #############
     # Databases #
     #############

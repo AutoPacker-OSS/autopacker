@@ -76,6 +76,16 @@ services:
             - fdapi-mvn:/root/.m2/repository
             - /var/run/docker.sock:/var/run/docker.sock
 
+    # Gateway API
+    gateway:
+        container_name: gateway
+        ports:
+            - 8000:8000
+        networks:
+            - backend-network
+        volumes:
+            - gateway-mvn:/root/.m2/repository
+
     #############
     # Databases #
     #############
@@ -128,6 +138,7 @@ volumes:
     general-mvn:
     user-mvn:
     fdapi-mvn:
+    gateway-mvn:
     ap-fs:
     mysql-backend:
     fdapi-mongo:
