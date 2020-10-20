@@ -25,12 +25,7 @@ jobs:
         password: ${{ secrets.STAGING_PASSWORD }}
         port: ${{ secrets.STAGING_PORT }}
         script: |
-          cd ./AutoPacker-TEMP
+          cd ./AutoPacker
           docker-compose down
-          docker image pull autopacker/webapp
-          docker image pull autopacker/userservice
-          docker image pull autopacker/servermanager
-          docker image pull autopacker/general-api
-          docker image pull autopacker/fsapi
-          docker image pull autopacker/staging-keycloak
+          docker-compose -f docker-compose.yml -f docker-compose.stage.yml pull
           docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d
