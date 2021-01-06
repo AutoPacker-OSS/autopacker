@@ -26,6 +26,6 @@ jobs:
         port: ${{ secrets.STAGING_PORT }}
         script: |
           cd ./AutoPacker
-          docker-compose down
+          docker-compose -f docker-compose.yml -f docker-compose.stage.yml down
           docker-compose -f docker-compose.yml -f docker-compose.stage.yml pull
           docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d
