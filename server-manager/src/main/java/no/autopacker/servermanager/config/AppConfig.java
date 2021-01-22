@@ -17,10 +17,12 @@ public class AppConfig {
     private String apiRootUrl;
 
     public String getApplicationUrl() {
+        // return apiRootUrl + ":8082";
         return apiRootUrl;
     }
 
     public String getFileDeliveryAPIApplicationUrl() {
+        // return apiRootUrl + ":8090";
         return apiRootUrl;
     }
 

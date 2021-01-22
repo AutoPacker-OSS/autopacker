@@ -291,8 +291,7 @@ function ServerOverview() {
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
 				process.env.REACT_APP_SERVER_MANAGER +
-				"/server/init/" +
-				server.serverId,
+				"/server/init/",
 			data: {
 				serverId: server.serverId,
 				password: serverPassword,

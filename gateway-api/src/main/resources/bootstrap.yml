@@ -1,8 +1,2 @@
-spring:
-  cloud:
-    config:
-      uri: http://stage.autopacker.no:8888
-  application:
-    name: gateway
-  profiles:
-    active: staging
+server:
+  port: 443

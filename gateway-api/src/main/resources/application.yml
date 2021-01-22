@@ -1,0 +1,7 @@
+server:
+  port: 443
+  ssl:
+    enabled: true
+    key-store: /home/dev/ssl/ap-stage-api.p12
+    key-store-password: jesus123
+    key-store-type: PKCS12

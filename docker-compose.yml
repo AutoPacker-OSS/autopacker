@@ -11,7 +11,7 @@ services:
         depends_on:
             - keycloak
         ports:
-            - 80:80
+            - 8444:80
 
     ####################
     # Backend Services #
@@ -81,10 +81,21 @@ services:
         container_name: gateway
         ports:
             - 8000:8000
+        depends_on:
+            - config-srv
         networks:
             - backend-network
         volumes:
             - gateway-mvn:/root/.m2/repository
+
+    config-srv:
+        container_name: config-srv
+        ports:
+            - 8888:8888
+        networks:
+            - backend-network
+        volumes:
+            - config-srv-mvn:/root/.m2/repository
 
     #############
     # Databases #
@@ -109,6 +120,7 @@ services:
             - "3306"
         depends_on:
             - keycloak
+            - config-srv
         networks:
             - backend-network
         volumes:
@@ -122,6 +134,7 @@ services:
         container_name: keycloak
         ports:
             - 8080:8080
+            - 8443:8443
         networks:
             - backend-network
 
@@ -139,6 +152,7 @@ volumes:
     user-mvn:
     fdapi-mvn:
     gateway-mvn:
+    config-srv-mvn:
     ap-fs:
     mysql-backend:
     fdapi-mongo:

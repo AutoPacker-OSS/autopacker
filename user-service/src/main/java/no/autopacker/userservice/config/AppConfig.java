@@ -23,10 +23,12 @@ public class AppConfig {
     private String apiClientPassword;
 
     public String getKeycloakAuthUrl() {
+        // return apiRootUrl + ":9090/auth";
         return apiRootUrl + ":8443/auth";
     }
 
     public String getApplicationUrl() {
+        // return apiRootUrl + ":8081";
         return apiRootUrl;
     }
 

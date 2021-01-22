@@ -34,6 +34,15 @@ services:
     # Gateway API
     gateway:
         image: autopacker/gateway-api
+        volumes:
+            - ${SSL_APP_LOCATION}:/home/dev/ssl/ap-stage.p12
+
+    # Config Server
+    config-srv:
+        image: autopacker/config-srv
+        volumes:
+            - /home/dev/AutoPacker-Configuration:/etc/autopacker/config
+
 
     #############
     # Databases #
@@ -57,6 +66,11 @@ services:
 
     keycloak:
         image: autopacker/staging-keycloak
+        ports:
+            - 8443:8443
+        volumes:
+            - ${SSL_FULLCHAIN}:/etc/x509/https/tls.crt
+            - ${SSL_PRIVKEY}:/etc/x509/https/tls.key
 
 volumes:
     fdapi_data:
