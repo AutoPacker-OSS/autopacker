@@ -9,7 +9,7 @@
 
 server:
 # The TCP port on which the REST API will be listening
-  port: 8081
+  port: 8082
 
 ########################################
 # KeyCloak authentication server setup #
@@ -48,5 +48,7 @@ spring:
 
 api:
   root-url: http://127.0.0.1
+  service-url: http://127.0.0.1:8082
+  fdapi-url: http://127.0.0.1:8090
 
 # @formatter:on

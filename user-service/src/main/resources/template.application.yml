@@ -59,6 +59,8 @@ spring:
 
 api:
   root-url: ${API_ROOT_URL}
+  service-url: http://127.0.0.1:8081
+  keycloak-url: http://127.0.0.1:8080
   client-username: ${API_CLIENT_USERNAME}
   client-password: ${API_CLIENT_PASSWORD}
 

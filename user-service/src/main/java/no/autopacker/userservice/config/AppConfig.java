@@ -16,6 +16,12 @@ public class AppConfig {
     @Value("${api.root-url}")
     private String apiRootUrl;
 
+    @Value("${api.service-url}")
+    private String serviceUrl;
+
+    @Value("${api.keycloak-url}")
+    private String keycloakUrl;
+
     @Value("${api.client-username}")
     private String apiClientUsername;
 
@@ -23,15 +29,15 @@ public class AppConfig {
     private String apiClientPassword;
 
     public String getKeycloakAuthUrl() {
-        // return apiRootUrl + ":9090/auth";
-        return apiRootUrl + ":8443/auth";
+        return keycloakUrl;
     }
 
     public String getApplicationUrl() {
-        // return apiRootUrl + ":8081";
-        return apiRootUrl;
+        return serviceUrl;
     }
 
-    public String getWebApplicationUrl() { return apiRootUrl; }
+    public String getWebApplicationUrl() {
+        return apiRootUrl;
+    }
 
 }

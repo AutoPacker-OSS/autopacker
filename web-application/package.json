@@ -14,7 +14,7 @@
 		"date-fns": "^2.15.0",
 		"env-cmd": "^10.1.0",
 		"keycloak-js": "^10.0.2",
-		"node-sass": "^4.14.1",
+		"node-sass": "4.14.1",
 		"rc-tween-one": "^2.6.8",
 		"react": "^16.13.1",
 		"react-dom": "^16.13.1",

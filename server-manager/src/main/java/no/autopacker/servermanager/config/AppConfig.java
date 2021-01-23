@@ -16,14 +16,22 @@ public class AppConfig {
     @Value("${api.root-url}")
     private String apiRootUrl;
 
-    public String getApplicationUrl() {
-        // return apiRootUrl + ":8082";
+    @Value("${api.service-url}")
+    private String serviceUrl;
+
+    @Value("${api.fdapi-url}")
+    private String fdapiUrl;
+
+    public String getRootUrl() {
         return apiRootUrl;
     }
 
+    public String getApplicationUrl() {
+        return serviceUrl;
+    }
+
     public String getFileDeliveryAPIApplicationUrl() {
-        // return apiRootUrl + ":8090";
-        return apiRootUrl;
+        return fdapiUrl;
     }
 
 }
