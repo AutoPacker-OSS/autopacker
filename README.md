@@ -82,7 +82,7 @@ This will setup a local keycloak server on your host computer with the admin cre
 #### Run Mysql container
 Just creating a mysql container with a desired database set as environment property:
 ```
-docker container run -d --name mysql-backend -p 3306:3306 -e MYSQL_DATABASE=autopacker -e MYSQL_USER=root -e MYSQL_PASSWORD= -e MYSQL_ALLOW_EMPTY_PASSWORD=1 mysql:8.0.16
+docker container run -d --name mysql-backend -p 3306:3306 -e MYSQL_DATABASE=autopacker -e MYSQL_USER=root -e MYSQL_PASSWORD= -e MYSQL_ALLOW_EMPTY_PASSWORD=1 autopacker/local-mysql-backend
 ```
 
 #### Run Mongo container
