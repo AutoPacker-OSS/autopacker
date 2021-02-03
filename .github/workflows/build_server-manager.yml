@@ -1,5 +1,6 @@
-# This workflow should be executed when a merge request to develop branch is accepted
-name: AutoPacker docker image build & publish 
+# This workflow should be executed when a merge request to
+# develop or master including changes to file delivery api is accepted
+name: Server Manager Build
 
 on:
   push:
@@ -12,7 +13,7 @@ on:
 jobs:
       
   # Build and publish docker image for the server manager
-  build:
+  build_server-manager:
 
     runs-on: ubuntu-latest
 
@@ -31,27 +32,4 @@ jobs:
         repository: autopacker/servermanager
         tags: latest
         path: ./server-manager
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-      
+       
