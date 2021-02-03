@@ -23,8 +23,11 @@ function NewServer() {
 
 	// validation
 	const [validName, setValidName] = React.useState(false);
+	const [validIp, setValidIp] = React.useState(false);
 	const [nameValidStatus, setNameValidStatus] = React.useState("");
+	const [ipValidStatus, setIpValidStatus] = React.useState("");
 	const [nameHelpText, setNameHelpText] = React.useState("");
+	const [ipHelpText, setIpHelpText] = React.useState("");
 
 	// Get antd sub components
 	const { Paragraph } = Typography;
@@ -138,6 +141,29 @@ function NewServer() {
 		setTitle(value);
 	};
 
+	const validationIp = (ipAdress) => {
+		const ipFormat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+
+		if (ipAdress.trim().length <= 0) {
+			setValidIp(false);
+			setIpValidStatus("error");
+			setIpHelpText("Please enter a IP address");
+		} else if (ipAdress.match(ipFormat)) {
+			setValidIp(true);
+			setIpValidStatus("success");
+			setIpHelpText("");
+		} else {
+			setValidIp(false);
+			setIpValidStatus("error");
+			setIpHelpText(
+				"Only a valid IP is allowed"
+			);
+		}
+		setIp(ipAdress);
+	};
+
+
+
 	return (
 		<div style={{ width: "100%" }}>
 			<PageHeader
@@ -192,6 +218,8 @@ function NewServer() {
 								</Tooltip>
 							</span>
 						}
+						validateStatus={ipValidStatus}
+						help={ipHelpText}
 						style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}
 						rules={[
 							{
@@ -200,7 +228,7 @@ function NewServer() {
 							},
 						]}
 					>
-						<Input onChange={(e) => setIp(e.target.value)} />
+						<Input onChange={(e) => validationIp(e.target.value)} />
 					</Form.Item>
 					<Form.Item
 						name="username"
@@ -279,7 +307,7 @@ function NewServer() {
 						) : (
 							<Button
 								disabled={
-									!validName || ip.length <= 0 || username.length <= 0
+									!validName || !validIp || username.length <= 0
 									// || !radioChecked
 								}
 								type="primary"
