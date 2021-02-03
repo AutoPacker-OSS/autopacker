@@ -1,6 +1,6 @@
 # This workflow should be executed when a merge request to
 # develop or master including changes to file delivery api is accepted
-name: User Service Build
+name: General API Build
 
 on:
   push:
@@ -8,12 +8,12 @@ on:
       - master
       - develop
     paths:
-      - user-service/**
-    
+      - general-api/**
+
 jobs:
-        
-  # Build and publish docker image for the user service
-  build_user-service:
+  
+  # Build and publish docker image for the general service
+  build_general-service:
 
     runs-on: ubuntu-latest
 
@@ -22,14 +22,13 @@ jobs:
       uses: actions/checkout@v2
       
     - name: change config server bootstrap value
-      run: sed -i 's/localhost/stage.autopacker.no/' ./user-service/src/main/resources/bootstrap.yml
+      run: sed -i 's/localhost/stage.autopacker.no/' ./general-api/src/main/resources/bootstrap.yml
       
-    - name: Build and push the user service docker image
+    - name: Build and push the general service docker image
       uses: docker/build-push-action@v1
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
-        repository: autopacker/userservice
+        repository: autopacker/general-api
         tags: latest
-        path: ./user-service
-        
+        path: ./general-api
