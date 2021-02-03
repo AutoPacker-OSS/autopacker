@@ -12,7 +12,7 @@ on:
 jobs:
         
   # Build and publish docker image for the user service
-  build:
+  build_user-service:
 
     runs-on: ubuntu-latest
 
