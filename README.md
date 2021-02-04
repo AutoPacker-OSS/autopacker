@@ -3,6 +3,10 @@ AutoPacker is an automated software packaging and deployment solution.
 AutoPacker is a simple, but productive and transparent platform that is cloud-service and hosting independent and offers a way to manage projects, servers, deployment and storage, and being a platform for people to share projects and ideas.
 AutoPacker was created by three bachelor students at [NTNU](https://www.ntnu.edu/) as a part of their bachelor thesis project.
 
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
 ## Getting Started
 AutoPacker consists of several modules, each is a separate sub-project:
 - File delivery API - manages projects, modules, dockerfiles and docker-compose blocks.
