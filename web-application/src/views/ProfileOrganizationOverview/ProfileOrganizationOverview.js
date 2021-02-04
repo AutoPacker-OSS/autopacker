@@ -224,7 +224,6 @@ function ProfileOrganizationOverview() {
 																	{project.name
 																		.charAt(0)
 																		.toUpperCase()}{" "}
-																	/
 																</Avatar>
 																<div>
 																	<Link to={"#"}>
