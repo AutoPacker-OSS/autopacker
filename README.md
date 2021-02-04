@@ -117,7 +117,7 @@ TODO Add additional notes about how to deploy this on a live system.
 * Bendik Uglem Nogva
 * Girts Strazdins
 
-See also the list of [contributors](https://github.com/ANicholasson/AutoPacker-TEMP/graphs/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/AutoPacker-OSS/autopacker/graphs/contributors) who participated in this project.
 
 
 ## License
