@@ -11,6 +11,24 @@ on:
       - user-service/**
     
 jobs:
+  
+  # Build and publish a local docker image for development
+  build_local-user-service:
+    
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Build and push the user service docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+        repository: autopacker/local-userservice
+        tags: latest
+        path: ./user-service
         
   # Build and publish docker image for the user service
   build_user-service:

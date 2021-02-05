@@ -12,6 +12,24 @@ on:
 
 jobs:
   
+  # Build and publish docker image for local development
+  build_file-delivery:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build and push the file service docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+        repository: autopacker/local-fdapi
+        tags: latest
+        path: ./file-delivery-api
+
   # Build and publish docker image for the file service
   build_file-delivery:
 
