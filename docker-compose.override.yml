@@ -7,7 +7,7 @@ services:
     ###################
 
     web-app:
-        image: autopacker/local-webapp
+        image: autopacker/webapp
 
     # web-app:
     #     container_name: web-app
@@ -47,6 +47,10 @@ services:
     # File Delivery API
     fdapi:
         image: autopacker/local-fdapi
+
+    # Config Server
+    config-srv:
+        image: autopacker/local-config-server
 
     #############
     # Databases #

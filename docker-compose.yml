@@ -76,22 +76,10 @@ services:
             - fdapi-mvn:/root/.m2/repository
             - /var/run/docker.sock:/var/run/docker.sock
 
-    # Gateway API
-    gateway:
-        container_name: gateway
-        ports:
-            - 8000:8000
-        depends_on:
-            - config-srv
-        networks:
-            - backend-network
-        volumes:
-            - gateway-mvn:/root/.m2/repository
-
     config-srv:
         container_name: config-srv
-        ports:
-            - 8888:8888
+        expose:
+            - "8888"
         networks:
             - backend-network
         volumes:

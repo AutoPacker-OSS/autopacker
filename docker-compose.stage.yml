@@ -34,8 +34,16 @@ services:
     # Gateway API
     gateway:
         image: autopacker/gateway-api
+        container_name: gateway
+        ports:
+            - 8000:8000
+        depends_on:
+            - config-srv
+        networks:
+            - backend-network
         volumes:
             - ${SSL_APP_LOCATION}:/home/dev/ssl/ap-stage.p12
+            - gateway-mvn:/root/.m2/repository
 
     # Config Server
     config-srv:
