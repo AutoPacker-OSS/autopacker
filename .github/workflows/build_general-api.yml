@@ -11,6 +11,24 @@ on:
       - general-api/**
 
 jobs:
+
+  # Build and publish docker image for local development
+  build_general-service:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build and push the general service docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+        repository: autopacker/local-general-api
+        tags: latest
+        path: ./general-api
   
   # Build and publish docker image for the general service
   build_general-service:
