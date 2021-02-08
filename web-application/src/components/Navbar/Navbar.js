@@ -63,7 +63,7 @@ function Navbar() {
 						placeholder="Search users, projects ..."
 						onChange={(e) => setSearch(e.target.value)}
 						onSearch={() => setSearchAction(true)}
-						style={{ width: 200 }}
+						style={{ width: 200, paddingTop: "16px" }}
 					/>
 				</Menu.Item>
 			</Menu>
