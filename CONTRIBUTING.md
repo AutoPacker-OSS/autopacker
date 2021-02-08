@@ -33,13 +33,13 @@ When you initially consider contributing to AutoPacker, you might be unsure were
     
 ## How To Contribute?
 
-If you notice a bug in the application or missing documentation or have an idea for an improvement or feature, feel free to create an issue in [AutoPackers' issue list](https://github.com/ANicholasson/AutoPacker-TEMP/issues). Please check this list for existing issues before creating one. If you are unsure where to start contributing, we have issues marked with `Good first issue` to help you get started.
+If you notice a bug in the application or missing documentation or have an idea for an improvement or feature, feel free to create an issue in [AutoPackers' issue list](https://github.com/AutoPacker-OSS/autopacker/issues). Please check this list for existing issues before creating one. If you are unsure where to start contributing, we have issues marked with `Good first issue` to help you get started.
 
 > **Note:** If the issue you stumble upon is **Closed**, you open a new issue linking to that existing closed issue.
 
 ### Reporting Bugs
 
-To include enough information regarding a bug, you should use [this template](https://github.com/ANicholasson/AutoPacker-TEMP/blob/add-contribution.md/.github/bug_report.md) so that other contributors have enough information to work with without having to establish a conversation to understand the problem.
+To include enough information regarding a bug, you should use [this template](https://github.com/AutoPacker-OSS/autopacker/blob/develop/.github/bug_report.md) so that other contributors have enough information to work with without having to establish a conversation to understand the problem.
 
 ### Reporting Security Vulnerabilities
 
@@ -47,7 +47,7 @@ TODO - Write a SECURITY.md file that describes how to report security vulnerabil
 
 ### Suggesting Enhancements And Changes
 
-Enchangements and change suggestions are created using GitHub [issues](https://github.com/ANicholasson/AutoPacker-TEMP/issues). An enchancement or change suggestion are well appreciated and can be anything, but be sure that you leave a good explanation on what the suggestion involves and the results wanted. Check the [AutoPackers' issue list](https://github.com/ANicholasson/AutoPacker-TEMP/issues) for any existing suggestions that matches what you want before creating a new issue.
+Enchangements and change suggestions are created using GitHub [issues](https://github.com/AutoPacker-OSS/autopacker/issues). An enchancement or change suggestion are well appreciated and can be anything, but be sure that you leave a good explanation on what the suggestion involves and the results wanted. Check the [AutoPackers' issue list](https://github.com/AutoPacker-OSS/autopacker/issues) for any existing suggestions that matches what you want before creating a new issue.
 
 ### Conclusion 
 
