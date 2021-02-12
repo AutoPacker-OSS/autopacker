@@ -4,7 +4,8 @@ name: Deploy File Delivery API
 
 on:
   workflow_run:
-    - File Delivery Build
+    workflows:
+      - File Delivery Build
   types:
     - completed
 

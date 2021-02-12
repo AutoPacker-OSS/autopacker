@@ -4,7 +4,8 @@ name: Deploy Server Manager
 
 on:
   workflow_run:
-    - Server Manager Build
+    workflows:
+      - Server Manager Build
   types:
     - completed
 

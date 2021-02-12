@@ -4,7 +4,8 @@ name: Deploy User Service
 
 on:
   workflow_run:
-    - User Service Build
+    workflows:
+      - User Service Build
   types:
     - completed
 
