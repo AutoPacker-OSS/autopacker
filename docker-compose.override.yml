@@ -50,7 +50,7 @@ services:
 
     # Config Server
     config-srv:
-        image: autopacker/local-config-server
+        image: autopacker/local-config-server-compose
 
     #############
     # Databases #

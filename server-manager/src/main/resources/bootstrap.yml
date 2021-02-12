@@ -1,7 +1,7 @@
 spring:
   cloud:
     config:
-      uri: http://localhost:8888
+      uri: http://config-srv:8888 # without compose, use localhost
   application:
     name: servermanager
   profiles:
