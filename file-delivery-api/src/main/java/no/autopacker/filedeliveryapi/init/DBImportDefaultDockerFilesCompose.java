@@ -36,7 +36,7 @@ public class DBImportDefaultDockerFilesCompose implements CommandLineRunner {
         // List of docker-compose and Dockerfile (NOTE: file must be present in both docker-compose and dockerfiles folder)
         List<String> configTypes = Arrays.asList("java-11", "java-8", "dev-test", "angular",
             "mysql", "mysql-empty-password", "postgres", "postgres-empty-password", "react",
-            "java-8-jar", "java-11-jar", "spring-boot", "staticsite", "vanilla-minecraft", "ftb-infinity-evolved");
+            "java-8-jar", "java-11-jar", "spring-boot", "staticsite", "vanilla-minecraft", "ftb-infinity-evolved", "factorio-stable");
 
         configTypes.forEach(type -> {
             addIfDockerFileNotExists(new Dockerfile(type, Utils.instance().getDockerFileLocation(type)));
