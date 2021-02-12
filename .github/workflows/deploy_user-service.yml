@@ -6,8 +6,8 @@ on:
   workflow_run:
     workflows:
       - User Service Build
-  types:
-    - completed
+    types:
+      - completed
 
 jobs:
   deploy_staging:

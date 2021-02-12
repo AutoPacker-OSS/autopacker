@@ -6,8 +6,8 @@ on:
   workflow_run:
     workflows:
       - General API Build
-  types:
-    - completed
+    types:
+      - completed
 
 jobs:
   deploy_staging:

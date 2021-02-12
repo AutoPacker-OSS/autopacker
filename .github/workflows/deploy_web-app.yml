@@ -6,8 +6,8 @@ on:
   workflow_run:
     workflows:
       - Web Application Build
-  types:
-    - completed
+    types:
+      - completed
 
 jobs:
   deploy_staging:
