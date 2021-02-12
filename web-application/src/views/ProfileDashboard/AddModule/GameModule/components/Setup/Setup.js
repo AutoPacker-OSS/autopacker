@@ -87,8 +87,21 @@ function Setup(props) {
 			},
 			{
 				id: 1,
-				name: "Factorio (coming soon)",
-				disabled: true,
+				name: "Factorio",
+				disabled: false,
+				server_types: [
+					{
+						id: 1,
+						name: "Stable Builds",
+						versions: [
+							{
+								id: 1,
+								version: "Stable 1.1",
+								"config-type": "factorio-stable",
+							},
+						],
+					},
+				],
 			},
 		];
 
