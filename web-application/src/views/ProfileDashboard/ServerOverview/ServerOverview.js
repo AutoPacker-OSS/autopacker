@@ -31,6 +31,8 @@ import {
 	GitlabOutlined,
 	FolderOutlined,
 } from "@ant-design/icons";
+import {useModals} from "../../../context/ModalContext";
+import {GenericModal} from "../../../components/Modal/GenericModal";
 
 function ServerOverview() {
 	// State
@@ -63,6 +65,7 @@ function ServerOverview() {
 
 	const [keycloak] = useKeycloak();
 
+	const { openModal, closeModal } = useModals();
 	const dispatch = useDispatch();
 
 	// Get antd sub components
@@ -461,6 +464,35 @@ function ServerOverview() {
 			});
 	};
 
+	const serverInstallationModal = () => {
+		openModal(GenericModal, {
+			title: "Install Essentials",
+			description: "This will disable the server firewall, and download docker and " +
+				"docker-compose. These are needed to be able to run projects on the " +
+				"server.",
+			okText: "Yes",
+			okButtonProps: { disabled: serverPassword.length <= 0 },
+			ok: installEssentials,
+			jsx:
+				<Form layout="vertical">
+					<Form.Item
+						name="password"
+						label="Enter server password to install essentials"
+						rules={[
+							{
+								required: true,
+								message: "Please input your password!",
+							},
+						]}
+					>
+						<Input.Password
+							onChange={(e) => setServerPassword(e.target.value)}
+						/>
+					</Form.Item>
+				</Form>
+		})
+	}
+
 	return (
 		<div style={{ width: "100%" }}>
 			<PageHeader
@@ -520,7 +552,7 @@ function ServerOverview() {
 						<Paragraph style={{ float: "left" }}>{actions}</Paragraph>
 
 						<Button
-							onClick={() => setInstallationModalOpen(true)}
+							onClick={serverInstallationModal}
 							disabled={installationLoading}
 							style={{ float: "right" }}
 						>
@@ -771,42 +803,6 @@ function ServerOverview() {
 							<Form.Item
 								name="password"
 								label="Enter server password to confirm deletion"
-								rules={[
-									{
-										required: true,
-										message: "Please input your password!",
-									},
-								]}
-							>
-								<Input.Password
-									onChange={(e) => setServerPassword(e.target.value)}
-								/>
-							</Form.Item>
-						</Form>
-					</Modal>
-				) : (
-					<div />
-				)}
-				{/* Installation Modal */}
-				{installationModalOpen ? (
-					<Modal
-						title={"Install Essentials?"}
-						centered
-						visible={installationModalOpen}
-						onOk={() => installEssentials()}
-						okButtonProps={{ disabled: serverPassword.length > 0 ? false : true }}
-						okText="Yes"
-						onCancel={() => setInstallationModalOpen(false)}
-					>
-						<Paragraph>
-							This will disable the server firewall, and download docker and
-							docker-compose. These are needed to be able to run projects on the
-							server.
-						</Paragraph>
-						<Form layout="vertical">
-							<Form.Item
-								name="password"
-								label="Enter server password to install essentials"
 								rules={[
 									{
 										required: true,
