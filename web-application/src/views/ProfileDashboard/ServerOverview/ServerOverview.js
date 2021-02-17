@@ -464,6 +464,12 @@ function ServerOverview() {
 			});
 	};
 
+	const verifyServerInitialization = () => {
+		if (serverPassword.trim().length > 0) {
+			installEssentials();
+		}
+	}
+
 	const serverInstallationModal = () => {
 		openModal(GenericModal, {
 			title: "Install Essentials",
@@ -471,8 +477,7 @@ function ServerOverview() {
 				"docker-compose. These are needed to be able to run projects on the " +
 				"server.",
 			okText: "Yes",
-			okButtonProps: { disabled: serverPassword.length <= 0 },
-			ok: installEssentials,
+			ok: verifyServerInitialization,
 			jsx:
 				<Form layout="vertical">
 					<Form.Item
