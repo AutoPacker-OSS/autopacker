@@ -16,6 +16,7 @@ import generalReducer from "./store/reducers/generalReducer";
 import "./index.scss";
 // Import antd scss
 import "antd/dist/antd.css";
+import {ModalStack} from "./context/ModalContext";
 
 const rootReducer = combineReducers({
 	general: generalReducer,
@@ -52,7 +53,9 @@ const app = (
 	<KeycloakProvider keycloak={keycloak} initConfig={keycloakProviderInitConfig}>
 		<Router>
 			<Provider store={reduxStore}>
-				<App />
+				<ModalStack>
+					<App />
+				</ModalStack>
 			</Provider>
 		</Router>
 	</KeycloakProvider>
