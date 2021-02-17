@@ -19,7 +19,7 @@ jobs:
       with:
         host: ${{ secrets.STAGING_HOST }}
         username: ${{ secrets.STAGING_USERNAME }}
-        password: ${{ secrets.STAGING_PASSWORD }}
+        key: ${{ secrets.STAGING_PASSWORD }}
         port: ${{ secrets.STAGING_PORT }}
         script: |
           cd ./AutoPacker
