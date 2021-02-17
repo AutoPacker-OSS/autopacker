@@ -1,7 +1,7 @@
-import { Card, Col, Input, Layout, PageHeader, Row, Typography } from "antd";
+import {Button, Card, Col, Input, Layout, PageHeader, Row, Typography} from "antd";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Redirect } from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 // Import redux actions
 import axios from "axios";
@@ -114,10 +114,13 @@ function Organizations() {
 				}}
 			>
 				<Search
-					style={{ /*width: "80%", marginRight: "3%"*/ width: "100%" }}
+					style={{ width: "80%", marginRight: "3%" }}
 					placeholder="Search organization.."
 					onChange={(e) => setSearch(e.target.value)}
 				/>
+				<Button style={{ width: "17%" }} type="primary">
+				<Link to="/profile/organization/add">New Organization</Link>
+				</Button>
 				<Row style={{ marginTop: 20 }} gutter={[24, 24]}>
 					{organizations.map((organization) => (
 						<Col xs={24} lg={8} xl={6} key={organization.id}>
