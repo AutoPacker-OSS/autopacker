@@ -119,7 +119,7 @@ function Organizations() {
 					onChange={(e) => setSearch(e.target.value)}
 				/>
 				<Button style={{ width: "17%" }} type="primary">
-				<Link to="/profile/organization/add">New Organization</Link>
+				<Link id="new-organization-link" to="/profile/organization/add">New Organization</Link>
 				</Button>
 				<Row style={{ marginTop: 20 }} gutter={[24, 24]}>
 					{organizations.map((organization) => (

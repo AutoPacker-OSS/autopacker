@@ -59,6 +59,7 @@ function App() {
 				<ProfileDashboardRoute exact path="/profile/servers/overview/:server" component={ServerOverview} />
 				<ProfileDashboardRoute path="/profile/servers/overview/:server/settings" component={ServerSettings} />
 
+
 				{/*Projects*/}
 				<ProfileDashboardRoute exact path="/profile/projects" component={Projects} />
 				<ProfileDashboardRoute exact path="/profile/projects/new" component={NewProject} />
