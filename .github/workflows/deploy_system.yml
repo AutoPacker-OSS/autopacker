@@ -1,5 +1,5 @@
 # Manual action for deploying the latest changes in [develop] branch to the staging server
-name: Manual workflow
+name: Deploy Repo
 
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
