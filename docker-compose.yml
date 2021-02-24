@@ -2,157 +2,167 @@
 version: "3.1"
 
 services:
-    ###################
-    # Web Application #
-    ###################
+  ###################
+  # Web Application #
+  ###################
 
-    web-app:
-        container_name: web-app
-        depends_on:
-            - keycloak
-        ports:
-            - 8444:80
+  web-app:
+    container_name: web-app
+    depends_on:
+      - keycloak
+    ports:
+      - 8444:80
 
-    ####################
-    # Backend Services #
-    ####################
+  ####################
+  # Backend Services #
+  ####################
 
-    # Authentication Server
-    user-service:
-        container_name: user-service
-        depends_on:
-            - mysql-backend
-            - keycloak
-        restart: on-failure:10
-        ports:
-            - 8081:8081
-        networks:
-            - backend-network
-        volumes:
-            - user-mvn:/root/.m2/repository
+  # Authentication Server
+  user-service:
+    container_name: user-service
+    depends_on:
+      - mysql-backend
+      - keycloak
+    restart: on-failure:10
+    ports:
+      - 8081:8081
+    networks:
+      - backend-network
+    volumes:
+      - user-mvn:/root/.m2/repository
 
-    # General API
-    general-api:
-        container_name: general-api
-        depends_on:
-            - mysql-backend
-            - keycloak
-        restart: on-failure:10
-        ports:
-            - 8083:8083
-        networks:
-            - backend-network
-        volumes:
-            - general-mvn:/root/.m2/repository
+  # General API
+  general-api:
+    container_name: general-api
+    depends_on:
+      - mysql-backend
+      - keycloak
+    restart: on-failure:10
+    ports:
+      - 8083:8083
+    networks:
+      - backend-network
+    volumes:
+      - general-mvn:/root/.m2/repository
 
-    # Server Manager
-    server-manager:
-        container_name: servermanager
-        depends_on:
-            - mysql-backend
-            - keycloak
-        restart: on-failure:10
-        ports:
-            - 8082:8082
-        networks:
-            - backend-network
-        volumes:
-            - servers-mvn:/root/.m2/repository
+  # Server Manager
+  server-manager:
+    container_name: servermanager
+    depends_on:
+      - mysql-backend
+      - keycloak
+    restart: on-failure:10
+    ports:
+      - 8082:8082
+    networks:
+      - backend-network
+    volumes:
+      - servers-mvn:/root/.m2/repository
 
-    # File Delivery API
-    fdapi:
-        container_name: fdapi
-        ports:
-            - "8090:8090"
-        depends_on:
-            - mysql-backend
-            - fdapi-mongo
-            - keycloak
-        restart: on-failure:10
-        networks:
-            - backend-network
-        volumes:
-            - ap-fs:/opt/fs/
-            - fdapi-mvn:/root/.m2/repository
-            - /var/run/docker.sock:/var/run/docker.sock
+  # File Delivery API
+  fdapi:
+    container_name: fdapi
+    ports:
+      - "8090:8090"
+    depends_on:
+      - mysql-backend
+      - fdapi-mongo
+      - keycloak
+    restart: on-failure:10
+    networks:
+      - backend-network
+    volumes:
+      - ap-fs:/opt/fs/
+      - fdapi-mvn:/root/.m2/repository
+      - /var/run/docker.sock:/var/run/docker.sock
 
-    # Gateway API
-    gateway:
-        container_name: gateway
-        ports:
-            - 8000:8000
-        depends_on:
-            - config-srv
-        networks:
-            - backend-network
-        volumes:
-            - gateway-mvn:/root/.m2/repository
+  # Gateway API
+  gateway:
+    container_name: gateway
+    ports:
+      - 8000:8000
+    depends_on:
+      - config-srv
+    networks:
+      - backend-network
+    volumes:
+      - gateway-mvn:/root/.m2/repository
 
-    config-srv:
-        container_name: config-srv
-        ports:
-            - 8888:8888
-        networks:
-            - backend-network
-        volumes:
-            - config-srv-mvn:/root/.m2/repository
+  config-srv:
+    container_name: config-srv
+    ports:
+      - 8888:8888
+    networks:
+      - backend-network
+    volumes:
+      - config-srv-mvn:/root/.m2/repository
 
-    #############
-    # Databases #
-    #############
+  #############
+  # Databases #
+  #############
 
-    fdapi-mongo:
-        container_name: fdapi-mongodb
-        image: mongo:4.2.8
-        expose:
-            - "27017"
-        depends_on:
-            - keycloak
-        networks:
-            - backend-network
-        volumes:
-            - fdapi-mongo:/var/lib/mongodb
+  fdapi-mongo:
+    container_name: fdapi-mongodb
+    image: mongo:4.2.8
+    expose:
+      - "27017"
+    depends_on:
+      - keycloak
+    networks:
+      - backend-network
+    volumes:
+      - fdapi-mongo:/var/lib/mongodb
 
-    mysql-backend:
-        image: mysql:8.0.16
-        container_name: mysql-backend
-        expose: # Exposes the port to other containers within same network
-            - "3306"
-        depends_on:
-            - keycloak
-            - config-srv
-        networks:
-            - backend-network
-        volumes:
-            - mysql-backend:/var/lib/mysql
+  mysql-backend:
+    image: mysql:8.0.16
+    container_name: mysql-backend
+    expose: # Exposes the port to other containers within same network
+      - "3306"
+    depends_on:
+      - keycloak
+      - config-srv
+    networks:
+      - backend-network
+    volumes:
+      - mysql-backend:/var/lib/mysql
 
-    ############
-    # Keycloak #
-    ############
+  postgres:
+    image: postgres:13.2
+    container_name: postgres
+    expose: # Exposes the port to other containers within the same network
+      - "5432"
+    networks:
+      - backend-network
+    volumes: postgres-backend:/var/lib/postgres
 
-    keycloak:
-        container_name: keycloak
-        ports:
-            - 8080:8080
-            - 8443:8443
-        networks:
-            - backend-network
+  ############
+  # Keycloak #
+  ############
+
+  keycloak:
+    container_name: keycloak
+    ports:
+      - 8080:8080
+      - 8443:8443
+    networks:
+      - backend-network
 
 ######################
 # Networks & Volumes #
 ######################
 
 networks:
-    frontend-network:
-    backend-network:
+  frontend-network:
+  backend-network:
 
 volumes:
-    servers-mvn:
-    general-mvn:
-    user-mvn:
-    fdapi-mvn:
-    gateway-mvn:
-    config-srv-mvn:
-    ap-fs:
-    mysql-backend:
-    fdapi-mongo:
+  servers-mvn:
+  general-mvn:
+  user-mvn:
+  fdapi-mvn:
+  gateway-mvn:
+  config-srv-mvn:
+  ap-fs:
+  mysql-backend:
+  fdapi-mongo:
+  postgres-backend:

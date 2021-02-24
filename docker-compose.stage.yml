@@ -2,75 +2,86 @@
 version: "3.1"
 
 services:
-    ###################
-    # Web Application #
-    ###################
+  ###################
+  # Web Application #
+  ###################
 
-    web-app:
-        image: autopacker/webapp
+  web-app:
+    image: autopacker/webapp
 
-    ####################
-    # Backend Services #
-    ####################
+  ####################
+  # Backend Services #
+  ####################
 
-    # Authentication Server
-    user-service:
-        image: autopacker/userservice
+  # Authentication Server
+  user-service:
+    image: autopacker/userservice
 
-    # General API
-    general-api:
-        image: autopacker/general-api
+  # General API
+  general-api:
+    image: autopacker/general-api
 
-    # Server Manager
-    server-manager:
-        image: autopacker/servermanager
+  # Server Manager
+  server-manager:
+    image: autopacker/servermanager
 
-    # File Delivery API
-    fdapi:
-        image: autopacker/fsapi
-        volumes:
-            - fdapi_data:/usr/src/fdapi/data
+  # File Delivery API
+  fdapi:
+    image: autopacker/fsapi
+    volumes:
+      - fdapi_data:/usr/src/fdapi/data
 
-    # Gateway API
-    gateway:
-        image: autopacker/gateway-api
-        volumes:
-            - ${SSL_APP_LOCATION}:/home/dev/ssl/ap-stage.p12
+  # Gateway API
+  gateway:
+    image: autopacker/gateway-api
+    volumes:
+      - ${SSL_APP_LOCATION}:/home/dev/ssl/ap-stage.p12
 
-    # Config Server
-    config-srv:
-        image: autopacker/config-srv
-        volumes:
-            - /home/dev/AutoPacker-Configuration:/etc/autopacker/config
+  # Config Server
+  config-srv:
+    image: autopacker/config-srv
+    volumes:
+      - /home/dev/AutoPacker-Configuration:/etc/autopacker/config
 
+  #############
+  # Databases #
+  #############
 
-    #############
-    # Databases #
-    #############
+  fdapi-mongo:
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
 
-    fdapi-mongo:
-        environment:
-            MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME}
-            MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
+  mysql-backend:
+    environment:
+      MYSQL_DATABASE: ${MYSQLDB_DATABASE}
+      MYSQL_USER: ${MYSQLDB_USERNAME}
+      MYSQL_PASSWORD: ${MYSQLDB_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: ${MYSQLDB_RANDOM_ROOT_PASSWORD}
 
-    mysql-backend:
-        environment:
-            MYSQL_DATABASE: ${MYSQLDB_DATABASE}
-            MYSQL_USER: ${MYSQLDB_USERNAME}
-            MYSQL_PASSWORD: ${MYSQLDB_PASSWORD}
-            MYSQL_RANDOM_ROOT_PASSWORD: ${MYSQLDB_RANDOM_ROOT_PASSWORD}
+  postgres:
+    environment:
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
-    ############
-    # Keycloak #
-    ############
+  ############
+  # Keycloak #
+  ############
 
-    keycloak:
-        image: autopacker/staging-keycloak
-        ports:
-            - 8443:8443
-        volumes:
-            - ${SSL_FULLCHAIN}:/etc/x509/https/tls.crt
-            - ${SSL_PRIVKEY}:/etc/x509/https/tls.key
+  keycloak:
+    image: autopacker/staging-keycloak
+    ports:
+      - 8443:8443
+    volumes:
+      - ${SSL_FULLCHAIN}:/etc/x509/https/tls.crt
+      - ${SSL_PRIVKEY}:/etc/x509/https/tls.key
+    environment:
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
 
 volumes:
-    fdapi_data:
+  fdapi_data:
+  ${SSL_FULLCHAIN}:
+  ${SSL_PRIVKEY}:
+  ${SSL_APP_LOCATION}:

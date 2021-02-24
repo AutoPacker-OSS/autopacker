@@ -2,71 +2,77 @@
 version: "3.1"
 
 services:
-    ###################
-    # Web Application #
-    ###################
+  ###################
+  # Web Application #
+  ###################
 
-    web-app:
-        image: autopacker/local-webapp
+  web-app:
+    image: autopacker/local-webapp
 
-    # web-app:
-    #     container_name: web-app
-    #     build:
-    #         context: web-application
-    #         dockerfile: dev.Dockerfile
-    #     ports:
-    #         - 3000:3000
-    #     depends_on:
-    #         # - user-service
-    #         # - general-api
-    #         # - server-manager
-    #         - fdapi
-    #     networks:
-    #         - frontend-network
-    #     volumes:
-    #         # Mount the real source directories into the container - real-time changes will refresh the dev-build
-    #         - ./web-application/src:/app/src
-    #         - ./web-application/public:/app/public# docker-compose for local development
+  # web-app:
+  #     container_name: web-app
+  #     build:
+  #         context: web-application
+  #         dockerfile: dev.Dockerfile
+  #     ports:
+  #         - 3000:3000
+  #     depends_on:
+  #         # - user-service
+  #         # - general-api
+  #         # - server-manager
+  #         - fdapi
+  #     networks:
+  #         - frontend-network
+  #     volumes:
+  #         # Mount the real source directories into the container - real-time changes will refresh the dev-build
+  #         - ./web-application/src:/app/src
+  #         - ./web-application/public:/app/public# docker-compose for local development
 
-    ####################
-    # Backend Services #
-    ####################
+  ####################
+  # Backend Services #
+  ####################
 
-    # Authentication Server
-    user-service:
-        image: autopacker/local-userservice
+  # Authentication Server
+  user-service:
+    image: autopacker/local-userservice
 
-    # General API
-    general-api:
-        image: autopacker/local-general-api
+  # General API
+  general-api:
+    image: autopacker/local-general-api
 
-    # Server Manager
-    server-manager:
-        image: autopacker/local-servermanager
+  # Server Manager
+  server-manager:
+    image: autopacker/local-servermanager
 
-    # File Delivery API
-    fdapi:
-        image: autopacker/local-fdapi
+  # File Delivery API
+  fdapi:
+    image: autopacker/local-fdapi
 
-    #############
-    # Databases #
-    #############
+  #############
+  # Databases #
+  #############
 
-    fdapi-mongo:
-        environment:
-            MONGO_INITDB_ROOT_USERNAME: "autopacker"
-            MONGO_INITDB_ROOT_PASSWORD: "password"
+  fdapi-mongo:
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "autopacker"
+      MONGO_INITDB_ROOT_PASSWORD: "password"
 
-    mysql-backend:
-        environment:
-            MYSQL_DATABASE: "autopacker"
-            MYSQL_USER: "root"
-            MYSQL_PASSWORD: ""
-            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+  mysql-backend:
+    environment:
+      MYSQL_DATABASE: "autopacker"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: ""
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
 
-    ############
-    # Keycloak #
-    ############
+  # postgres:
+  #   environment:
+  #   POSTGRES_DB: keycloak
+  #   POSTGRES_USER: root
+  #   POSTGRES_PASSWORD: toor
 
-    keycloak:
-        image: autopacker/local-keycloak
+  ############
+  # Keycloak #
+  ############
+
+  keycloak:
+    image: autopacker/local-keycloak
