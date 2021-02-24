@@ -133,7 +133,8 @@ services:
       - "5432"
     networks:
       - backend-network
-    volumes: postgres-backend:/var/lib/postgres
+    volumes:
+      - postgres-backend:/var/lib/postgres
 
   ############
   # Keycloak #
@@ -144,6 +145,8 @@ services:
     ports:
       - 8080:8080
       - 8443:8443
+    depends_on:
+      - postgres
     networks:
       - backend-network
 
