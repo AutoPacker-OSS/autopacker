@@ -13,7 +13,7 @@ function NewOrganization() {
     const [orgName, setOrgName] = React.useState("");
     const [orgDesc, setOrgDesc] = React.useState("");
     const [url, setUrl] = React.useState("");
-    const [username, setVisability] = React.useState("");
+    const [visibility, setVisibility] = React.useState("");
     const [sshKey, setSSHKey] = React.useState("");
     const [radioChecked, setRadioChecked] = React.useState(false);
     // Conditional rendering
@@ -80,10 +80,10 @@ function NewOrganization() {
                     Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
                 },
                 data: {
-                    title: orgName,
-                    desc: orgDesc,
-                    ip: url,
-                    username: username,
+                    orgName: orgName,
+                    orgDesc: orgDesc,
+                    url: url,
+                    username: visibility,
                     ssh: sshKey,
                 },
             })
@@ -143,11 +143,6 @@ function NewOrganization() {
         setOrgName(value);
     };
 
-    const setGender = (event) => {
-        console.log(event.target.value);
-    }
-
-
     return (
         <div style={{ width: "100%" }}>
             <PageHeader
@@ -172,7 +167,7 @@ function NewOrganization() {
                 <Form {...formItemLayout}>
                     <Form.Item
                         name="organizationName"
-                        label="Name:"
+                        label="Org Name:"
                         hasFeedback
                         validateStatus={orgNameValidStatus}
                         help={nameHelpText}
@@ -187,7 +182,7 @@ function NewOrganization() {
                     </Form.Item>
                     <Form.Item
                         name="organizationDescription"
-                        label="Organization Description"
+                        label="Org Description"
                         style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}
                     >
                         <TextArea onChange={(e) => setOrgDesc(e.target.value)} />
@@ -197,16 +192,16 @@ function NewOrganization() {
                         label="Organization URL"
                         style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}
                     >
-                        <TextArea onChange={(e) => setOrgDesc(e.target.value)} />
+                        <TextArea onChange={(e) => setUrl(e.target.value)} />
                     </Form.Item>
-
                     <Form.Item
-                                name="organizationVisability"
+                                name="organizationVisibility"
                                 label={
                                    <span>
-								Visability&nbsp;
-                                       <Tooltip title="Visability to see the organization">
+								Visibility&nbsp;
+                                       <Tooltip title="Visibility to see the organization">
 									<QuestionCircleOutlined />
+
 								</Tooltip>
 							</span>
                                }
@@ -224,6 +219,7 @@ function NewOrganization() {
                                 value="Public"
                                 onChange={() => {
                                     setRadioChecked(true);
+                                    setVisibility("Public");
                                 }}
                             >
                                 Public
@@ -232,6 +228,7 @@ function NewOrganization() {
                                 value="Private"
                                 onChange={() => {
                                     setRadioChecked(true);
+                                    setVisibility("Private");
                                 }}
                             >
                                 Private
@@ -269,8 +266,7 @@ function NewOrganization() {
                         ) : (
                             <Button
                                 disabled={
-                                    !validOrgName || !validUrl || username.length <= 0
-                                    // || !radioChecked
+                                    !validOrgName || !radioChecked
                                 }
                                 type="primary"
                             >
