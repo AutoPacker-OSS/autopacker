@@ -1,4 +1,4 @@
-import { Button, Form, Input, Layout, PageHeader, Tooltip, Typography, Spin } from "antd";
+import {Button, Form, Input, Layout, PageHeader, Tooltip, Typography, Spin, Radio} from "antd";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
@@ -15,7 +15,7 @@ function NewOrganization() {
     const [url, setUrl] = React.useState("");
     const [username, setVisability] = React.useState("");
     const [sshKey, setSSHKey] = React.useState("");
-    // const [radioChecked, setRadioChecked] = React.useState(false);
+    const [radioChecked, setRadioChecked] = React.useState(false);
     // Conditional rendering
     const [sshEnabled, setSSHEnabled] = React.useState(false);
     const [redirect, setRedirect] = React.useState(false);
@@ -27,7 +27,7 @@ function NewOrganization() {
     const [orgNameValidStatus, setOrgNameValidStatus] = React.useState("");
     const [urlValidStatus, setUrlValidStatus] = React.useState("");
     const [nameHelpText, setNameHelpText] = React.useState("");
-    //const [ipHelpText, setIpHelpText] = React.useState("");
+    //econst [ipHelpText, setIpHelpText] = React.useState("");
 
     // Get antd sub components
     const { Paragraph } = Typography;
@@ -63,6 +63,8 @@ function NewOrganization() {
             breadcrumbName: "Add Organizations",
         },
     ];
+
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -141,13 +143,9 @@ function NewOrganization() {
         setOrgName(value);
     };
 
-    const handleOptionChange = changeEvent => {
-        this.setState({
-            selectedOption: changeEvent.target.value
-        });
-    };
-
-
+    const setGender = (event) => {
+        console.log(event.target.value);
+    }
 
 
     return (
@@ -202,8 +200,9 @@ function NewOrganization() {
                         <TextArea onChange={(e) => setOrgDesc(e.target.value)} />
                     </Form.Item>
 
-                    <Form.Item name="organizationVisability"
-                               label={
+                    <Form.Item
+                                name="organizationVisability"
+                                label={
                                    <span>
 								Visability&nbsp;
                                        <Tooltip title="Visability to see the organization">
@@ -219,29 +218,25 @@ function NewOrganization() {
                                ]}>
 
 
-                        <div className="form-check">
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="radioOption1"
-                                    value="public"
-                                    checked={true}
-                                />
+                        <Radio.Group value="Public">
+                            <Radio
+
+                                value="Public"
+                                onChange={() => {
+                                    setRadioChecked(true);
+                                }}
+                            >
                                 Public
-                            </label>
-                        </div>
-
-                        <div className="form-check">
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="radioOption2"
-                                    value="private"
-
-                                />
+                            </Radio>
+                            <Radio
+                                value="Private"
+                                onChange={() => {
+                                    setRadioChecked(true);
+                                }}
+                            >
                                 Private
-                            </label>
-                        </div>
+                            </Radio>
+                        </Radio.Group>
                     </Form.Item>
 
                     {sshEnabled ? (
