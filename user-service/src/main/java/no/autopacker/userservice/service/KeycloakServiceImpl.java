@@ -1,7 +1,5 @@
 package no.autopacker.userservice.service;
 
-import java.util.Collections;
-import javax.ws.rs.core.Response;
 import no.autopacker.userservice.domain.KeycloakAdminClientConfig;
 import no.autopacker.userservice.entity.User;
 import no.autopacker.userservice.security.KeycloakAdminClientUtils;
@@ -17,8 +15,11 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.ws.rs.core.Response;
+import java.util.Collections;
+
 @Service
-public class KeycloakAdminClientService {
+public class KeycloakServiceImpl {
 
     @Value("${keycloak.realm}")
     private String keycloakRealm;
@@ -26,23 +27,23 @@ public class KeycloakAdminClientService {
     private final KeycloakAdminClientUtils keycloakAdminClientUtils;
     private final KeycloakPropertyReader keycloakPropertyReader;
 
-    public KeycloakAdminClientService(
-        KeycloakAdminClientUtils keycloakAdminClientUtils,
-        KeycloakPropertyReader keycloakPropertyReader) {
+    public KeycloakServiceImpl(
+            KeycloakAdminClientUtils keycloakAdminClientUtils,
+            KeycloakPropertyReader keycloakPropertyReader) {
         this.keycloakAdminClientUtils = keycloakAdminClientUtils;
         this.keycloakPropertyReader = keycloakPropertyReader;
     }
 
-    public void createNewUser(User user, String password) {
+    public String createNewUser(User user, String password) {
 
         // Add user to database
 
         // Get Keycloak config
         KeycloakAdminClientConfig keycloakAdminClientConfig = this.keycloakAdminClientUtils
-            .loadConfig(keycloakPropertyReader);
+                .loadConfig(keycloakPropertyReader);
         // Get keycloak client
         Keycloak keycloak = this.keycloakAdminClientUtils
-            .getKeycloakClient(keycloakAdminClientConfig);
+                .getKeycloakClient(keycloakAdminClientConfig);
 
         // Define user
         UserRepresentation userRepresentation = new UserRepresentation();
@@ -56,11 +57,7 @@ public class KeycloakAdminClientService {
 
         // Create user (requires manage-users role)
         Response response = usersResource.create(userRepresentation);
-        System.out.printf("Repsonse: %s %s%n", response.getStatus(), response.getStatusInfo());
-        System.out.println(response.getLocation());
         String userId = CreatedResponseUtil.getCreatedId(response);
-
-        System.out.printf("User created with userId: %s%n", userId);
 
         // Define password credential
         CredentialRepresentation passwordCred = new CredentialRepresentation();
@@ -73,16 +70,18 @@ public class KeycloakAdminClientService {
         // Set password credential
         userResource.resetPassword(passwordCred);
 
-//        // Get realm role "tester" (requires view-realm role)
+        // Get realm role "tester" (requires view-realm role)
         RoleRepresentation testerRealmRole = realmResource.roles()//
-            .get("UNVERIFIED").toRepresentation();
-//
-//        // Assign realm role tester to user
-        userResource.roles().realmLevel() //
-            .add(Collections.singletonList(testerRealmRole));
+                .get("MEMBER").toRepresentation();
+
+        // Assign realm role tester to user
+        userResource.roles().realmLevel()
+                .add(Collections.singletonList(testerRealmRole));
 
         // Request email verification
         usersResource.get(userId).executeActionsEmail(Collections.singletonList("VERIFY_EMAIL"));
+
+        return userId;
     }
 
 }

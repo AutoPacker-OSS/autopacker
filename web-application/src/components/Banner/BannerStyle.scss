@@ -16,6 +16,7 @@
 	max-width: 300px;
 	width: 100%;
 	min-width: 200px;
+	margin: 0 auto;
 }
 
 .login-form-forgot {
@@ -26,7 +27,13 @@
 	width: 100%;
 }
 
+.form-item {
+	margin-bottom: 10px;
+}
+
 .banner-content-wrapper {
-	margin: 0 auto;
+	margin: 2em auto;
 	max-width: 900px;
+	display: flex;
+	flex-wrap: wrap;
 }
