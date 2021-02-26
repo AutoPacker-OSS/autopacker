@@ -186,7 +186,15 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 					// TODO Check if status is 200 or not and respond corresponding
 
 					setLoading(false);
-					message.success("Registration success! Check your email inbox.")
+					console.log("RESPONSE:", response)
+					if (response.status === 200 || response.status === 201) {
+						message.success("Registration success! Check your email inbox.")
+						setUsername("");
+						setEmail("");
+						setPassword("");
+					} else {
+						message.error("Couldn't register user")
+					}
 				})	
 				.catch((error) => {
 					console.error(error)
@@ -244,6 +252,7 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 													setUsernameHelpText("Checking username...");
 													setUsername(e.target.value.trim());
 												}}
+												value={username}
 											/>
 										</Form.Item>
 										<Form.Item className="form-item"
@@ -265,6 +274,7 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 													setEmailHelpText("Checking email...");
 													setEmail(e.target.value.trim());
 												}}
+												value={email}
 											/>
 										</Form.Item>
 										<div>
@@ -283,6 +293,7 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 													setValidPassword("validating");
 													validatePassword(e.target.value);
 												}}
+												value={password}
 											/>
 											</Form.Item>
 
