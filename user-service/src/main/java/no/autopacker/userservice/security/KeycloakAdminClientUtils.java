@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class KeycloakAdminClientUtils {
 
-    private static Logger log = LoggerFactory.getLogger(KeycloakAdminClientUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(KeycloakAdminClientUtils.class);
 
     private final AppConfig appConfig;
 
@@ -39,7 +39,6 @@ public class KeycloakAdminClientUtils {
             String keycloakServer = System.getProperty("keycloak.url");
             if (!StringUtils.isBlank(keycloakServer)) {
                 builder = builder.serverUrl(keycloakServer);
-
             } else {
                 builder = builder
                     .serverUrl(keycloakPropertyReader.getProperty("keycloak.auth-server-url"));
@@ -48,7 +47,6 @@ public class KeycloakAdminClientUtils {
             String realm = System.getProperty("keycloak.realm");
             if (!StringUtils.isBlank(realm)) {
                 builder = builder.realm(realm);
-
             } else {
                 builder = builder.realm(keycloakPropertyReader.getProperty("keycloak.realm"));
             }
@@ -56,7 +54,6 @@ public class KeycloakAdminClientUtils {
             String clientId = System.getProperty("keycloak.clientId");
             if (!StringUtils.isBlank(clientId)) {
                 builder = builder.clientId(clientId);
-
             } else {
                 builder = builder.clientId(keycloakPropertyReader.getProperty("keycloak.resource"));
             }
@@ -64,7 +61,6 @@ public class KeycloakAdminClientUtils {
             String clientSecret = System.getProperty("keycloak.secret");
             if (!StringUtils.isBlank(clientSecret)) {
                 builder = builder.clientSecret(clientSecret);
-
             } else {
                 builder = builder
                     .clientSecret(keycloakPropertyReader.getProperty("keycloak.credentials.secret"));
@@ -79,9 +75,6 @@ public class KeycloakAdminClientUtils {
 
         return config;
     }
-
-    // TODO Discuss whether to use Cliend ID and Secret so resource can access admin server or
-    //  use a user with username and password with resricted authoritites
 
     /**
      * It builds a {@link Keycloak} client from a given configuration. This client is used to
@@ -104,14 +97,15 @@ public class KeycloakAdminClientUtils {
             .password(this.appConfig.getApiClientPassword())
             .build();
 
-//        return KeycloakBuilder.builder()
-//            .serverUrl(config.getServerUrl())
-//            .realm(config.getRealm())
-//            .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
-//            .clientId(config.getClientId())
-//            .clientSecret(config.getClientSecret())
-//            .authorization(session.getTokenString())
-//            .build();
+        // TODO This might be a better solution? (using authorization token)
+        //  return KeycloakBuilder.builder()
+        //    .serverUrl(config.getServerUrl())
+        //    .realm(config.getRealm())
+        //    .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+        //    .clientId(config.getClientId())
+        //    .clientSecret(config.getClientSecret())
+        //    .authorization(session.getTokenString())
+        //     .build();
     }
 
 

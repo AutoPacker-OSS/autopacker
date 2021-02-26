@@ -28,16 +28,4 @@ public class AppConfig {
     @Value("${api.client-password}")
     private String apiClientPassword;
 
-    public String getKeycloakAuthUrl() {
-        return keycloakUrl;
-    }
-
-    public String getApplicationUrl() {
-        return serviceUrl;
-    }
-
-    public String getWebApplicationUrl() {
-        return apiRootUrl;
-    }
-
 }

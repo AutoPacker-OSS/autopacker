@@ -1,10 +1,12 @@
 // Ant Design imports
-import { Button, Col, Row, Typography } from "antd";
+import { Button, Col, Row, Typography, Form, Spin, Card, Input, message } from "antd";
+import { UserOutlined, MailOutlined, LockOutlined } from "@ant-design/icons";
 import React, { useEffect } from "react";
 // Import styles
 import "./BannerStyle.scss";
 // custom alert
 import { createAlert } from "../../store/actions/generalActions";
+import { deleteCookie, getCookie } from "../../util/cookieService";
 import { connect } from "react-redux";
 import axios from "axios";
 // Import custom hooks
@@ -70,7 +72,7 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 		// Our useEffect function will only execute if this value changes ...
 		// ... and thanks to our hook it will only change if the original ...
 		// value (searchTerm) hasn't changed for more than 500ms.
-		[debouncedUsernameCheck, username]
+		[debouncedUsernameCheck]
 	);
 
 	// Inspired from https://dev.to/gabe_ragland/debouncing-with-react-hooks-jci
@@ -112,7 +114,7 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 		// Our useEffect function will only execute if this value changes ...
 		// ... and thanks to our hook it will only change if the original ...
 		// value (searchTerm) hasn't changed for more than 500ms.
-		[debouncedEmailCheck, email]
+		[debouncedEmailCheck]
 	);
 
 	const text = (
@@ -153,7 +155,7 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 		</div>
 	);
 
-	/* const handleSubmit = (event) => {
+	const handleSubmit = (event) => {
 		event.preventDefault();
 		deleteCookie("Authorization");
 		if (username.trim().length === 0) {
@@ -181,18 +183,25 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 				}),
 			})
 				.then((response) => {
-					onAuth(username, password);
-					const tokenFound = getCookie("Authorization") !== null;
+					// TODO Check if status is 200 or not and respond corresponding
 
-					if (tokenFound) {
-						setLoading(false);
-						setRegistrationSuccess(true);
-						onRegistrationSuccess("Registration Success", text, "success", true);
+					setLoading(false);
+					console.log("RESPONSE:", response)
+					if (response.status === 200 || response.status === 201) {
+						message.success("Registration success! Check your email inbox.")
+						setUsername("");
+						setEmail("");
+						setPassword("");
+					} else {
+						message.error("Couldn't register user")
 					}
-				})
-				.catch((error) => {});
+				})	
+				.catch((error) => {
+					console.error(error)
+					message.error("Couldn't register user")
+				});
 		}
-	}; */
+	};
 
 	const validatePassword = (value) => {
 		setPassword(value);
@@ -211,7 +220,7 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 				<Row gutter={[48, 0]}>
 					<div style={{}} className="banner-content-wrapper">
 						{/* Text Section */}
-						<Col xs={24} md={24} style={{ marginTop: 40, textAlign: "center" }}>
+						<Col xs={24} md={12} style={{ textAlign: "center", alignSelf: "center" }}>
 							<Title style={{ fontSize: 40, fontWeight: "bold" }}>
 								Automatic packaging and deployment solution
 							</Title>
@@ -221,23 +230,19 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 							</Paragraph>
 						</Col>
 
-						{/* // TODO Change what to do with this form */}
-						{/* {registrationSuccess ? <RedirectProfileHome /> : <div />}
-
-						{/* Registration form *
-						<Col xs={24} md={12}>
+						{/* Registration form */}
+						<Col xs={24} md={12} style={{ textAlign: "center" }}>
 							<Spin spinning={loading} delay={500}>
 								<Card size="small" className="login-form">
 									<Form>
-										<Form.Item
+										<Form.Item className="form-item"
 											hasFeedback
 											validateStatus={validUsername}
 											help={usernameHelpText}
 										>
 											<Input
 												prefix={
-													<Icon
-														type="user"
+													<UserOutlined
 														style={{ color: "rgba(0,0,0,.25)" }}
 													/>
 												}
@@ -247,17 +252,17 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 													setUsernameHelpText("Checking username...");
 													setUsername(e.target.value.trim());
 												}}
+												value={username}
 											/>
 										</Form.Item>
-										<Form.Item
+										<Form.Item className="form-item"
 											hasFeedback
 											validateStatus={validEmail}
 											help={emailHelpText}
 										>
 											<Input
 												prefix={
-													<Icon
-														type="mail"
+													<MailOutlined
 														style={{
 															color: "rgba(0,0,0,.25)",
 														}}
@@ -269,13 +274,16 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 													setEmailHelpText("Checking email...");
 													setEmail(e.target.value.trim());
 												}}
+												value={email}
 											/>
 										</Form.Item>
-										<Form.Item hasFeedback validateStatus={validPassword}>
+										<div>
+										<Form.Item className="form-item" 
+											hasFeedback 
+											validateStatus={validPassword}>
 											<Input
 												prefix={
-													<Icon
-														type="lock"
+													<LockOutlined
 														style={{ color: "rgba(0, 0, 0, 0.25)" }}
 													/>
 												}
@@ -285,11 +293,13 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 													setValidPassword("validating");
 													validatePassword(e.target.value);
 												}}
+												value={password}
 											/>
+											</Form.Item>
 
-											<p style={{ lineHeight: 1.5, marginBottom: 0 }}>
+											<p style={{ lineHeight: 1.5, marginBottom: 0, marginTop: 10 }}>
 												Make sure the password is at least{" "}
-												{/* TODO Set conditional coloring 
+												{/* TODO Set conditional coloring */}
 												<span
 													style={{
 														color:
@@ -302,9 +312,9 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 													lower- and uppercase letter
 												</span>
 											</p>
-										</Form.Item>
+										</div>
 
-										<Form.Item>
+										<Form.Item style={{marginTop: 10, marginBottom: 10}}>
 											<Button
 												type="primary"
 												htmlType="submit"
@@ -313,16 +323,14 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 											>
 												Sign Up
 											</Button>
-											<Paragraph style={{ lineHeight: 1.5, marginTop: 10 }}>
+											{/* <Paragraph style={{ lineHeight: 1.5, marginTop: 10 }}>
 												By clicking "Sign Up", you agree to our{" "}
-												<a href="#">Terms and Service</a> and{" "}
-												<a href="#">Privacy Statement</a>.
-											</Paragraph>
+											</Paragraph> */}
 										</Form.Item>
 									</Form>
 								</Card>
 							</Spin>
-						</Col> */}
+						</Col>
 					</div>
 				</Row>
 			</Col>

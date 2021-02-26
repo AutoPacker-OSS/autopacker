@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,17 +21,17 @@ import no.autopacker.userservice.annotation.ValidEmail;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String id;
 
     @NotEmpty
+    @NotNull
     @Size(min = 4, max = 25)
     private String username;
 
     @NotEmpty
+    @NotNull
     @ValidEmail
     private String email;
-
 
     /**
      * Constructor for objects of type User
