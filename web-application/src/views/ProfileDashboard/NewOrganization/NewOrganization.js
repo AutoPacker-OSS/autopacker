@@ -16,6 +16,7 @@ function NewOrganization() {
     const [visibility, setVisibility] = React.useState("");
     const [sshKey, setSSHKey] = React.useState("");
     const [radioChecked, setRadioChecked] = React.useState(false);
+
     // Conditional rendering
     const [sshEnabled, setSSHEnabled] = React.useState(false);
     const [redirect, setRedirect] = React.useState(false);
@@ -23,11 +24,9 @@ function NewOrganization() {
 
     // validation
     const [validOrgName, setValidOrgName] = React.useState(false);
-    const [validUrl, setValidUrl] = React.useState(false);
     const [orgNameValidStatus, setOrgNameValidStatus] = React.useState("");
-    const [urlValidStatus, setUrlValidStatus] = React.useState("");
     const [nameHelpText, setNameHelpText] = React.useState("");
-    //econst [ipHelpText, setIpHelpText] = React.useState("");
+
 
     // Get antd sub components
     const { Paragraph } = Typography;
@@ -88,7 +87,6 @@ function NewOrganization() {
                 },
             })
                 .then(() => {
-                    //console.log("OK");
                     dispatch(
                         createAlert(
                             "Organization Added",
@@ -128,7 +126,7 @@ function NewOrganization() {
         if (value.trim().length <= 0) {
             setValidOrgName(false);
             setOrgNameValidStatus("error");
-            setNameHelpText("Please name your project");
+            setNameHelpText("Please name your organization");
         } else if (/^[a-zA-Z0-9-]+$/.test(value)) {
             setValidOrgName(true);
             setOrgNameValidStatus("success");
