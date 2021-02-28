@@ -35,6 +35,8 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
                 .authorizeRequests()
+                    .antMatchers("actuator/**")
+                        .hasRole("ADMIN")
                     .anyRequest()
                         .hasAnyRole("ADMIN", "USER");
     }// @formatter:on

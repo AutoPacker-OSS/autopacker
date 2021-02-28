@@ -104,8 +104,8 @@ public class DBInit implements CommandLineRunner {
         this.organizationRepository.save(ntnu);
 
         // Create members
-        Member aronmn = new Member(ntnu, admin, "aronmn", "Aron Nicholasson", "aron_junk@hotmail.com");
-        aronmn.setEnabled(true);
+        Member user = new Member(ntnu, admin, "user", "User", "autopacker01@gmail.com");
+        user.setEnabled(true);
 
 
         Member vister = new Member(ntnu, admin, "vister", "Victor F. Charlsson", "vister@dummy.no");
@@ -125,7 +125,7 @@ public class DBInit implements CommandLineRunner {
 
         Member Hatiou1983 = new Member(ntnu, student, "Hatiou1983", "Billy B. Kincaid", "JosephCAnderson@rhyta.com");
         Member chu3Il2ahkai = new Member(ntnu, student, "chu3Il2ahkai", "Joseph C. Anderson", "JosephCAnderson@rhyta.com");
-        this.memberRepository.saveAll(Arrays.asList(aronmn, vister, Arro1990, Tionve, Hatiou1983, chu3Il2ahkai, Boodsom, Jone1994, Funt1959, Sithered));
+        this.memberRepository.saveAll(Arrays.asList(user, vister, Arro1990, Tionve, Hatiou1983, chu3Il2ahkai, Boodsom, Jone1994, Funt1959, Sithered));
 
         // Create project
         OrganizationProject test = new OrganizationProject(ntnu, Arro1990, new JSONArray(Arrays.asList("Bethany")), 1L, "Test Project", "Bachelor", "This is just for displaying data from db", new JSONArray(Arrays.asList("http://localhost")), new JSONArray(Arrays.asList("test", "project")));

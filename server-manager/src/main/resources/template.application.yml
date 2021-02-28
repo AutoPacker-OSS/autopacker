@@ -51,4 +51,23 @@ api:
   service-url: http://127.0.0.1:8082
   fdapi-url: http://127.0.0.1:8090
 
+######################
+# Actuator & Logging #
+######################
+
+management:
+  endpoints:
+    web:
+      cors:
+        allowed-origins: *
+        allowed-methods: GET
+      exposure:
+        include: logs
+
+logging:
+  file:
+    path: ./logs/
+    max-history: 2
+    max-size: 50MB
+
 # @formatter:on
