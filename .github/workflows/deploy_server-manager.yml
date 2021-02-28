@@ -24,4 +24,4 @@ jobs:
         script: |
           cd ./AutoPacker
           docker image pull autopacker/servermanager
-          docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d --force-recreate servermanager
+          docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d --force-recreate server-manager
