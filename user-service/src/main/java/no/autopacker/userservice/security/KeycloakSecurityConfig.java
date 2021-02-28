@@ -33,6 +33,8 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
                 .authorizeRequests()
                     .antMatchers(HttpMethod.PUT, "/api/auth/changePassword")
                         .authenticated()
+                    .antMatchers("actuator/**")
+                        .hasRole("ADMIN")
                     .anyRequest()
                         .permitAll();
     }// @formatter:on

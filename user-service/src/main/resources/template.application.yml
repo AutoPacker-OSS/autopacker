@@ -64,4 +64,14 @@ api:
   client-username: ${API_CLIENT_USERNAME}
   client-password: ${API_CLIENT_PASSWORD}
 
+######################
+# Actuator & Logging #
+######################
+
+logging:
+  file:
+    path: ./src/main/resources/logs/
+    max-history: 2
+    max-size: 50MB
+
 # @formatter:on

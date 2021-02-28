@@ -35,6 +35,8 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
                 .authorizeRequests()
                     .antMatchers(HttpMethod.POST, "/projects/**")
                         .authenticated()
+                    .antMatchers("actuator/**")
+                        .hasRole("ADMIN")
                     .anyRequest()
                         .permitAll();
     }// @formatter:on

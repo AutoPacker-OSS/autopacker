@@ -59,4 +59,15 @@ docker:
   token: ${DOCKER_TOKEN}
   repository: ${DOCKER_REPO}
 
+
+######################
+# Actuator & Logging #
+######################
+
+logging:
+  file:
+    path: ./src/main/resources/logs/
+    max-history: 2
+    max-size: 50MB
+
 # @formatter:on
