@@ -1,9 +1,6 @@
 package no.autopacker.general.service;
 
-import no.autopacker.general.entity.organization.Member;
-import no.autopacker.general.entity.organization.MemberApplication;
-import no.autopacker.general.entity.organization.OrganizationProject;
-import no.autopacker.general.entity.organization.ProjectApplication;
+import no.autopacker.general.entity.organization.*;
 import no.autopacker.general.repository.organization.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
+import java.util.Locale;
 
 @Service
 public class OrganizationService {
@@ -295,4 +294,17 @@ public class OrganizationService {
         }
     }
 
+
+
+    public ResponseEntity<String> createNewOrg(Organization organization) {
+        Organization orgFound = this.organizationRepository.findByName(organization.getName());
+        if (orgFound == null){
+
+            this.organizationRepository.save(organization);
+            return ResponseEntity.ok().build();
+        } else {
+            return new ResponseEntity("Organization already existing!", HttpStatus.BAD_REQUEST);
+        }
+
+    }
 }
