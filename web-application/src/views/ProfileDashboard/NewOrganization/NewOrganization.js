@@ -70,7 +70,7 @@ function NewOrganization() {
         if (keycloak.idTokenParsed.email_verified) {
             axios({
                 method: "post",
-                url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_SERVER_MANAGER + "/organization/new-organization",
+                url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_GENERAL_API  + "/organization/new-organization",
                 headers: {
                     Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
                 },
