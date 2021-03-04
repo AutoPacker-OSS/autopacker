@@ -44,7 +44,7 @@ public class DockerService {
 		// Get Docker status command of the login attempt
 		int statusCode = this.loginToDocker();
 
-		if (statusCode != 0) {
+		if (statusCode != 0 && statusCode != 1) {
 			throw new BeanCreationException("Couldn't login to Docker");
 		}
 
