@@ -31,7 +31,7 @@ jobs:
         path: ./file-delivery-api
 
   # Build and publish docker image for the file service
-  build_file-delivery:
+  build_local-file-delivery:
 
     runs-on: ubuntu-latest
 

@@ -99,7 +99,12 @@ function SearchResult(props) {
 
 	return (
 		<React.Fragment>
-			<Row>
+			<Row
+				style={{
+					borderTop: "1px solid rgb(235, 237, 240)",
+					backgroundColor: "#FFFFFF",
+				}}
+			>
 				<Col span={14} offset={5}>
 					<Title style={{ marginTop: 20 }} level={2}>
 						Search

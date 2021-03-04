@@ -82,6 +82,10 @@ function ProfileOrganizationForm() {
 		<React.Fragment>
 			{redirect ? <Redirect to={"/organization/" + organization.name} /> : <div />}
 			{/* Content */}
+			<Row style={{
+				borderTop: "1px solid rgb(235, 237, 240)",
+				backgroundColor: "#FFFFFF",
+			}}/>
 			<Row style={{ marginTop: 20 }}>
 				<Col span={14} offset={5}>
 					<Row style={{ maxWidth: 1100 }} gutter={[24, 0]}>

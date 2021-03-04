@@ -17,9 +17,9 @@ import java.io.IOException;
 @Service
 public class DockerService {
 
-	private DockerfileRepository dockerfileRepo;
-	private DockerConfig dockerConfig;
-	private Logger logger;
+	private final DockerfileRepository dockerfileRepo;
+	private final DockerConfig dockerConfig;
+	private final Logger logger;
 
 	@Autowired
 	public DockerService(DockerfileRepository dockerfileRepo,
@@ -41,14 +41,14 @@ public class DockerService {
 					"root folder is added to the user/system PATH variable.");
 		}
 
-		// Get Docker status command of the login attempt
-		int statusCode = this.loginToDocker();
+		// Get Docker exit command of the login attempt
+		int exitCode = this.loginToDocker();
 
-		if (statusCode != 0 && statusCode != 1) {
-			throw new BeanCreationException("Couldn't login to Docker");
+		if (exitCode != 0) {
+			logger.warn(String.format("Docker login command executed with a non-null exit code! Exit code: %s", exitCode));
+		} else {
+			logger.info("Logged into Docker as " + dockerConfig.getUsername() + "!");
 		}
-
-		logger.info("Logged into Docker as " + dockerConfig.getUsername() + "!");
 	}
 
 	/**
@@ -69,26 +69,27 @@ public class DockerService {
 	}
 
 	/**
-	 * Login to docker and store the system status code.
+	 * Login to docker and store the system exit code.
 	 *
 	 * @return              0 (OK) if Docker is logged in or another number if login failed
 	 */
 	public int loginToDocker() {
-		int statusCode;
+		int exitCode;
 
 		try {
 			// Login to docker
-			statusCode = Runtime
+			exitCode = Runtime
 					.getRuntime()
 					.exec(
 							new String[]{"docker", "login", "--username", dockerConfig.getUsername(),
 									"--password", dockerConfig.getToken(), dockerConfig.getRepository()})
 					.waitFor();
 		} catch (IOException | InterruptedException e) {
-			statusCode = -1;
+			e.printStackTrace();
+			exitCode = -1;
 		}
 
-		return statusCode;
+		return exitCode;
 	}
 
 	public void buildDockerImage(ModuleMeta module, String ownerUsername) throws Exception {
