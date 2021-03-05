@@ -122,10 +122,10 @@ function ProfileDashboardLayout({ children }) {
 						</Menu.Item>
 						{keycloak.realmAccess.roles.includes("ADMIN") ? (
 							<Menu.Item key="9">
-								<Link to="/monitor/" id="sidebar-monitor-link">
+								<a href="https://stage.autopacker.no/monitor/" target="_blank" rel="noopener noreferrer" id="sidebar-monitor-link">
 									<DesktopOutlined />
 									{collapsed ? <div /> : "Monitor"}
-								</Link>
+								</a>
 							</Menu.Item>
 						) : null}
 					</Menu>
