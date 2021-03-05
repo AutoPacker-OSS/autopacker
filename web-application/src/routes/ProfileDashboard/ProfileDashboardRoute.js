@@ -1,5 +1,5 @@
 import { Layout, Menu, Button } from "antd";
-import { HddOutlined, FolderOutlined, ApartmentOutlined } from "@ant-design/icons";
+import { HddOutlined, FolderOutlined, ApartmentOutlined, DesktopOutlined } from "@ant-design/icons";
 import React, { Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Route, Redirect } from "react-router-dom";
@@ -72,6 +72,7 @@ function ProfileDashboardLayout({ children }) {
 	);
 
 	React.useEffect(() => {
+		console.log(keycloak.realmAccess.roles);
 		if (keycloak.idTokenParsed.email_verified === false) {
 			dispatch(createAlert("Please verify your email address", text, "warning", true));
 		}
@@ -119,6 +120,14 @@ function ProfileDashboardLayout({ children }) {
 								{collapsed ? <div /> : "Your Organizations"}
 							</Link>
 						</Menu.Item>
+						{keycloak.realmAccess.roles.includes("ADMIN") ? (
+							<Menu.Item key="9">
+								<Link to="/monitor" id="sidebar-monitor-link">
+									<DesktopOutlined />
+									{collapsed ? <div /> : "Monitor"}
+								</Link>
+							</Menu.Item>
+						) : null}
 					</Menu>
 				</Sider>
 				<Content>
