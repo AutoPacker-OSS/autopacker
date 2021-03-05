@@ -16,6 +16,7 @@ import no.autopacker.general.repository.organization.ProjectApplicationRepositor
 import no.autopacker.general.repository.organization.ProjectRepository;
 import no.autopacker.general.repository.organization.RoleRepository;
 import no.autopacker.general.service.OrganizationService;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
@@ -25,12 +26,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.TransactionSystemException;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
 @RestController
 @RequestMapping(value = "api/organization")
@@ -67,6 +65,23 @@ public class OrganizationController {
         this.organizationService = organizationService;
         this.objectMapper = new ObjectMapper();
     }
+
+    @PostMapping(value = "/new-organization")
+    public ResponseEntity<String> createNewOrg(HttpEntity<String> httpEntity) {
+        String body = httpEntity.getBody();
+        if (body != null) {
+            JSONObject jsonObject = new JSONObject(body);
+           return this.organizationService.createNewOrg( new Organization(
+                    jsonObject.getString("orgName"),
+                   jsonObject.getString("orgDesc"))
+            );
+        } else {
+            return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
+        }
+
+
+    }
+
 
     @PostMapping(value = "/requestMembership")
     public ResponseEntity<String> requestMembership(HttpEntity<String> httpEntity) {

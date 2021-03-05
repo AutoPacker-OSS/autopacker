@@ -18,7 +18,6 @@ function NewOrganization() {
     const [radioChecked, setRadioChecked] = React.useState(false);
 
     // Conditional rendering
-    const [sshEnabled, setSSHEnabled] = React.useState(false);
     const [redirect, setRedirect] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
 
@@ -71,19 +70,15 @@ function NewOrganization() {
         if (keycloak.idTokenParsed.email_verified) {
             axios({
                 method: "post",
-                url:
-                    process.env.REACT_APP_APPLICATION_URL +
-                    process.env.REACT_APP_SERVER_MANAGER +
-                    "/organization/new-organization",
+                url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_GENERAL_API  + "/organization/new-organization",
                 headers: {
                     Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
                 },
                 data: {
                     orgName: orgName,
                     orgDesc: orgDesc,
-                    url: url,
-                    username: visibility,
-                    ssh: sshKey,
+                   // url: url,
+                   // visibility: visibility,
                 },
             })
                 .then(() => {
@@ -233,17 +228,6 @@ function NewOrganization() {
                             </Radio>
                         </Radio.Group>
                     </Form.Item>
-
-                    {sshEnabled ? (
-                        <Form.Item
-                            label="SSH Key"
-                            style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}
-                        >
-                            <TextArea onChange={(e) => setSSHKey(e.target.value)} />
-                        </Form.Item>
-                    ) : (
-                        <div />
-                    )}
                     <div
                         style={{ width: "100%", textAlign: "center" }}
                         onClick={(e) => handleSubmit(e)}
