@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "actuator/auth")
+@RequestMapping(value = "api/auth/actuator")
 public class ActuatorController {
 
     private final Path infoLogPath = FileSystems.getDefault().getPath("./src/main/resources/logs", "spring.log");

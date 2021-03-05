@@ -21,7 +21,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping(value = "actuator/organization")
+@RequestMapping(value = "api/organization/actuator/")
 public class ActuatorController {
 
     private final Path infoLogPath = FileSystems.getDefault().getPath("./src/main/resources/logs", "spring.log");
@@ -52,7 +52,7 @@ public class ActuatorController {
     }
 
     @GetMapping(
-            value = "logs",
+            value = "/logs",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
     public @ResponseBody
@@ -61,7 +61,7 @@ public class ActuatorController {
         return IOUtils.toByteArray(in);
     }
 
-    @GetMapping(value = "health")
+    @GetMapping(value = "/health")
     public Health getHealth() {
         try {
             return Health.up().build();
