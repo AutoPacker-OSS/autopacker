@@ -122,7 +122,7 @@ function ProfileDashboardLayout({ children }) {
 						</Menu.Item>
 						{keycloak.realmAccess.roles.includes("ADMIN") ? (
 							<Menu.Item key="9">
-								<Link to="/monitor" id="sidebar-monitor-link">
+								<Link to="/monitor/" id="sidebar-monitor-link">
 									<DesktopOutlined />
 									{collapsed ? <div /> : "Monitor"}
 								</Link>
