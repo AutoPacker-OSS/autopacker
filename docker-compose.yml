@@ -47,7 +47,7 @@ services:
 
   # Server Manager
   server-manager:
-    container_name: servermanager
+    container_name: server-manager
     depends_on:
       - mysql-backend
       - keycloak
