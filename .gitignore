@@ -65,3 +65,11 @@ file-delivery-api/data/workspace
 
 ### Chrome Drivers ###
 webapp-test/src/main/resources/chromedriver/windows/
+
+file-delivery-api/src/main/resources/logs/
+
+general-api/src/main/resources/logs/
+
+server-manager/src/main/resources/logs/
+
+user-service/src/main/resources/logs/

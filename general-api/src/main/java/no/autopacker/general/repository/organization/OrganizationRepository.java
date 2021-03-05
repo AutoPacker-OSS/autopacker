@@ -10,6 +10,8 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 
     Organization findByName(String name);
 
+    Organization findByNameIgnoreCase(String name);
+
     List<Organization> findAllByNameContaining(String search);
 
     List<Organization> findOrganizationsByMembersUsernameAndMembersIsEnabled(String username,

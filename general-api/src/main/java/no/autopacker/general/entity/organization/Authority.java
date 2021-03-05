@@ -3,6 +3,7 @@ package no.autopacker.general.entity.organization;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.keycloak.adapters.jaas.AbstractKeycloakLoginModule;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;

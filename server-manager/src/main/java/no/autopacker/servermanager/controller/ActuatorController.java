@@ -1,11 +1,16 @@
 package no.autopacker.servermanager.controller;
 
+import org.apache.commons.io.IOUtils;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
@@ -30,7 +35,7 @@ public class ActuatorController {
     public List<String> getInfoLog() {
         try (BufferedReader reader = Files.newBufferedReader(infoLogPath, charset)) {
             String line;
-            while (((line = reader.readLine()) != null)){
+            while (((line = reader.readLine()) != null)) {
                 this.logList.add(line);
             }
         } catch (IOException e) {
@@ -45,4 +50,22 @@ public class ActuatorController {
         return logListToSend;
     }
 
+    @GetMapping(
+            value = "logs",
+            produces = MediaType.TEXT_PLAIN_VALUE
+    )
+    public @ResponseBody
+    byte[] getLog() throws IOException {
+        InputStream in = Files.newInputStream(infoLogPath);
+        return IOUtils.toByteArray(in);
+    }
+
+    @GetMapping(value = "health")
+    public Health getHealth() {
+        try {
+            return Health.up().build();
+        } catch (Exception e) {
+            return Health.down().build();
+        }
+    }
 }
