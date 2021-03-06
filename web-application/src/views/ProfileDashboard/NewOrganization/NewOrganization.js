@@ -14,7 +14,6 @@ function NewOrganization() {
     const [orgDesc, setOrgDesc] = React.useState("");
     const [url, setUrl] = React.useState("");
     const [visibility, setVisibility] = React.useState("");
-    const [sshKey, setSSHKey] = React.useState("");
     const [radioChecked, setRadioChecked] = React.useState(false);
 
     // Conditional rendering
@@ -77,8 +76,8 @@ function NewOrganization() {
                 data: {
                     orgName: orgName,
                     orgDesc: orgDesc,
-                   // url: url,
-                   // visibility: visibility,
+                    url: url,
+                    visibility: visibility,
                 },
             })
                 .then(() => {
