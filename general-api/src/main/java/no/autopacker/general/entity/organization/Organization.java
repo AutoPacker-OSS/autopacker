@@ -26,6 +26,10 @@ public class Organization {
 
     private String description;
 
+    private String url;
+
+    private Boolean visibility;
+
     @OneToMany(mappedBy = "organization")
     private List<OrganizationProject> organizationProjects;
 
@@ -38,9 +42,11 @@ public class Organization {
     @OneToMany(mappedBy = "organization")
     private List<ProjectApplication> projectApplications;
 
-    public Organization(String name, String desc) {
+    public Organization(String name, String desc, String url, boolean visibility) {
         this.name = name;
         this.description = desc;
+        this.url = url;
+        this.visibility = visibility;
         this.organizationProjects = new ArrayList<>();
         this.members = new ArrayList<>();
     }

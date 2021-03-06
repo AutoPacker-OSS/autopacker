@@ -72,8 +72,10 @@ public class OrganizationController {
         if (body != null) {
             JSONObject jsonObject = new JSONObject(body);
            return this.organizationService.createNewOrg( new Organization(
-                    jsonObject.getString("orgName"),
-                   jsonObject.getString("orgDesc"))
+                   jsonObject.getString("orgName"),
+                   jsonObject.getString("orgDesc"),
+                   jsonObject.getString("url"),
+                   jsonObject.getBoolean("visibility"))
             );
         } else {
             return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
