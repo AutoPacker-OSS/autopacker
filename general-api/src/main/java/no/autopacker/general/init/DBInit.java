@@ -100,7 +100,7 @@ public class DBInit implements CommandLineRunner {
         this.roleRepository.saveAll(Arrays.asList(admin, maintainer, student, employee));
 
         // Create organization
-        Organization ntnu = new Organization("NTNU", "Norwegian University of Science and Technology (NTNU) is a state university in Norway, and from 2016 the country's largest. It has headquarters in Trondheim and campuses in Gjøvik and Ålesund.");
+        Organization ntnu = new Organization("NTNU", "Norwegian University of Science and Technology (NTNU) is a state university in Norway, and from 2016 the country's largest. It has headquarters in Trondheim and campuses in Gjøvik and Ålesund.", "https://www.ntnu.no/", true);
         this.organizationRepository.save(ntnu);
 
         // Create members
