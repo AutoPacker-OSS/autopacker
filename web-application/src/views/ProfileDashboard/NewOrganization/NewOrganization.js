@@ -13,7 +13,7 @@ function NewOrganization() {
     const [orgName, setOrgName] = React.useState("");
     const [orgDesc, setOrgDesc] = React.useState("");
     const [url, setUrl] = React.useState("");
-    const [visibility, setVisibility] = React.useState("");
+    const [isPublic, setIsPublic] = React.useState("");
     const [radioChecked, setRadioChecked] = React.useState(false);
 
     // Conditional rendering
@@ -77,7 +77,9 @@ function NewOrganization() {
                     orgName: orgName,
                     orgDesc: orgDesc,
                     url: url,
-                    visibility: visibility,
+                    isPublic: isPublic,
+                    username: keycloak.idTokenParsed.preferred_username,
+                    // email:
                 },
             })
                 .then(() => {
@@ -211,7 +213,7 @@ function NewOrganization() {
                                 value="Public"
                                 onChange={() => {
                                     setRadioChecked(true);
-                                    setVisibility("Public");
+                                    setIsPublic(true);
                                 }}
                             >
                                 Public
@@ -220,7 +222,7 @@ function NewOrganization() {
                                 value="Private"
                                 onChange={() => {
                                     setRadioChecked(true);
-                                    setVisibility("Private");
+                                    setIsPublic(false);
                                 }}
                             >
                                 Private
@@ -252,6 +254,7 @@ function NewOrganization() {
                                 type="primary"
                             >
                                 Create Organization
+
                             </Button>
                         )}
                     </div>

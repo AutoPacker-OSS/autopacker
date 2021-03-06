@@ -28,7 +28,7 @@ public class Organization {
 
     private String url;
 
-    private Boolean visibility;
+    private Boolean isPublic;
 
     @OneToMany(mappedBy = "organization")
     private List<OrganizationProject> organizationProjects;
@@ -42,11 +42,11 @@ public class Organization {
     @OneToMany(mappedBy = "organization")
     private List<ProjectApplication> projectApplications;
 
-    public Organization(String name, String desc, String url, boolean visibility) {
+    public Organization(String name, String desc, String url, boolean isPublic) {
         this.name = name;
         this.description = desc;
         this.url = url;
-        this.visibility = visibility;
+        this.isPublic = isPublic;
         this.organizationProjects = new ArrayList<>();
         this.members = new ArrayList<>();
     }
