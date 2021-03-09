@@ -15,6 +15,8 @@ function NewOrganization() {
     const [url, setUrl] = React.useState("");
     const [isPublic, setIsPublic] = React.useState("");
     const [radioChecked, setRadioChecked] = React.useState(false);
+    const [email, setEmail] = React.useState("");
+    const [name, setName] = React.useState("");
 
     // Conditional rendering
     const [redirect, setRedirect] = React.useState(false);
@@ -22,8 +24,12 @@ function NewOrganization() {
 
     // validation
     const [validOrgName, setValidOrgName] = React.useState(false);
+    const [validEmail, setValidEmail] = React.useState(false);
     const [orgNameValidStatus, setOrgNameValidStatus] = React.useState("");
+    const [emailValidStatus, setEmailValidStatus] = React.useState("");
     const [nameHelpText, setNameHelpText] = React.useState("");
+    const [emailHelpText, setEmailHelpText] = React.useState("");
+
 
 
     // Get antd sub components
@@ -66,6 +72,7 @@ function NewOrganization() {
     const handleSubmit = (event) => {
         event.preventDefault();
         setLoading(true);
+        console.log(keycloak.idTokenParsed.preferred_username, email,name)
         if (keycloak.idTokenParsed.email_verified) {
             axios({
                 method: "post",
@@ -79,8 +86,12 @@ function NewOrganization() {
                     url: url,
                     isPublic: isPublic,
                     username: keycloak.idTokenParsed.preferred_username,
-                    // email:
+                    email: email,
+                    name: name,
+                    role: "ADMIN"
+
                 },
+
             })
                 .then(() => {
                     dispatch(
@@ -137,6 +148,25 @@ function NewOrganization() {
         setOrgName(value);
     };
 
+    const validateEmail = (value) => {
+        if (value.trim().length <= 0) {
+            setValidEmail(false);
+            setEmailValidStatus("error");
+            setEmailHelpText("Please enter your email");
+        } else if /*Email Regex*/(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(value)) {
+            setValidEmail(true);
+            setEmailValidStatus("success");
+            setEmailHelpText("");
+        } else {
+            setValidEmail(false);
+            setEmailValidStatus("error");
+            setEmailHelpText(
+                "Only a valid email is allowed"
+            );
+        }
+        setEmail(value);
+    };
+
     return (
         <div style={{ width: "100%" }}>
             <PageHeader
@@ -166,11 +196,7 @@ function NewOrganization() {
                         validateStatus={orgNameValidStatus}
                         help={nameHelpText}
                         style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
+                        rules={[{required: true}]}
                     >
                         <Input onChange={(e) => validateName(e.target.value)} />
                     </Form.Item>
@@ -186,7 +212,34 @@ function NewOrganization() {
                         label="Organization URL"
                         style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}
                     >
-                        <TextArea onChange={(e) => setUrl(e.target.value)} />
+                        <Input onChange={(e) => setUrl(e.target.value)} />
+                    </Form.Item>
+                    <Form.Item
+                        name="organizationEmail"
+                        label={
+                            <span>
+                            Email&nbsp;
+                            <Tooltip title="This will be the contact email for the organization">
+                            <QuestionCircleOutlined />
+
+                            </Tooltip>
+                            </span>
+                        }
+                        hasFeedback
+                        validateStatus={emailValidStatus}
+                        help={emailHelpText}
+                        style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}
+                        rules={[{required: true}]}
+                    >
+                        <Input onChange={(e) => validateEmail(e.target.value)} />
+                    </Form.Item>
+                    <Form.Item
+                        name="name"
+                        label="Your Name"
+                        style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}
+                        rules={[{required: true}]}
+                    >
+                        <Input onChange={(e) => setName(e.target.value)} />
                     </Form.Item>
                     <Form.Item
                                 name="organizationVisibility"
@@ -249,7 +302,7 @@ function NewOrganization() {
                         ) : (
                             <Button
                                 disabled={
-                                    !validOrgName || !radioChecked
+                                    !validOrgName || !radioChecked || name.length <= 0 || !validEmail
                                 }
                                 type="primary"
                             >

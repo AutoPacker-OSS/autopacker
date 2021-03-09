@@ -293,23 +293,20 @@ public class OrganizationService {
     }
 
 
-
-    public ResponseEntity<String> createNewOrg(Organization organization, String username, String email) {
+    public ResponseEntity<String> createNewOrg(Organization organization, String username, String email, String name, Role role) {
         Organization orgFound = this.organizationRepository.findByName(organization.getName());
         if (orgFound == null){
-          //  if(username != null){
                 this.organizationRepository.save(organization);
-              /*  Role admin = new Role("ADMIN");
-                Member user = new Member(organization, admin, username, username, email);
+
+
+                Member user = new Member(organization, role, username, name, email);
                 user.setEnabled(true);
-                this.memberRepository.save(user); */
-                return ResponseEntity.ok().build();
-           // } else{
-             //   return new ResponseEntity<>("Please log in on a verified user!", HttpStatus.BAD_REQUEST);
-           // }
+                System.out.println(user);
+                this.memberRepository.save(user);
+
+                return new ResponseEntity<>("Organization Created", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Organization already existing!", HttpStatus.BAD_REQUEST);
         }
-
     }
 }
