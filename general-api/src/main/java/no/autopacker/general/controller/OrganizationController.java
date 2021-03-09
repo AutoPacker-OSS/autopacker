@@ -76,8 +76,11 @@ public class OrganizationController {
                    jsonObject.getString("orgDesc"),
                    jsonObject.getString("url"),
                    jsonObject.getBoolean ("isPublic")),
+
                    jsonObject.getString("username"),
-                   jsonObject.getString("email")
+                   jsonObject.getString("email"),
+                   jsonObject.getString("name"),
+                   this.roleRepository.findByName(jsonObject.getString("role"))
             );
         } else {
             return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
