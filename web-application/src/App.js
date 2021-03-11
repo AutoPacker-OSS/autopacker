@@ -18,6 +18,7 @@ const ServerOverview = React.lazy(() => import("./views/ProfileDashboard/ServerO
 const NewServer = React.lazy(() => import("./views/ProfileDashboard/NewServer/NewServer"));
 const NewProject = React.lazy(() => import("./views/ProfileDashboard/NewProject/NewProject"));
 const NewOrganization = React.lazy(() => import("./views/ProfileDashboard/NewOrganization/NewOrganization"));
+const RoleControl = React.lazy(() => import("./views/OrganizationDashboard/RoleControl/RoleControl"));
 // const Verification = React.lazy(() => import("./views/Verification/Verification"));
 const SearchResult = React.lazy(() => import("./views/SearchResult/SearchResult"));
 const ProfilePage = React.lazy(() => import("./views/ProfilePage/ProfilePage"));
@@ -53,6 +54,7 @@ function App() {
 				<OrganizationDashboardRoute path="/organization/dashboard/:organization" component={OrganizationDashboard} />
 				<OrganizationDashboardRoute path="/organization/applicants/:organization" component={Applicants} />
 				<OrganizationDashboardRoute path="/organization/members/:organization" component={Members} />
+				<OrganizationDashboardRoute path="/organization/rolecontrol/:organization" component={RoleControl} />
 				<ProfileDashboardRoute exact path="/profile/organization/add/" component={NewOrganization}/>
 
 				{/*Servers*/}

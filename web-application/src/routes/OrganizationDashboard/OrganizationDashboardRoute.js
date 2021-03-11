@@ -152,6 +152,13 @@ function OrganizationDashboardLayout({ children }) {
 								) : (
 									<div />
 								)}
+								{keycloak.tokenParsed.resource_access["general-api"].roles.includes("ADMIN") ? (
+									<Menu.Item key="10">
+										<Link to={"/organization/rolecontrol/" + organizationName}>Role Control</Link>
+									</Menu.Item>
+								) : (
+									<div />
+								)}
 							</SubMenu>
 							<SubMenu
 								onTitleClick={(e) => dispatch(toggleSubMenuOption(e.key))}
