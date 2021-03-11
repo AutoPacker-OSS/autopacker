@@ -9,8 +9,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
-
 @Service
 public class OrganizationService {
 
@@ -295,16 +293,20 @@ public class OrganizationService {
     }
 
 
-
-    public ResponseEntity<String> createNewOrg(Organization organization) {
+    public ResponseEntity<String> createNewOrg(Organization organization, String username, String email, String name, Role role) {
         Organization orgFound = this.organizationRepository.findByName(organization.getName());
         if (orgFound == null){
+                this.organizationRepository.save(organization);
 
-            this.organizationRepository.save(organization);
-            return ResponseEntity.ok().build();
+
+                Member user = new Member(organization, role, username, name, email);
+                user.setEnabled(true);
+                System.out.println(user);
+                this.memberRepository.save(user);
+
+                return new ResponseEntity<>("Organization Created", HttpStatus.OK);
         } else {
-            return new ResponseEntity("Organization already existing!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Organization already existing!", HttpStatus.BAD_REQUEST);
         }
-
     }
 }
