@@ -186,30 +186,29 @@ function Applicants() {
 											<Descriptions.Item label="Role">{applicant.member.role.name}</Descriptions.Item>
 											<Descriptions.Item label="Comment">{applicant.comment}</Descriptions.Item>
 										</Descriptions>
+										<div style={{ float: "right", padding: 10 }}>
+											<Button
+												style={{ marginRight: 10 }}
+												type="danger"
+												onClick={() => openDeclineModal(applicant.member.username, applicant.member.name)}
+											>
+												Decline Request
+											</Button>
+											<Button
+												type="primary"
+												onClick={() =>
+													openAcceptModal(
+														applicant.member.username,
+														applicant.member.name,
+														applicant.member.role.name
+													)
+												}
+											>
+												Accept Request
+											</Button>
+										</div>
 									</Col>
 								</Row>
-
-								<div style={{ float: "right", padding: 10 }}>
-									<Button
-										style={{ marginRight: 10 }}
-										type="danger"
-										onClick={() => openDeclineModal(applicant.member.username, applicant.member.name)}
-									>
-										Decline Request
-									</Button>
-									<Button
-										type="primary"
-										onClick={() =>
-											openAcceptModal(
-												applicant.member.username,
-												applicant.member.name,
-												applicant.member.role.name
-											)
-										}
-									>
-										Accept Request
-									</Button>
-								</div>
 							</Panel>
 						))}
 					</Collapse>

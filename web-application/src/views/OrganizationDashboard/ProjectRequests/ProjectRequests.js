@@ -235,43 +235,42 @@ function ProjectRequests() {
 										<Descriptions layout="horizontal">
 											<Descriptions.Item label="Comment">{project.comment}</Descriptions.Item>
 										</Descriptions>
+										<div style={{ float: "right", padding: 10 }}>
+											<Button
+												style={{ marginRight: 10 }}
+												type="danger"
+												onClick={() => {
+													setSelectedProjectRequest(project);
+													setDeclineModalOpen(true);
+												}}
+											>
+												Decline Request
+											</Button>
+											<Button
+												style={{ marginRight: 10 }}
+												onClick={() => {
+													setSelectedProjectRequest(project);
+													setEditModalOpen(true);
+												}}
+											>
+												Edit
+											</Button>
+											<Button
+												style={{ marginRight: 10 }}
+												type="primary"
+												onClick={() => {
+													setSelectedProjectRequest(project);
+													setAcceptModalOpen(true);
+												}}
+											>
+												Accept Request
+											</Button>
+											<Button disabled type="primary">
+												Accept & Verify
+											</Button>
+										</div>
 									</Col>
 								</Row>
-
-								<div style={{ float: "right", padding: 10 }}>
-									<Button
-										style={{ marginRight: 10 }}
-										type="danger"
-										onClick={() => {
-											setSelectedProjectRequest(project);
-											setDeclineModalOpen(true);
-										}}
-									>
-										Decline Request
-									</Button>
-									<Button
-										style={{ marginRight: 10 }}
-										onClick={() => {
-											setSelectedProjectRequest(project);
-											setEditModalOpen(true);
-										}}
-									>
-										Edit
-									</Button>
-									<Button
-										style={{ marginRight: 10 }}
-										type="primary"
-										onClick={() => {
-											setSelectedProjectRequest(project);
-											setAcceptModalOpen(true);
-										}}
-									>
-										Accept Request
-									</Button>
-									<Button disabled type="primary">
-										Accept & Verify
-									</Button>
-								</div>
 							</Panel>
 						))}
 					</Collapse>
