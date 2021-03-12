@@ -15039,7 +15039,7 @@ style-utils@~0.2.0:
   resolved "https://registry.yarnpkg.com/style-utils/-/style-utils-0.2.1.tgz#c78fe6696214f4ab12701959f09553e9d81dd45b"
   integrity sha512-eKRIfWnUSdBqe2ko+qisUwBSlfWpHru89geRqzmScpDhkPW1ksmE04d//nDcXeF+TVK5cnBG90mMmHgxyxXleQ==
 
-styled-components@^5.2.1:
+styled-components@^5, styled-components@^5.2.1:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-5.2.1.tgz#6ed7fad2dc233825f64c719ffbdedd84ad79101a"
   integrity sha512-sBdgLWrCFTKtmZm/9x7jkIabjFNVzCUeKfoQsM6R3saImkUnjx0QYdLwJHBjY9ifEcmjDamJDVfknWm1yxZPxQ==

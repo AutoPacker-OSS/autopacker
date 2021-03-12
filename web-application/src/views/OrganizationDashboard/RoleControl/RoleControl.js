@@ -1,8 +1,11 @@
-import { Layout, PageHeader, Table, Typography } from "antd";
+import {Layout, Menu, Button, Dropdown, PageHeader, Table, Typography} from "antd";
+import { DownOutlined } from '@ant-design/icons';
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
+import MenuItem from "antd/es/menu/MenuItem";
+import SubMenu from "antd/lib/menu/SubMenu";
 
 function Members() {
     // State
@@ -52,6 +55,14 @@ function Members() {
         },
     ];
 
+    const menu = [
+        <Menu>
+            <Menu.Item><a>1st menu item</a></Menu.Item>
+            <Menu.Item><a>2nd menu item</a></Menu.Item>
+            <Menu.Item><a>3rd menu item</a></Menu.Item>
+        </Menu>
+    ]
+
     // Table columns
     const columns = [
         {
@@ -68,14 +79,9 @@ function Members() {
             sorter: (a, b) => b.role.localeCompare(a.role),
             sortDirections: ["descend", "ascend"],
         },
-        {
-            title: "Role",
-            dataIndex: "role",
-            filterMultiple: false,
-            sorter: (a, b) => b.role.localeCompare(a.role),
-            sortDirections: ["descend", "ascend"],
-        },
     ];
+
+
 
     return (
         <div style={{ width: "100%" }}>
@@ -98,6 +104,7 @@ function Members() {
                     minHeight: 280,
                 }}
             >
+
                 <Table columns={columns} dataSource={members} />
             </Content>
         </div>
