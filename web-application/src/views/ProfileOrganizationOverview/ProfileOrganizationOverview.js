@@ -43,6 +43,7 @@ function ProfileOrganizationOverview() {
 
 	// TODO - refactor - code duplicate with ProfileOrganizationForm
 	useEffect(() => {
+		clearSessionStorage()
 		const projectsUrl =
 			process.env.REACT_APP_APPLICATION_URL +
 			process.env.REACT_APP_GENERAL_API +
@@ -55,6 +56,7 @@ function ProfileOrganizationOverview() {
 
 		if (keycloak.authenticated) {
 			// First checking if the value isMemberOfOrganization is available in session, if not do a request.
+			setIsMember(false);
 			const isMemberOfOrganization = sessionStorage.getItem("isMember");
 			if (isMemberOfOrganization === undefined || isMemberOfOrganization === null) {
 				axios
@@ -132,6 +134,10 @@ function ProfileOrganizationOverview() {
 		[debouncedSearchTerm]
 	);
 
+	const clearSessionStorage = () => {
+		sessionStorage.removeItem("isMember")
+	}
+
 	return (
 		<React.Fragment>
 			<Row style={{
@@ -170,7 +176,7 @@ function ProfileOrganizationOverview() {
 								extra={[
 									keycloak.authenticated ? (
 										keycloak.idTokenParsed.email_verified && !isMember ? (
-											<Button key="application">
+											<Button key="application" onClick={() => clearSessionStorage()}>
 												<Link
 													to={
 														"/organization/" +
