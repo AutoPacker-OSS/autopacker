@@ -1,17 +1,21 @@
-import {Layout, Menu, Button, Dropdown, PageHeader, Table, Typography} from "antd";
-import { DownOutlined } from '@ant-design/icons';
+import {Layout, PageHeader, Table, Typography, Space, Select, Modal, Button} from "antd";
+
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
-import MenuItem from "antd/es/menu/MenuItem";
-import SubMenu from "antd/lib/menu/SubMenu";
 
 function Members() {
     // State
     const [members, setMembers] = React.useState([]);
-
     const organizationName = sessionStorage.getItem("selectedOrganizationName");
+
+    //Modal
+    const [deleteModal, setDeleteModal] = React.useState(false);
+    const [roleModal, setRoleModal] = React.useState(false);
+
+
+    const [user, setUser] = React.useState("");
+    const [role, setRole] = React.useState("");
 
     const [keycloak] = useKeycloak();
 
@@ -55,19 +59,29 @@ function Members() {
         },
     ];
 
-    const menu = [
-        <Menu>
-            <Menu.Item><a>1st menu item</a></Menu.Item>
-            <Menu.Item><a>2nd menu item</a></Menu.Item>
-            <Menu.Item><a>3rd menu item</a></Menu.Item>
-        </Menu>
-    ]
+
+    const { Option } = Select;
+    function changeRole(value, user, role) {
+        setUser(user);
+        setRole(role)
+        setRoleModal(value);
+    }
+
+    function deleteMember(value, user){
+        setDeleteModal(value);
+        setUser(user);
+    }
+    function turnOffModal(value){
+        setDeleteModal(value);
+        setRoleModal(value);
+    }
 
     // Table columns
     const columns = [
         {
             title: "Username",
             dataIndex: "username",
+            key: "username",
             filterMultiple: false,
             sorter: (a, b) => b.username.localeCompare(a.username),
             sortDirections: ["descend", "ascend"],
@@ -75,10 +89,31 @@ function Members() {
         {
             title: "Role",
             dataIndex: "role",
+            key: "role",
             filterMultiple: false,
             sorter: (a, b) => b.role.localeCompare(a.role),
             sortDirections: ["descend", "ascend"],
         },
+        {
+            title: 'Action',
+            key: 'operation',
+            fixed: 'right',
+            width: 300,
+            render: (text, record) => (
+                // eslint-disable-next-line react/jsx-no-undef
+                <Space size="middle">
+                    <>
+                        <Select defaultValue="Change Role" style={{ width: 120 }} onChange={() => changeRole(true, record.username, record.role)}>
+                            <Option value="Admin">Admin</Option>
+                            <Option value="Owner">Owner</Option>
+                            <Option value="Member">Member</Option>
+                        </Select>
+                    </>
+                    <Button style={{ marginLeft: 20 }} type="danger" onClick={() => deleteMember(true, record.username)}>Delete</Button>
+                </Space>
+            )
+
+        }
     ];
 
 
@@ -104,8 +139,29 @@ function Members() {
                     minHeight: 280,
                 }}
             >
-
-                <Table columns={columns} dataSource={members} />
+                <Table columns={columns} dataSource={members}>
+                </Table>
+                <Modal
+                    title={"Are you sure, this can not be reverted?"}
+                    centered
+                    visible={deleteModal}
+                    onOk={() => turnOffModal(false)}
+                    onCancel={() => turnOffModal(false)}
+                >
+                    <p>
+                       By accepting this, you will delete <b>{user}</b> from your organization?
+                    </p>
+                </Modal>
+                <Modal
+                    title={"Are you sure, this can not be reverted?"}
+                    centered
+                    visible={roleModal}
+                    onOk={() => turnOffModal(false)}
+                    onCancel={() => turnOffModal(false)}
+                >
+                    <p>By accepting this, change the role to <b>{user}</b> to role <b>{role}</b>.</p>
+                    <p>Press <b>Ok</b> to confirm these changes.</p>
+                </Modal>
             </Content>
         </div>
     );
