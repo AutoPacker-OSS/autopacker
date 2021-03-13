@@ -97,7 +97,8 @@ public class DBInit implements CommandLineRunner {
         Role student = new Role("STUDENT");
         Role employee = new Role("EMPLOYEE");
         Role maintainer = new Role("MAINTAINER");
-        this.roleRepository.saveAll(Arrays.asList(admin, maintainer, student, employee));
+        Role member = new Role("MEMBER");
+        this.roleRepository.saveAll(Arrays.asList(admin, maintainer, student, employee, member));
 
         // Create organization
         Organization ntnu = new Organization("NTNU", "Norwegian University of Science and Technology (NTNU) is a state university in Norway, and from 2016 the country's largest. It has headquarters in Trondheim and campuses in Gjøvik and Ålesund.", "https://www.ntnu.no/", true);
@@ -106,8 +107,6 @@ public class DBInit implements CommandLineRunner {
         // Create members
         Member user = new Member(ntnu, admin, "user", "User", "autopacker01@gmail.com");
         user.setEnabled(true);
-
-
         Member vister = new Member(ntnu, admin, "vister", "Victor F. Charlsson", "vister@dummy.no");
         vister.setEnabled(true);
         Member Arro1990 = new Member(ntnu, admin, "Arro1990", "Bethany B. Mowry", "BethanyBMowry@teleworm.us");
@@ -122,10 +121,12 @@ public class DBInit implements CommandLineRunner {
         Funt1959.setEnabled(true);
         Member Sithered = new Member(ntnu, student, "Sithered", "Summer Sims", "SummerSims@rhyta.com");
         Sithered.setEnabled(true);
+        Member user2 = new Member(ntnu, member, "user2", "user2", "SummerSims@rhyta.com");
+        user2.setEnabled(true);
 
         Member Hatiou1983 = new Member(ntnu, student, "Hatiou1983", "Billy B. Kincaid", "JosephCAnderson@rhyta.com");
         Member chu3Il2ahkai = new Member(ntnu, student, "chu3Il2ahkai", "Joseph C. Anderson", "JosephCAnderson@rhyta.com");
-        this.memberRepository.saveAll(Arrays.asList(user, vister, Arro1990, Tionve, Hatiou1983, chu3Il2ahkai, Boodsom, Jone1994, Funt1959, Sithered));
+        this.memberRepository.saveAll(Arrays.asList(user, vister, Arro1990, Tionve, Hatiou1983, chu3Il2ahkai, Boodsom, Jone1994, Funt1959, Sithered, user2));
 
         // Create project
         OrganizationProject test = new OrganizationProject(ntnu, Arro1990, new JSONArray(Arrays.asList("Bethany")), 1L, "Test Project", "Bachelor", "This is just for displaying data from db", new JSONArray(Arrays.asList("http://localhost")), new JSONArray(Arrays.asList("test", "project")));
