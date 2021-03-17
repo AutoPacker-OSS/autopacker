@@ -309,4 +309,36 @@ public class OrganizationService {
             return new ResponseEntity<>("Organization already existing!", HttpStatus.BAD_REQUEST);
         }
     }
+
+    public ResponseEntity<String> changeRole(String orgName, String user, Role role) {
+        Organization orgFound = this.organizationRepository.findByName(orgName);
+        Member memberFound = this.memberRepository.findByUsernameIgnoreCaseAndIsEnabledIsTrue(user);
+        if (orgFound != null){
+            if (memberFound != null){
+                    memberFound.setRole(role);
+                    memberRepository.save(memberFound);
+                    return new ResponseEntity<>("Role Changed!", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Organization do not exist!", HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            return new ResponseEntity<>("Organization do not exist!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<String> deleteMember(String orgName, String user) {
+        Organization orgFound = this.organizationRepository.findByName(orgName);
+        Member memberFound = this.memberRepository.findByOrganization_NameAndUsername(orgName, user);
+        if (orgFound != null){
+            if (memberFound != null){
+                Long id = memberFound.getId();
+                this.memberRepository.deleteById(id);
+                return new ResponseEntity<>("User Deleted", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Organization do not exist!", HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            return new ResponseEntity<>("Organization do not exist!", HttpStatus.BAD_REQUEST);
+        }
+    }
 }

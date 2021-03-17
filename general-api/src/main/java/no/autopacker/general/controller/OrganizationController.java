@@ -229,6 +229,38 @@ public class OrganizationController {
     }
 
     /*------------------------------
+    RoleControl
+    ----------------------------*/
+    @PostMapping(value = "/changeRole")
+    public ResponseEntity<String> changeRole(HttpEntity<String> httpEntity) {
+        String body = httpEntity.getBody();
+        if (body != null) {
+            JSONObject jsonObject = new JSONObject(body);
+            return this.organizationService.changeRole(
+                    jsonObject.getString("orgName"),
+                    jsonObject.getString("user"),
+                    this.roleRepository.findByName(jsonObject.getString("role"))
+                    );
+        } else {
+            return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping(value = "/deleteMember")
+    public ResponseEntity<String> deleteMember(HttpEntity<String> httpEntity) {
+        String body = httpEntity.getBody();
+        if (body != null) {
+            JSONObject jsonObject = new JSONObject(body);
+            return this.organizationService.deleteMember(
+                    jsonObject.getString("orgName"),
+                    jsonObject.getString("user")
+            );
+        } else {
+            return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    /*------------------------------
     Getters for returning all data
     ----------------------------*/
 
