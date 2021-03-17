@@ -103,6 +103,8 @@ public class DBInit implements CommandLineRunner {
         // Create organization
         Organization ntnu = new Organization("NTNU", "Norwegian University of Science and Technology (NTNU) is a state university in Norway, and from 2016 the country's largest. It has headquarters in Trondheim and campuses in Gjøvik and Ålesund.", "https://www.ntnu.no/", true);
         this.organizationRepository.save(ntnu);
+        Organization testing = new Organization("testing", "Norwegian University of Science and Technology (NTNU) is a state university in Norway, and from 2016 the country's largest. It has headquarters in Trondheim and campuses in Gjøvik and Ålesund.", "https://www.ntnu.no/", true);
+        this.organizationRepository.save(testing);
 
         // Create members
         Member user = new Member(ntnu, admin, "user", "User", "autopacker01@gmail.com");
@@ -123,10 +125,12 @@ public class DBInit implements CommandLineRunner {
         Sithered.setEnabled(true);
         Member user2 = new Member(ntnu, member, "user2", "user2", "SummerSims@rhyta.com");
         user2.setEnabled(true);
+        Member user22 = new Member(testing, member, "user2", "user2", "SummerSims@rhyta.com");
+        user22.setEnabled(true);
 
         Member Hatiou1983 = new Member(ntnu, student, "Hatiou1983", "Billy B. Kincaid", "JosephCAnderson@rhyta.com");
         Member chu3Il2ahkai = new Member(ntnu, student, "chu3Il2ahkai", "Joseph C. Anderson", "JosephCAnderson@rhyta.com");
-        this.memberRepository.saveAll(Arrays.asList(user, vister, Arro1990, Tionve, Hatiou1983, chu3Il2ahkai, Boodsom, Jone1994, Funt1959, Sithered, user2));
+        this.memberRepository.saveAll(Arrays.asList(user, vister, Arro1990, Tionve, Hatiou1983, chu3Il2ahkai, Boodsom, Jone1994, Funt1959, Sithered, user2, user22));
 
         // Create project
         OrganizationProject test = new OrganizationProject(ntnu, Arro1990, new JSONArray(Arrays.asList("Bethany")), 1L, "Test Project", "Bachelor", "This is just for displaying data from db", new JSONArray(Arrays.asList("http://localhost")), new JSONArray(Arrays.asList("test", "project")));
