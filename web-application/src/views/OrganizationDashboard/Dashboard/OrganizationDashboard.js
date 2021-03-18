@@ -6,6 +6,7 @@ import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 // Import custom hooks
 import useDebounce from "./../../../hooks/useDebounce";
+import {format} from "date-fns";
 // Import helper methods
 
 function OrganizationDashboard() {
@@ -13,8 +14,9 @@ function OrganizationDashboard() {
 	const [search, setSearch] = React.useState("");
 	const [organization, setOrganization] = React.useState({});
 	const [projects, setProjects] = React.useState([]);
+	const [selectedCard, setSelectedCard] = React.useState(null);
 	// TODO Implement this functionality for organization selected project view thingy
-	//const [selectedCard, setSelectedCard] = React.useState(null);
+
 
 	const debouncedSearchTerm = useDebounce(search, 500);
 
@@ -29,7 +31,7 @@ function OrganizationDashboard() {
 	const { Meta } = Card;
 
 	useEffect(() => {
-		//setSelectedCard(null);
+		setSelectedCard(null);
 
 		axios({
 			method: "get",
@@ -133,16 +135,20 @@ function OrganizationDashboard() {
 					{projects.map((project) => (
 						<Col xs={24} lg={8} xl={6} key={project.id}>
 							{/* Redirects user when a project card has been selected */}
-							{/* {selectedCard !== null ? (
-								<Redirect to={"/profile/projects/overview" + selectedCard} />
+							 {selectedCard !== null ? (
+								<Redirect to={"/organization/dashboard" + selectedCard} />
 							) : (
 								<div />
-							)} */}
+							)}
 
 							<Card
 								hoverable
 								style={{ width: 240, height: 330 }}
-								//onClick={() => setSelectedCard(project.id)}
+								onClick={() => {sessionStorage.setItem("selectedProjectName", project.projectName);
+									sessionStorage.setItem("selectedProjectId", project.id);
+									setSelectedCard(project.projectName);
+								}}
+
 								cover={
 									<img
 										alt="project"
@@ -153,14 +159,9 @@ function OrganizationDashboard() {
 								}
 							>
 								<Meta
-									title={project.name}
+									title={project.projectName}
 									description={
-										<div>
-											<Paragraph ellipsis={{ rows: 3 }}>{project.description}</Paragraph>
-											<Paragraph>
-												<b>Type:</b> {project.type}
-											</Paragraph>
-										</div>
+										<Paragraph ellipsis={{ rows: 3 }}>{project.desc}</Paragraph>
 									}
 								/>
 								<div
@@ -171,6 +172,18 @@ function OrganizationDashboard() {
 										position: "absolute",
 									}}
 								>
+									<Paragraph
+										style={{
+											color: "#878787",
+											marginTop: 20,
+											marginLeft: "auto",
+											marginRight: "auto",
+											width: "100%",
+											textAlign: "center",
+										}}
+									>
+										Last updated {format(project.lastUpdated, "dd/MM/yyyy")}
+									</Paragraph>
 									<div
 										style={{
 											marginTop: -10,

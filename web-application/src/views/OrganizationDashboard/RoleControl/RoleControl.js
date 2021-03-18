@@ -163,7 +163,7 @@ function RoleControl() {
         },
         {
             path: "organization/rolecontrol",
-            breadcrumbName: "Organization Members",
+            breadcrumbName: "Organization Role Control",
         },
     ];
 
