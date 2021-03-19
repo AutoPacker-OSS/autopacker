@@ -1,13 +1,10 @@
 import { Button, Card, Col, Empty, Layout, Modal, PageHeader, Row, Tag, Typography } from "antd";
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
-
-import { createAlert } from "../../../store/actions/generalActions";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
-import { GlobalOutlined, PlusCircleOutlined, SettingOutlined, GitlabOutlined, DeleteOutlined } from "@ant-design/icons";
+import { GlobalOutlined, SettingOutlined, GitlabOutlined, DeleteOutlined } from "@ant-design/icons";
 
 function OrgProjectOverview() {
 	// State
@@ -15,12 +12,8 @@ function OrgProjectOverview() {
 	const [projectModules, setProjectModules] = React.useState([]);
 	const [tags, setTags] = React.useState([]);
 	const [modalOpen, setModalOpen] = React.useState(false);
-	const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
 	const [selectedModule, setSelectedModule] = React.useState(null);
-	const [moduleToDeleteSelected, setModuleToDeleteSelected] = React.useState(null);
 
-
-	const [refreshList, setRefreshList] = React.useState(false);
 
 	// Get antd sub components
 	const { Paragraph } = Typography;
@@ -32,8 +25,6 @@ function OrgProjectOverview() {
 	const organizationName = sessionStorage.getItem("selectedOrganizationName");
 	const projectId = sessionStorage.getItem("selectedProjectId");
 
-	const dispatch = useDispatch();
-
 	useEffect(() => {
 		setSelectedModule(null);
 		axios({
@@ -44,7 +35,7 @@ function OrgProjectOverview() {
 				"/organization/dashboard/" +
 				organizationName +
 				"/overview/" +
-				project.id,
+				projectId,
 			headers: {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
@@ -81,19 +72,6 @@ function OrgProjectOverview() {
 		</div>
 	);
 
-	const selectModalToDelete = (id, name) => {
-		setModuleToDeleteSelected({
-			id: id,
-			name: name,
-		});
-		setDeleteModalOpen(true);
-	};
-
-	const closeDeleteModal = () => {
-		setDeleteModalOpen(false);
-		setModuleToDeleteSelected(null);
-	};
-	
 
 	return (
 		<div style={{ width: "100%", height: "auto" }}>
