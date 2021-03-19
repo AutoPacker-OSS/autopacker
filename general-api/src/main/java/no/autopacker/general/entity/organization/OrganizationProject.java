@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -20,6 +21,8 @@ public class OrganizationProject {
     private Long id;
 
     private String image;
+
+    private Date lastUpdated;
 
     @NotEmpty
     private String name;
@@ -51,6 +54,7 @@ public class OrganizationProject {
 
     public OrganizationProject(Organization organization, Member member, JSONArray authors, Long actualProjectId, String name, String type, String desc, JSONArray links, JSONArray tags) {
         this.organization = organization;
+        this.lastUpdated = new Date();
         this.member = member;
         setAuthors(authors);
         this.actualProjectId = actualProjectId;
@@ -64,6 +68,7 @@ public class OrganizationProject {
 
     public OrganizationProject(Organization organization, Member member, String authors, Long actualProjectId, String name, String type, String desc, String links, JSONArray tags) {
         this.organization = organization;
+        this.lastUpdated = new Date();
         this.member = member;
         this.authors = authors;
         this.actualProjectId = actualProjectId;

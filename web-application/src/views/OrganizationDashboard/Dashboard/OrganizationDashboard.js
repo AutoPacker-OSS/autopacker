@@ -4,8 +4,10 @@ import { useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
+import Moment from 'moment';
 // Import custom hooks
 import useDebounce from "./../../../hooks/useDebounce";
+import {format} from "date-fns";
 // Import helper methods
 
 function OrganizationDashboard() {
@@ -13,8 +15,9 @@ function OrganizationDashboard() {
 	const [search, setSearch] = React.useState("");
 	const [organization, setOrganization] = React.useState({});
 	const [projects, setProjects] = React.useState([]);
+	const [selectedCard, setSelectedCard] = React.useState(null);
 	// TODO Implement this functionality for organization selected project view thingy
-	//const [selectedCard, setSelectedCard] = React.useState(null);
+
 
 	const debouncedSearchTerm = useDebounce(search, 500);
 
@@ -29,7 +32,7 @@ function OrganizationDashboard() {
 	const { Meta } = Card;
 
 	useEffect(() => {
-		//setSelectedCard(null);
+		setSelectedCard(null);
 
 		axios({
 			method: "get",
@@ -80,6 +83,7 @@ function OrganizationDashboard() {
 					},
 				}).then(function (response) {
 					setProjects(response.data);
+					console.log(response.data);
 				});
 			}
 		},
@@ -93,13 +97,14 @@ function OrganizationDashboard() {
 
 	const routes = [
 		{
-			path: "organization/dashboard",
+			path: "organization/",
 			breadcrumbName: "Dashboard",
 		},
 		{
-			path: "organization/projects",
+			path: "organization/dashboard",
 			breadcrumbName: "Organization Projects",
 		},
+
 	];
 
 	return (
@@ -133,16 +138,21 @@ function OrganizationDashboard() {
 					{projects.map((project) => (
 						<Col xs={24} lg={8} xl={6} key={project.id}>
 							{/* Redirects user when a project card has been selected */}
-							{/* {selectedCard !== null ? (
-								<Redirect to={"/profile/projects/overview" + selectedCard} />
+							 {selectedCard !== null ? (
+								<Redirect to={"/organization/" + organizationName + "/overview/" + selectedCard} />
 							) : (
 								<div />
-							)} */}
-
+							)}
 							<Card
+								className="org-project-card"
 								hoverable
 								style={{ width: 240, height: 330 }}
-								//onClick={() => setSelectedCard(project.id)}
+								onClick={() => {
+									sessionStorage.setItem("selectedProjectName", project.name);
+									sessionStorage.setItem("selectedProjectId", project.id);
+									setSelectedCard(project.id);
+								}}
+
 								cover={
 									<img
 										alt="project"
@@ -155,12 +165,7 @@ function OrganizationDashboard() {
 								<Meta
 									title={project.name}
 									description={
-										<div>
-											<Paragraph ellipsis={{ rows: 3 }}>{project.description}</Paragraph>
-											<Paragraph>
-												<b>Type:</b> {project.type}
-											</Paragraph>
-										</div>
+										<Paragraph ellipsis={{ rows: 3 }}>{project.description}</Paragraph>
 									}
 								/>
 								<div
@@ -171,6 +176,18 @@ function OrganizationDashboard() {
 										position: "absolute",
 									}}
 								>
+									<Paragraph
+										style={{
+											color: "#878787",
+											marginTop: 20,
+											marginLeft: "auto",
+											marginRight: "auto",
+											width: "100%",
+											textAlign: "center",
+										}}
+									>
+										Last updated {Moment(project.lastUpdated).format('DD/MM/yyyy')}
+									</Paragraph>
 									<div
 										style={{
 											marginTop: -10,
