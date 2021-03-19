@@ -54,6 +54,7 @@ public class OrganizationProject {
 
     public OrganizationProject(Organization organization, Member member, JSONArray authors, Long actualProjectId, String name, String type, String desc, JSONArray links, JSONArray tags) {
         this.organization = organization;
+        this.lastUpdated = new Date();
         this.member = member;
         setAuthors(authors);
         this.actualProjectId = actualProjectId;
@@ -63,11 +64,11 @@ public class OrganizationProject {
         setLinks(links);
         setTags(tags);
         this.isAccepted = false;
-        this.lastUpdated = new Date();
     }
 
     public OrganizationProject(Organization organization, Member member, String authors, Long actualProjectId, String name, String type, String desc, String links, JSONArray tags) {
         this.organization = organization;
+        this.lastUpdated = new Date();
         this.member = member;
         this.authors = authors;
         this.actualProjectId = actualProjectId;
@@ -77,7 +78,6 @@ public class OrganizationProject {
         this.links = links;
         setTags(tags);
         this.isAccepted = false;
-        this.lastUpdated = new Date();
     }
 
     public void setAuthors(JSONArray jsonArray) {

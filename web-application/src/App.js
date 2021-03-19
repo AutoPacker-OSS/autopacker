@@ -13,6 +13,7 @@ const Dashboard = React.lazy(() => import("./views/ProfileDashboard/Dashboard/Da
 const Projects = React.lazy(() => import("./views/ProfileDashboard/Projects/Projects"));
 const RedirectProfileHome = React.lazy(() => import("./components/Redirects/RedirectProfileHome"));
 const ProjectOverview = React.lazy(() => import("./views/ProfileDashboard/ProjectOverview/ProjectOverview"));
+const OrgProjectOverview = React.lazy(() => import("./views/OrganizationDashboard/OrgProjectOverview/OrgProjectOverview"));
 const Servers = React.lazy(() => import("./views/ProfileDashboard/Servers/Servers"));
 const ServerOverview = React.lazy(() => import("./views/ProfileDashboard/ServerOverview/ServerOverview"));
 const NewServer = React.lazy(() => import("./views/ProfileDashboard/NewServer/NewServer"));
@@ -48,13 +49,16 @@ function App() {
 		router = (
 			<React.Fragment>
 				{/*Organization*/}
+
 				<OrganizationDashboardRoute path="/organization/submissions/:organization" component={Submissions} />
 				<OrganizationDashboardRoute path="/organization/project-requests/:organization" component={ProjectRequests} />
 				<OrganizationDashboardRoute path="/organization/submit-project/:organization" component={SubmitProject} />
 				<OrganizationDashboardRoute path="/organization/dashboard/:organization" component={OrganizationDashboard} />
+				<OrganizationDashboardRoute path="/organization/:organization/overview/:project" component={OrgProjectOverview} />
 				<OrganizationDashboardRoute path="/organization/applicants/:organization" component={Applicants} />
 				<OrganizationDashboardRoute path="/organization/members/:organization" component={Members} />
 				<OrganizationDashboardRoute path="/organization/rolecontrol/:organization" component={RoleControl} />
+
 				<ProfileDashboardRoute exact path="/profile/organization/add/" component={NewOrganization}/>
 
 				{/*Servers*/}

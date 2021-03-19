@@ -97,8 +97,9 @@ public class DBInit implements CommandLineRunner {
         Role student = new Role("STUDENT");
         Role employee = new Role("EMPLOYEE");
         Role maintainer = new Role("MAINTAINER");
+        Role owner = new Role("OWNER");
         Role member = new Role("MEMBER");
-        this.roleRepository.saveAll(Arrays.asList(admin, maintainer, student, employee, member));
+        this.roleRepository.saveAll(Arrays.asList(admin, maintainer, student, employee, member, owner));
 
         // Create organization
         Organization ntnu = new Organization("NTNU", "Norwegian University of Science and Technology (NTNU) is a state university in Norway, and from 2016 the country's largest. It has headquarters in Trondheim and campuses in Gjøvik and Ålesund.", "https://www.ntnu.no/", true);

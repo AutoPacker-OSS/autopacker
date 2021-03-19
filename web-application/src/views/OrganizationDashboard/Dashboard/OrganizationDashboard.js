@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
+import Moment from 'moment';
 // Import custom hooks
 import useDebounce from "./../../../hooks/useDebounce";
 import {format} from "date-fns";
@@ -82,6 +83,7 @@ function OrganizationDashboard() {
 					},
 				}).then(function (response) {
 					setProjects(response.data);
+					console.log(response.data);
 				});
 			}
 		},
@@ -95,13 +97,14 @@ function OrganizationDashboard() {
 
 	const routes = [
 		{
-			path: "organization/dashboard",
+			path: "organization/",
 			breadcrumbName: "Dashboard",
 		},
 		{
-			path: "organization/projects",
+			path: "organization/dashboard",
 			breadcrumbName: "Organization Projects",
 		},
+
 	];
 
 	return (
@@ -136,17 +139,18 @@ function OrganizationDashboard() {
 						<Col xs={24} lg={8} xl={6} key={project.id}>
 							{/* Redirects user when a project card has been selected */}
 							 {selectedCard !== null ? (
-								<Redirect to={"/organization/dashboard" + selectedCard} />
+								<Redirect to={"/organization/" + organizationName + "/overview/" + selectedCard} />
 							) : (
 								<div />
 							)}
-
 							<Card
+								className="org-project-card"
 								hoverable
 								style={{ width: 240, height: 330 }}
-								onClick={() => {sessionStorage.setItem("selectedProjectName", project.projectName);
+								onClick={() => {
+									sessionStorage.setItem("selectedProjectName", project.name);
 									sessionStorage.setItem("selectedProjectId", project.id);
-									setSelectedCard(project.projectName);
+									setSelectedCard(project.id);
 								}}
 
 								cover={
@@ -159,9 +163,9 @@ function OrganizationDashboard() {
 								}
 							>
 								<Meta
-									title={project.projectName}
+									title={project.name}
 									description={
-										<Paragraph ellipsis={{ rows: 3 }}>{project.desc}</Paragraph>
+										<Paragraph ellipsis={{ rows: 3 }}>{project.description}</Paragraph>
 									}
 								/>
 								<div
@@ -182,7 +186,7 @@ function OrganizationDashboard() {
 											textAlign: "center",
 										}}
 									>
-										Last updated {format(project.lastUpdated, "dd/MM/yyyy")}
+										Last updated {Moment(project.lastUpdated).format('DD/MM/yyyy')}
 									</Paragraph>
 									<div
 										style={{
