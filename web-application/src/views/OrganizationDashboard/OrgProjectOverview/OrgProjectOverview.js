@@ -4,7 +4,7 @@ import { Link, Redirect } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
-import { GlobalOutlined, SettingOutlined, GitlabOutlined, DeleteOutlined } from "@ant-design/icons";
+import { GlobalOutlined, SettingOutlined, GitlabOutlined } from "@ant-design/icons";
 
 function OrgProjectOverview() {
 	// State
@@ -155,10 +155,6 @@ function OrgProjectOverview() {
 											key="edit"
 											onClick={() => message.success("Edit button hit")}
 										/>,*/
-										<DeleteOutlined
-											key="delete"
-											onClick={() => selectModalToDelete(module.id, module.name)}
-										/>,
 									]}
 								>
 									<div
