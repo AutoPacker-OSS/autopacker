@@ -15,6 +15,8 @@ public interface ProjectRepository extends JpaRepository<OrganizationProject, Lo
 
         OrganizationProject findByOrganization_NameAndId(String organization, Long id);
 
+        OrganizationProject findByOrganizationAndId(String organization, Long id);
+
         List<OrganizationProject> findAllByOrganization_NameAndAndNameContainingIgnoreCaseAndIsAcceptedIsTrue(String organization, String search);
 
 }
