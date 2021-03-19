@@ -155,10 +155,6 @@ function OrgProjectOverview() {
 											key="edit"
 											onClick={() => message.success("Edit button hit")}
 										/>,*/
-										<DeleteOutlined
-											key="delete"
-											onClick={() => selectModalToDelete(module.id, module.name)}
-										/>,
 									]}
 								>
 									<div
