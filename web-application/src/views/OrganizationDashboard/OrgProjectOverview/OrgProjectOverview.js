@@ -4,13 +4,13 @@ import { Link, Redirect } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
-import { GlobalOutlined, SettingOutlined, GitlabOutlined } from "@ant-design/icons";
+import { GlobalOutlined, SettingOutlined } from "@ant-design/icons";
 import Moment from "moment";
 
 function OrgProjectOverview() {
 	// State
 	const [project, setProject] = React.useState({});
-	const [projectModules, setProjectModules] = React.useState([]);
+	//const [projectModules, setProjectModules] = React.useState([]);
 	const [tags, setTags] = React.useState([]);
 	const [links, setLinks] = React.useState([]);
 	const [modalOpen, setModalOpen] = React.useState(false);
@@ -45,7 +45,6 @@ function OrgProjectOverview() {
 			setProject(response.data);
 			setTags(response.data.tags.split(","));
 			setLinks(response.data.links.split(","));
-			//setProjectModules(response.data.modules);
 		});
 	}, []);
 
