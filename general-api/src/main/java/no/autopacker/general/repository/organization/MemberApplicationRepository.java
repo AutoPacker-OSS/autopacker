@@ -15,6 +15,8 @@ public interface MemberApplicationRepository extends JpaRepository<MemberApplica
 
     MemberApplication findByMember_Username(String username);
 
+    MemberApplication findByOrganization_NameAndMember_Username(String org, String name);
+
     void deleteByMember_Username(String username);
 
 }

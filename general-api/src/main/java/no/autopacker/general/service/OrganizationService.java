@@ -47,7 +47,9 @@ public class OrganizationService {
 
     public ResponseEntity requestMembership(Member member, String comment) {
         MemberApplication memberApplication = new MemberApplication(member, comment);
-        if (this.memberApplicationRepository.findByMember_Username(member.getUsername()) == null) {
+        String org = memberApplication.getOrganization().getName();
+        String name = memberApplication.getMember().getName();
+        if (this.memberApplicationRepository.findByOrganization_NameAndMember_Username( org, name) == null ){
             this.memberRepository.save(member);
             this.memberApplicationRepository.save(memberApplication);
             return new ResponseEntity("OK", HttpStatus.OK);

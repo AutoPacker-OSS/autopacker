@@ -55,10 +55,7 @@ function ProfileOrganizationForm() {
 
 		const url = process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_GENERAL_API + "/organization/requestMembership";
 
-		axiosRequest(
-			"post",
-			url,
-			{},
+		axios.post(url,
 			{
 				organizationName: organization.name,
 				username: keycloak.idTokenParsed.preferred_username,
@@ -66,16 +63,16 @@ function ProfileOrganizationForm() {
 				email: email,
 				role: role,
 				comment: comment,
-			},
-			(response) => {
-				//console.log("OK");
-				message.success("Successfully sent the member application");
-				setRedirect(true);
-			},
-			(err) => {
-				message.error("Member already exist or you have already sent an application");
 			}
-		);
+		).then((response) => {
+			message.success("Successfully sent the member application");
+			setRedirect(true);
+			console.log(response);
+		}, (error) => {
+			message.error("Member already exist or you have already sent an application");
+			console.log(error);
+		});
+
 	};
 
 	return (
@@ -219,10 +216,10 @@ function ProfileOrganizationForm() {
 									]}
 								>
 									<Select placeholder="Please select a role" onChange={(value) => setRole(value)}>
-										<Option value="STUDENT">STUDENT</Option>
-										<Option value="EMPLOYEE">EMPLOYEE</Option>
+										<Option value="MEMBER">MEMBER</Option>
 										{/* <Option value="MAINTAINER">MAINTAINER</Option>
-													<Option value="ADMIN">ADMIN</Option> */}
+													<Option value="ADMIN">ADMIN</Option>
+													<Option value="EMPLOYEE">EMPLOYEE</Option>*/}
 									</Select>
 								</Form.Item>
 								<Form.Item
