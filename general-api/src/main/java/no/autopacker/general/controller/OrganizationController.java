@@ -353,20 +353,6 @@ public class OrganizationController {
         }
     }
 
-    @GetMapping(value = "/dashboard/{organization}/overview/{projectId}")
-    public ResponseEntity getOrgProjectDetails(@PathVariable("organization") String organization, @PathVariable("projectId") Long projectId) {
-        ResponseEntity response = null;
-
-        OrganizationProject project = projectRepository.findByOrganizationAndId(organization, projectId);
-
-        if (project != null) {
-             response = ResponseEntity.ok(project);
-        } else {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project does not exist.");
-        }
-        return response;
-    }
-
     @GetMapping(value = "/search")
     public ResponseEntity<String> searchAllOrganizations(@RequestParam("q") String query) {
         List<Organization> list = this.organizationRepository.findAllByNameContaining(query);
@@ -405,6 +391,20 @@ public class OrganizationController {
         } else {
             return new ResponseEntity<>("foobar", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping(value = "/{organization}/overview/{projectId}")
+    public ResponseEntity getOrgProjectDetails(@PathVariable("organization") String organization,
+                                               @PathVariable("projectId") Long projectId) {
+        ResponseEntity response = null;
+        OrganizationProject organizationProject = this.projectRepository.findByOrganization_NameAndId(organization, projectId);
+
+        if (organizationProject != null) {
+            response = ResponseEntity.ok(organizationProject);
+        } else {
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project does not exist.");
+        }
+        return response;
     }
 
 }
