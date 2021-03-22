@@ -4,16 +4,18 @@ import { Link, Redirect } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
-import { GlobalOutlined, SettingOutlined, GitlabOutlined } from "@ant-design/icons";
+import { GlobalOutlined, SettingOutlined } from "@ant-design/icons";
+import Moment from "moment";
+
 
 function OrgProjectOverview() {
 	// State
 	const [project, setProject] = React.useState({});
-	const [projectModules, setProjectModules] = React.useState([]);
+	//const [projectModules, setProjectModules] = React.useState([]);
 	const [tags, setTags] = React.useState([]);
+	const [links, setLinks] = React.useState([]);
 	const [modalOpen, setModalOpen] = React.useState(false);
 	const [selectedModule, setSelectedModule] = React.useState(null);
-
 
 	// Get antd sub components
 	const { Paragraph } = Typography;
@@ -32,7 +34,7 @@ function OrgProjectOverview() {
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
 				process.env.REACT_APP_GENERAL_API +
-				"/organization/dashboard/" +
+				"/organization/" +
 				organizationName +
 				"/overview/" +
 				projectId,
@@ -43,9 +45,8 @@ function OrgProjectOverview() {
 			console.log(response);
 			setProject(response.data);
 			setTags(response.data.tags.split(","));
-			setProjectModules(response.data.modules);
+			setLinks(response.data.links.split(","));
 		});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 
@@ -103,12 +104,13 @@ function OrgProjectOverview() {
 					</Link>,
 				]}
 			>
-				<Paragraph>{project.desc}</Paragraph>
+				<Paragraph>{project.description}</Paragraph>
 				<Paragraph style={{ color: "blue" }}>
-					{project.website !== "" ? (
-						<a href={project.website} target="_blank" rel="noopener noreferrer">
-							<GitlabOutlined /> {project.website}
-						</a>
+					{links.length > 0 ? (
+							links.map((link) => (
+						<a key={link} href={link} target="_blank" rel="noopener noreferrer">
+							 {link}
+						</a>))
 					) : (
 						<div />
 					)}
@@ -125,7 +127,7 @@ function OrgProjectOverview() {
 							<div />
 						)}
 					</div>
-					<Paragraph style={{ float: "right" }}>Last updated {project.lastUpdated}</Paragraph>
+					<Paragraph style={{ float: "right" }}>Last updated {Moment(project.lastUpdated).format('DD/MM/yyyy')}</Paragraph>
 				</div>
 			</PageHeader>
 			{/* Can add the Content thingy to route to be common, but might want to do something about the breadcrumb thingy */}

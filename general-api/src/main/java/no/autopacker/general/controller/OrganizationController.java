@@ -393,4 +393,18 @@ public class OrganizationController {
         }
     }
 
+    @GetMapping(value = "/{organization}/overview/{projectId}")
+    public ResponseEntity getOrgProjectDetails(@PathVariable("organization") String organization,
+                                               @PathVariable("projectId") Long projectId) {
+        ResponseEntity response = null;
+        OrganizationProject organizationProject = this.projectRepository.findByOrganization_NameAndId(organization, projectId);
+
+        if (organizationProject != null) {
+            response = ResponseEntity.ok(organizationProject);
+        } else {
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project does not exist.");
+        }
+        return response;
+    }
+
 }
