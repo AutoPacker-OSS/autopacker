@@ -11,7 +11,7 @@ import Moment from "moment";
 function OrgProjectOverview() {
 	// State
 	const [project, setProject] = React.useState({});
-	//const [projectModules, setProjectModules] = React.useState([]);
+	const [projectModules, setProjectModules] = React.useState([]);
 	const [tags, setTags] = React.useState([]);
 	const [links, setLinks] = React.useState([]);
 	const [modalOpen, setModalOpen] = React.useState(false);
