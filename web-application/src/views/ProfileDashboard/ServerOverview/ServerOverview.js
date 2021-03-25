@@ -31,8 +31,6 @@ import {
 	GitlabOutlined,
 	FolderOutlined,
 } from "@ant-design/icons";
-import {useModals} from "../../../context/ModalContext";
-import {GenericModal} from "../../../components/Modal/GenericModal";
 
 function ServerOverview() {
 	// State
@@ -65,7 +63,6 @@ function ServerOverview() {
 
 	const [keycloak] = useKeycloak();
 
-	const { openModal, closeModal } = useModals();
 	const dispatch = useDispatch();
 
 	// Get antd sub components
@@ -211,7 +208,7 @@ function ServerOverview() {
 				//console.log("LOADING MATCH", project);
 				projectsLoading[projectsLoading.indexOf(project)].loading = !projectsLoading[
 					projectsLoading.indexOf(project)
-				].loading;
+					].loading;
 			}
 		});
 		//console.log(projectsLoading);
@@ -453,8 +450,8 @@ function ServerOverview() {
 					createAlert(
 						"Failed to delete project",
 						"Failed to delete the project: " +
-							projectToDeleteSelected.name +
-							". Please write an issue on GitHub if this is unresolved",
+						projectToDeleteSelected.name +
+						". Please write an issue on GitHub if this is unresolved",
 						"error",
 						true
 					)
@@ -463,40 +460,6 @@ function ServerOverview() {
 				setServerPassword("");
 			});
 	};
-
-	const verifyServerInitialization = () => {
-		if (serverPassword.trim().length > 0) {
-			installEssentials();
-		}
-	}
-
-	const serverInstallationModal = () => {
-		openModal(GenericModal, {
-			title: "Install Essentials",
-			description: "This will disable the server firewall, and download docker and " +
-				"docker-compose. These are needed to be able to run projects on the " +
-				"server.",
-			okText: "Yes",
-			ok: verifyServerInitialization,
-			jsx:
-				<Form layout="vertical">
-					<Form.Item
-						name="password"
-						label="Enter server password to install essentials"
-						rules={[
-							{
-								required: true,
-								message: "Please input your password!",
-							},
-						]}
-					>
-						<Input.Password
-							onChange={(e) => setServerPassword(e.target.value)}
-						/>
-					</Form.Item>
-				</Form>
-		})
-	}
 
 	return (
 		<div style={{ width: "100%" }}>
@@ -557,7 +520,7 @@ function ServerOverview() {
 						<Paragraph style={{ float: "left" }}>{actions}</Paragraph>
 
 						<Button
-							onClick={serverInstallationModal}
+							onClick={() => setInstallationModalOpen(true)}
 							disabled={installationLoading}
 							style={{ float: "right" }}
 						>
@@ -701,6 +664,66 @@ function ServerOverview() {
 
 					{serverProjects === null
 						? userProjects.map((project) => (
+							<Card
+								key={project.id}
+								hoverable
+								style={{ height: "auto", marginBottom: 10 }}
+								size="small"
+								onClick={() => toggleCheckedProject(project.id)}
+							>
+								<div>
+									<Avatar
+										size="large"
+										icon={<FolderOutlined />}
+										style={{
+											float: "left",
+											verticalAlign: "middle",
+										}}
+									></Avatar>
+									<div style={{ verticalAlign: "middle" }}>
+										<Text style={{ marginLeft: 16 }}>
+											{project.projectName}
+										</Text>
+										<Checkbox
+											checked={getProjectCheckedValue(project.id)}
+											style={{ float: "right" }}
+										/>
+									</div>
+								</div>
+							</Card>
+						))
+						: userProjects.map((project) =>
+							serverProjects.includes(project) ? (
+								<Card
+									key={project.id}
+									style={{
+										height: "auto",
+										marginBottom: 10,
+										backgroundColor: "#b5b5b5",
+									}}
+									size="small"
+								>
+									<div>
+										<Avatar
+											size="large"
+											icon={<FolderOutlined />}
+											style={{
+												float: "left",
+												verticalAlign: "middle",
+											}}
+										></Avatar>
+										<div style={{ verticalAlign: "middle" }}>
+											<Text style={{ marginLeft: 16 }}>
+												{project.projectName}
+											</Text>
+											<Checkbox
+												checked={true}
+												style={{ float: "right" }}
+											/>
+										</div>
+									</div>
+								</Card>
+							) : (
 								<Card
 									key={project.id}
 									hoverable
@@ -728,68 +751,8 @@ function ServerOverview() {
 										</div>
 									</div>
 								</Card>
-						  ))
-						: userProjects.map((project) =>
-								serverProjects.includes(project) ? (
-									<Card
-										key={project.id}
-										style={{
-											height: "auto",
-											marginBottom: 10,
-											backgroundColor: "#b5b5b5",
-										}}
-										size="small"
-									>
-										<div>
-											<Avatar
-												size="large"
-												icon={<FolderOutlined />}
-												style={{
-													float: "left",
-													verticalAlign: "middle",
-												}}
-											></Avatar>
-											<div style={{ verticalAlign: "middle" }}>
-												<Text style={{ marginLeft: 16 }}>
-													{project.projectName}
-												</Text>
-												<Checkbox
-													checked={true}
-													style={{ float: "right" }}
-												/>
-											</div>
-										</div>
-									</Card>
-								) : (
-									<Card
-										key={project.id}
-										hoverable
-										style={{ height: "auto", marginBottom: 10 }}
-										size="small"
-										onClick={() => toggleCheckedProject(project.id)}
-									>
-										<div>
-											<Avatar
-												size="large"
-												icon={<FolderOutlined />}
-												style={{
-													float: "left",
-													verticalAlign: "middle",
-												}}
-											></Avatar>
-											<div style={{ verticalAlign: "middle" }}>
-												<Text style={{ marginLeft: 16 }}>
-													{project.projectName}
-												</Text>
-												<Checkbox
-													checked={getProjectCheckedValue(project.id)}
-													style={{ float: "right" }}
-												/>
-											</div>
-										</div>
-									</Card>
-								)
-						  )}
+							)
+						)}
 				</Modal>
 				{/* Delete Modal */}
 				{projectToDeleteSelected !== null ? (
@@ -808,6 +771,42 @@ function ServerOverview() {
 							<Form.Item
 								name="password"
 								label="Enter server password to confirm deletion"
+								rules={[
+									{
+										required: true,
+										message: "Please input your password!",
+									},
+								]}
+							>
+								<Input.Password
+									onChange={(e) => setServerPassword(e.target.value)}
+								/>
+							</Form.Item>
+						</Form>
+					</Modal>
+				) : (
+					<div />
+				)}
+				{/* Installation Modal */}
+				{installationModalOpen ? (
+					<Modal
+						title={"Install Essentials?"}
+						centered
+						visible={installationModalOpen}
+						onOk={() => installEssentials()}
+						okButtonProps={{ disabled: serverPassword.length > 0 ? false : true }}
+						okText="Yes"
+						onCancel={() => setInstallationModalOpen(false)}
+					>
+						<Paragraph>
+							This will disable the server firewall, and download docker and
+							docker-compose. These are needed to be able to run projects on the
+							server.
+						</Paragraph>
+						<Form layout="vertical">
+							<Form.Item
+								name="password"
+								label="Enter server password to install essentials"
 								rules={[
 									{
 										required: true,
