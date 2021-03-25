@@ -128,7 +128,6 @@ function NewProject() {
 				},
 			})
 				.then(function () {
-					//console.log("OK");
 					dispatch(
 						createAlert(
 							"Project Created",
@@ -162,7 +161,6 @@ function NewProject() {
 	};
 
 	const validateName = (value) => {
-		console.log(value);
 		if (value.trim().length <= 0) {
 			setValidName(false);
 			setNameValidStatus("error");

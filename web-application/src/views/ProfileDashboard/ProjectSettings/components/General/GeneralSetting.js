@@ -69,8 +69,6 @@ function GeneralSetting(props) {
 						)
 					);
 				});
-		} else {
-			//console.log("K");
 		}
 	}
 
@@ -90,7 +88,6 @@ function GeneralSetting(props) {
 				type="danger"
 				onClick={() => {
 					setModalVisible(true);
-					//console.log(showModal);
 				}}
 			>
 				Delete project

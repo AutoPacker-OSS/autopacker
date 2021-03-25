@@ -47,7 +47,6 @@ function ProjectOverview() {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
 		}).then(function (response) {
-			//console.log(response);
 			setProject(response.data);
 			setTags(response.data.tags.split(","));
 			setProjectModules(response.data.modules);

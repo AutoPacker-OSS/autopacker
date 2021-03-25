@@ -16,7 +16,6 @@ function GeneralSetting(props) {
 
 	const { Title, Text } = Typography;
 	const server = props.server;
-	//console.log("SERVER:", server);
 
 	// Get state from redux store
 	const dispatch = useDispatch();
@@ -61,8 +60,6 @@ function GeneralSetting(props) {
 						createAlert("Server deletion failed", "Failed to delete the given server: " + server.title, "error", true)
 					);
 				});
-		} else {
-			//console.log("K");
 		}
 	}
 
@@ -82,7 +79,6 @@ function GeneralSetting(props) {
 				type="danger"
 				onClick={() => {
 					setModalVisible(true);
-					//console.log(showModal);
 				}}
 			>
 				Delete server

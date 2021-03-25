@@ -67,10 +67,9 @@ function ProfileOrganizationForm() {
 		).then((response) => {
 			message.success("Successfully sent the member application");
 			setRedirect(true);
-			console.log(response);
 		}, (error) => {
 			message.error("Member already exist or you have already sent an application");
-			console.log(error);
+			console.error(error);
 		});
 
 	};

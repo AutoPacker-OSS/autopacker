@@ -8,10 +8,8 @@ function AuthorInput(props) {
 	const { updateAuthors } = props;
 
 	const authorChange = () => {
-		//console.log(props.form);
 		props.form.fields((err, values) => {
 			if (!err) {
-				console.log(values.names);
 				//updateAuthors(values.names);
 			}
 		});
@@ -45,7 +43,7 @@ function AuthorInput(props) {
 	);
 
 	return (
-		<Form.List name="names" onValuesChange={(changed, values) => console.log(values)}>
+		<Form.List name="names">
 			{(fields, { add, remove }) => {
 				return fields.length <= 0 ? (
 					<Form.Item

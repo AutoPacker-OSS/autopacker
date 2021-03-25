@@ -174,7 +174,6 @@ function SubmitProject(props) {
 	];
 
 	const validateName = (value) => {
-		console.log(value);
 		if (value.trim().length <= 0) {
 			setValidName(false);
 			setNameValidStatus("error");

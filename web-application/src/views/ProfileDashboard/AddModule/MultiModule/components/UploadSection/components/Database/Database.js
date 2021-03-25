@@ -25,8 +25,6 @@ function Database(props) {
 			setFileList(newFileList);
 		},
 		beforeUpload: (file) => {
-			//console.log(fileList);
-			//console.log(file);
 			setFileList([file]);
 			return false;
 		},

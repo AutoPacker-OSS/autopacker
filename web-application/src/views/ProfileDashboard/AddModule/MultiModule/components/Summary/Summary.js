@@ -86,7 +86,7 @@ function Summary(props) {
 				>
 					Add Module
 				</Button>
-				<Button disabled type="primary" size="large" onClick={() => console.log("SUBMIT")}>
+				<Button disabled type="primary" size="large" onClick={() => console.warn("NOT YET IMPLEMENTED")}>
 					Submit Modules
 				</Button>
 			</div>

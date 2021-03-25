@@ -52,7 +52,6 @@ function SearchResult(props) {
 			process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_AUTHENTICATION_SERVER + "/auth/search?q=" + query;
 
 		axios.get(usersUrl).then((response) => {
-			console.log(response);
 			setUsersList(response.data);
 		});
 
@@ -62,7 +61,6 @@ function SearchResult(props) {
 			process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_GENERAL_API + "/organization/search?q=" + query;
 
 		axios.get(organizationUrl).then((response) => {
-			//console.log(response);
 			setOrganizationsList(response.data);
 		});
 	}, [searchAction, window.location.href]);

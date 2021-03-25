@@ -44,7 +44,6 @@ function ProjectRequests() {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
 		}).then(function (response) {
-			console.log(response.data);
 			setProjects(response.data);
 		});
 

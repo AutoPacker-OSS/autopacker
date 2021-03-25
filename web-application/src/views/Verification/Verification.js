@@ -55,7 +55,6 @@ function Verification() {
 				}
 			})
 			.catch((error) => {
-				//console.log(error);
 				setSuccess(false);
 				setResult({
 					status: "error",

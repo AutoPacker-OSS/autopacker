@@ -45,8 +45,6 @@ function Setup(props) {
 				port: port,
 			};
 			setSetupInfo(form);
-			// TODO Remove this console.log when implemented
-			console.log(form);
 			nextStep();
 		}
 	};

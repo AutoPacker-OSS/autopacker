@@ -23,8 +23,6 @@ function OwnSetup() {
 			setFileList(newFileList);
 		},
 		beforeUpload: (file) => {
-			//console.log(fileList);
-			//console.log(file);
 			setFileList([file]);
 			return false;
 		},
@@ -57,7 +55,7 @@ function OwnSetup() {
 				</Dragger>
 			</div>
 			<div style={{ textAlign: "center", marginTop: 20 }}>
-				<Button disabled={fileList.length <= 0} type="primary" onClick={() => console.log("Clicked")}>
+				<Button disabled={fileList.length <= 0} type="primary" onClick={() => console.warn("NOT YET IMPLEMENTED")}>
 					Submit
 				</Button>
 			</div>

@@ -40,9 +40,6 @@ const LanguageSelector = forwardRef((props, ref) => {
 					value={selectedVersion === null ? "" : selectedVersion.version}
 					style={{ width: "32%" }}
 					onChange={(value) => {
-						//console.log(
-						//	selectedLanguage.versions.find((version) => version.id === value)
-						//);
 						handleChange(
 							1,
 							selectedLanguage.versions.find((version) => version.id === value)

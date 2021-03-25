@@ -32,7 +32,6 @@ function RequestEditForm(props) {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		console.log(request);
 		setProjectName(request.organizationProject.name);
 		setDesc(request.organizationProject.description);
 		setType(request.organizationProject.type);

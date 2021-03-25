@@ -86,7 +86,6 @@ function NewServer() {
 				},
 			})
 				.then(() => {
-					//console.log("OK");
 					dispatch(
 						createAlert(
 							"Server Added",
@@ -122,7 +121,6 @@ function NewServer() {
 	};
 
 	const validateName = (value) => {
-		console.log(value);
 		if (value.trim().length <= 0) {
 			setValidName(false);
 			setNameValidStatus("error");

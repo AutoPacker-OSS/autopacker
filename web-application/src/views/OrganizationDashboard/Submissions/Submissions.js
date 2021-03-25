@@ -53,7 +53,6 @@ function Submissions() {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
 		}).then(function (response) {
-			console.log(response.data);
 			setRequests(response.data);
 		});
 
@@ -76,8 +75,6 @@ function Submissions() {
 	];
 
 	const deleteRequest = (id) => {
-		console.log("DELETE PROCESS STARTED...");
-
 		// TODO Change method to DELETE and equivalent on general-api backend service
 		axios({
 			method: "get",

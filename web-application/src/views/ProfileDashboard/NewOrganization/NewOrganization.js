@@ -72,7 +72,6 @@ function NewOrganization() {
     const handleSubmit = (event) => {
         event.preventDefault();
         setLoading(true);
-        console.log(keycloak.idTokenParsed.preferred_username, email,name)
         if (keycloak.idTokenParsed.email_verified) {
             axios({
                 method: "post",
@@ -129,7 +128,6 @@ function NewOrganization() {
     };
 
     const validateName = (value) => {
-        console.log(value);
         if (value.trim().length <= 0) {
             setValidOrgName(false);
             setOrgNameValidStatus("error");

@@ -86,7 +86,6 @@ function ServerOverview() {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
 		}).then(function (response) {
-			//console.log(response);
 			setServer(response.data);
 			// TODO iff response contains some projects, fetch them from file system api
 			if (response.data.projectIds !== "") {
@@ -102,15 +101,11 @@ function ServerOverview() {
 							keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 					},
 				}).then((resp) => {
-					//console.log(resp);
 					setUserProjects(resp.data);
 
 					let listContainingServerProjectsAndLoadingState = [];
 
 					resp.data.forEach((project) => {
-						//console.log("PROJECT:", project);
-						//console.log("PROJECT ID:", project.id);
-
 						response.data.projectIds.split(",").forEach((projectId) => {
 							// eslint-disable-next-line eqeqeq
 							if (projectId == project.id) {
@@ -144,7 +139,6 @@ function ServerOverview() {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
 		}).then(function (response) {
-			//console.log(response);
 			setUserProjects(response.data);
 			let list = [];
 			response.data.forEach((project) => {
@@ -171,7 +165,6 @@ function ServerOverview() {
 			},
 		})
 			.then(() => {
-				//console.log(response);
 				window.location.reload();
 			})
 			.catch(() => {
@@ -196,22 +189,18 @@ function ServerOverview() {
 				numbCheckedProjects++;
 			}
 		});
-		//console.log(checkedProjects);
 		setNumbSelected(numbCheckedProjects);
 	};
 
 	const toggleLoadingState = (projectId) => {
 		let projectsLoading = deployingProjects;
 		projectsLoading.forEach((project) => {
-			//console.log(project.id, "===", projectId);
 			if (project.id === projectId) {
-				//console.log("LOADING MATCH", project);
 				projectsLoading[projectsLoading.indexOf(project)].loading = !projectsLoading[
 					projectsLoading.indexOf(project)
 					].loading;
 			}
 		});
-		//console.log(projectsLoading);
 		setDeployingProjects(projectsLoading);
 	};
 
@@ -222,7 +211,6 @@ function ServerOverview() {
 				loading = project.loading;
 			}
 		});
-		//console.log("Loading", loading);
 		return loading;
 	};
 
@@ -397,7 +385,6 @@ function ServerOverview() {
 			}
 		});
 		updateServerProjects(projectIds);
-		//console.log(projectIds);
 		setProjectModalOpen(false);
 	};
 

@@ -9,7 +9,6 @@ export default function useAxios(servicePort) {
 	const [axiosInstance, setAxiosInstance] = useState({});
 
 	useEffect(() => {
-		console.log(keycloak);
 		const instance = axios.create({
 			baseURL: process.env.REACT_APP_APPLICATION_URL + servicePort,
 			headers: {

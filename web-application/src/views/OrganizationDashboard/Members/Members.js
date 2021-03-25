@@ -29,7 +29,6 @@ function Members() {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
 		}).then(function (response) {
-			//console.log(response);
 			let arr = [];
 			response.data.forEach((member) => {
 				arr.push({

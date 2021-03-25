@@ -38,10 +38,7 @@ function ProfileProjectOverview() {
 			"/" +
 			selectedProject;
 
-		console.log(url);
-
 		axios.get(url).then((response) => {
-			console.log(response.data);
 			setProject(response.data);
 			setTags(response.data.tags.split(","));
 		});

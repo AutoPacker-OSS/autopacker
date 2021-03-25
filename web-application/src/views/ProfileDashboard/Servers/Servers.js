@@ -30,8 +30,6 @@ function Servers() {
 			// Make sure we have a value (user has entered something in input)
 			if (debouncedSearchTerm) {
 				// Fire off our API call
-				//console.log(search);
-
 				axios({
 					method: "get",
 					url:

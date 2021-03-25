@@ -186,7 +186,6 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 					// TODO Check if status is 200 or not and respond corresponding
 
 					setLoading(false);
-					console.log("RESPONSE:", response)
 					if (response.status === 200 || response.status === 201) {
 						message.success("Registration success! Check your email inbox.")
 						setUsername("");

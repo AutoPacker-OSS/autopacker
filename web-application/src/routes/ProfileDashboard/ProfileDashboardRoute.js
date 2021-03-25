@@ -72,7 +72,6 @@ function ProfileDashboardLayout({ children }) {
 	);
 
 	React.useEffect(() => {
-		console.log(keycloak.realmAccess.roles);
 		if (keycloak.idTokenParsed.email_verified === false) {
 			dispatch(createAlert("Please verify your email address", text, "warning", true));
 		}
