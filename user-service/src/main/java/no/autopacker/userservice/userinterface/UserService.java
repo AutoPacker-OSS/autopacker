@@ -2,6 +2,8 @@ package no.autopacker.userservice.userinterface;
 
 import no.autopacker.userservice.entity.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Locale;
@@ -27,5 +29,7 @@ public interface UserService {
     List<User> searchAllUsers(String search);
 
     boolean validatePassword(String password);
+
+    ResponseEntity<String> uploadProfileImage(String base64File);
 
 }
