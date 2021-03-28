@@ -28,7 +28,7 @@ public class OrgProjectController {
         this.orgProjectService = orgProjectService;
     }
 
-    @PostMapping(value = "/create-project")
+    @PostMapping(value = "/createProject")
     public ResponseEntity<String> submitProjectToOrganization(HttpEntity<String> httpEntity) throws JSONException {
 
         /** KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
@@ -40,7 +40,7 @@ public class OrgProjectController {
                 JSONObject jsonObject = new JSONObject(body);
                 return this.orgProjectService.createProject(new OrgProjectMeta(
                         jsonObject.getLong("organizationId"),
-                        jsonObject.getLong("member"),
+                        jsonObject.getString("user"),
                         jsonObject.getJSONArray("authors"),
                         jsonObject.getString("name"),
                         jsonObject.getString("desc"),

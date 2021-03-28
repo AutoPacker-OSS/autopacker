@@ -30,7 +30,7 @@ public class OrgProjectMeta {
 
     private Long organizationId;
 
-    private Long member;
+    private String user;
 
     private String authors;
 
@@ -38,11 +38,11 @@ public class OrgProjectMeta {
 
     private boolean isAccepted;
 
-    public OrgProjectMeta(Long organizationId, Long member, JSONArray authors, String name,
+    public OrgProjectMeta(Long organizationId, String user, JSONArray authors, String name,
                           String desc, JSONArray links, JSONArray tags) throws JSONException {
         this.organizationId = organizationId;
         this.lastUpdated = new Date();
-        this.member = member;
+        this.user = user;
         setAuthors(authors);
         this.name = name;
         this.description = desc;
