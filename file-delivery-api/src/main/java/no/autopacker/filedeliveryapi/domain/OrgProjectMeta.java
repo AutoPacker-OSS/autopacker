@@ -1,7 +1,5 @@
 package no.autopacker.filedeliveryapi.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.json.JSONArray;
@@ -12,9 +10,10 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Data
+@Entity(name = "org_project")
 @NoArgsConstructor
-@AllArgsConstructor
 public class OrgProjectMeta {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -23,22 +22,14 @@ public class OrgProjectMeta {
     private Date lastUpdated;
 
     @NotEmpty
-    private String projectName;
+    private String name;
 
     private String description;
 
     private String tags;
 
-    private Long actualProjectId;
+    private Long organizationId;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name="organization_id")
-    private Long organization;
-
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name="member_id")
     private Long member;
 
     private String authors;
@@ -47,13 +38,13 @@ public class OrgProjectMeta {
 
     private boolean isAccepted;
 
-    public OrgProjectMeta(Long organization, Long member, JSONArray authors,  String name,
-                           String desc, JSONArray links, JSONArray tags) throws JSONException {
-        this.organization = organization;
+    public OrgProjectMeta(Long organizationId, Long member, JSONArray authors, String name,
+                          String desc, JSONArray links, JSONArray tags) throws JSONException {
+        this.organizationId = organizationId;
         this.lastUpdated = new Date();
         this.member = member;
         setAuthors(authors);
-        this.projectName = name;
+        this.name = name;
         this.description = desc;
         setLinks(links);
         setTags(tags);

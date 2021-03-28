@@ -12,13 +12,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class OrgProjectService {
 
+    private final OrgProjectRepository orgProjectRepository;
+
+    @Autowired
+    public OrgProjectService(OrgProjectRepository orgProjectRepository){
+        this.orgProjectRepository = orgProjectRepository;
+    }
+
 
     public ResponseEntity<String> createProject(OrgProjectMeta orgProjectMeta) {
         if (orgProjectMeta != null ){
-
-            return new ResponseEntity("OK", HttpStatus.OK);
+           orgProjectRepository.save(orgProjectMeta);
+            return new ResponseEntity<>("OK", HttpStatus.OK);
         } else {
-            return new ResponseEntity("Bad_Request", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Bad_Request", HttpStatus.BAD_REQUEST);
         }
     }
 

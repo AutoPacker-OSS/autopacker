@@ -14,28 +14,47 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import no.autopacker.filedeliveryapi.service.OrgProjectService;
-import org.springframework.web.bind.annotation.*;
 
 
-@RestController
+
 @RequestMapping(value = "api/organization")
+@RestController
 public class OrgProjectController {
+    private final OrgProjectService orgProjectService;
+
+
+    @Autowired
+    public OrgProjectController(OrgProjectService orgProjectService){
+        this.orgProjectService = orgProjectService;
+    }
 
     @PostMapping(value = "/create-project")
     public ResponseEntity<String> submitProjectToOrganization(HttpEntity<String> httpEntity) throws JSONException {
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
+
+        /** KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
                 .getContext().getAuthentication().getPrincipal();
-        if (authUser != null) {
+        if (authUser != null) { */
+
             String body = httpEntity.getBody();
             if (body != null) {
                 JSONObject jsonObject = new JSONObject(body);
-               return new ResponseEntity<>("Ok", HttpStatus.OK);
+                return this.orgProjectService.createProject(new OrgProjectMeta(
+                        jsonObject.getLong("organizationId"),
+                        jsonObject.getLong("member"),
+                        jsonObject.getJSONArray("authors"),
+                        jsonObject.getString("name"),
+                        jsonObject.getString("desc"),
+                        jsonObject.getJSONArray("links"),
+                        jsonObject.getJSONArray("tags")
+
+                        )
+                );
             } else {
                 return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
             }
-        } else {
+        /**} else {
             return new ResponseEntity<>("User not authenticated", HttpStatus.UNAUTHORIZED);
-        }
+        } */
     }
 
 }

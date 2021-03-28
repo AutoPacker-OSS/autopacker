@@ -7,15 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrgProjectRepository {
+public interface OrgProjectRepository extends JpaRepository<OrgProjectMeta, Long>{
 
-
-    List<OrgProjectMeta> findAllByOrganization_NameAndIsAcceptedIsTrue(String name);
-
-    OrgProjectMeta findByOrganization_NameAndName(String organization, String projectName);
-
-    OrgProjectMeta findByOrganization_NameAndId(String organization, Long id);
-
-    List<OrgProjectMeta> findAllByOrganization_NameAndAndNameContainingIgnoreCaseAndIsAcceptedIsTrue(String organization, String search);
-
+    OrgProjectMeta findByOrganizationIdAndName(Long organization, String projectName);
 }
