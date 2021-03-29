@@ -374,7 +374,7 @@ function NewOrgProject() {
 						{authors.map((user) => (
 							<span key={user} style={{ display: "inline-block" }}>
 									<Tag
-										color="blue"
+										color="green"
 										closable
 										onClose={(e) => {
 											e.preventDefault();
