@@ -1,35 +1,30 @@
 import {
-	Avatar,
 	Button,
 	Col,
-	Divider,
 	Form,
 	Input,
 	Layout,
 	PageHeader,
-	Pagination,
 	Radio, Row,
 	Tag,
-	Tabs,
 	Tooltip,
 	Typography
 } from "antd";
 import { TweenOneGroup } from "rc-tween-one";
-import React, {useEffect} from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
-import {Link, Redirect} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import {createAlert, selectMenuOption} from "../../../store/actions/generalActions";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
-import {QuestionCircleOutlined, UserOutlined} from "@ant-design/icons";
+import {QuestionCircleOutlined} from "@ant-design/icons";
 
 function NewOrgProject() {
 	const [orgProjectName, setOrgProjectName] = React.useState("");
 	const [desc, setDesc] = React.useState("");
 	const [links, setLinks] = React.useState([]);
 	const [tags, setTags] = React.useState([]);
-	const [comment, setComment] = React.useState("");
 
 	//Search for users
 	const [usersList, setUsersList] = React.useState([]);
@@ -110,23 +105,22 @@ function NewOrgProject() {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 
+		console.log(desc);
 		if (keycloak.idTokenParsed.email_verified) {
 			axios({
 				method: "post",
-				url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_FILE_DELIVERY_API  +
-					"/organization/submitProject",
+				url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_FILE_DELIVERY_API + "/organization/createProject",
 				headers: {
 					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 				},
 				data: {
-					organizationId: organizationName,
+					organizationName: organizationName,
 					user: keycloak.idTokenParsed.preferred_username,
+					authors: authors,
+					name: orgProjectName,
 					desc: desc,
 					links: links,
 					tags: tags,
-					comment: comment,
 				},
 			})
 				.then(function () {
@@ -192,7 +186,6 @@ function NewOrgProject() {
 			"/auth/search?q=" + search;
 		axios.get(usersUrl).then((response) => {
 			setUsersList(response.data);
-			console.log(response.data);
 		});
 	};
 
@@ -340,7 +333,7 @@ function NewOrgProject() {
 						{usersList.length <= 0 ? (
 							<p>No users found</p>
 						) : (
-							<Row gutter={[0, 12]}>
+							<Row gutter={[0, 1]}>
 								{usersList.slice(0, 4).map((usersList) => (
 									<Col key={usersList.id} span={12}>
 										<Text
@@ -367,7 +360,7 @@ function NewOrgProject() {
 					>
 					<TweenOneGroup
 						enter={{
-							scale: 0.8,
+							scale: 1,
 							opacity: 0,
 							type: "from",
 							duration: 100,
@@ -438,7 +431,7 @@ function NewOrgProject() {
 							   style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}
 
 					>
-						<TextArea id="org-project-comment" onChange={(e) => setComment(e.target.value)} />
+						<TextArea id="org-project-comment"  />
 					</Form.Item>
 
 					<div style={{ width: "100%", textAlign: "center" }} onClick={(e) => handleSubmit(e)}>

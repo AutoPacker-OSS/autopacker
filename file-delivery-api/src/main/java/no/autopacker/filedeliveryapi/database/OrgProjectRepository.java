@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface OrgProjectRepository extends JpaRepository<OrgProjectMeta, Long>{
 
-    OrgProjectMeta findByOrganizationIdAndName(Long organization, String projectName);
+    OrgProjectMeta findByOrganizationNameAndName(String organization, String projectName);
 }
