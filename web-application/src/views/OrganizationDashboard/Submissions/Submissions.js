@@ -223,29 +223,28 @@ function Submissions() {
 												{request.comment}
 											</Descriptions.Item>
 										</Descriptions>
+										<div style={{ float: "right", padding: 10 }}>
+											<Button
+												style={{ marginRight: 10 }}
+												type="danger"
+												onClick={() => {
+													setSelectedRequest(request);
+													setOpenDeleteModal(true);
+												}}
+											>
+												Delete Request
+											</Button>
+											<Button
+												onClick={() => {
+													setSelectedRequest(request);
+													setOpenEditModal(true);
+												}}
+											>
+												Edit
+											</Button>
+										</div>
 									</Col>
 								</Row>
-
-								<div style={{ float: "right", padding: 10 }}>
-									<Button
-										style={{ marginRight: 10 }}
-										type="danger"
-										onClick={() => {
-											setSelectedRequest(request);
-											setOpenDeleteModal(true);
-										}}
-									>
-										Delete Request
-									</Button>
-									<Button
-										onClick={() => {
-											setSelectedRequest(request);
-											setOpenEditModal(true);
-										}}
-									>
-										Edit
-									</Button>
-								</div>
 							</Panel>
 						))}
 					</Collapse>
