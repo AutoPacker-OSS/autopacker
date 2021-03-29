@@ -10,4 +10,8 @@ import java.util.List;
 public interface OrgProjectRepository extends JpaRepository<OrgProjectMeta, Long>{
 
     OrgProjectMeta findByOrganizationNameAndName(String organization, String projectName);
+
+    List<OrgProjectMeta> findByOrganizationNameAndUser(String organization, String user);
+
+    OrgProjectMeta findByOrganizationNameAndId(String organization, Long id);
 }

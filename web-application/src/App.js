@@ -26,6 +26,8 @@ const ProfilePage = React.lazy(() => import("./views/ProfilePage/ProfilePage"));
 const ProfileProjectOverview = React.lazy(() => import("./views/ProfileProjectOverview/ProfileProjectOverview"));
 const Settings = React.lazy(() => import("./views/ProfileDashboard/Settings/Settings"));
 const OrganizationDashboard = React.lazy(() => import("./views/OrganizationDashboard/Dashboard/OrganizationDashboard"));
+const OrgPersonalProject = React.lazy(() => import("./views/OrganizationDashboard/OrgPersonalProject/OrgPersonalProject"));
+const PreSubmissionOverview = React.lazy(() => import("./views/OrganizationDashboard/PreSubmissionOverview/PreSubmissionOverview"));
 const Organizations = React.lazy(() => import("./views/ProfileDashboard/Organizations/Organizations"));
 const Members = React.lazy(() => import("./views/OrganizationDashboard/Members/Members"));
 const Applicants = React.lazy(() => import("./views/OrganizationDashboard/Applicants/Applicants"));
@@ -57,7 +59,10 @@ function App() {
 				<OrganizationDashboardRoute path="/organization/:organization/overview/:project" component={OrgProjectOverview} />
 				<OrganizationDashboardRoute path="/organization/applicants/:organization" component={Applicants} />
 				<OrganizationDashboardRoute path="/organization/members/:organization" component={Members} />
+				<OrganizationDashboardRoute path="/organization/pre-submission/:organization" component={OrgPersonalProject} />
+				<OrganizationDashboardRoute path="/organization/pre-submission-overview/:organization/:project" component={PreSubmissionOverview} />
 				<OrganizationDashboardRoute path="/organization/rolecontrol/:organization" component={RoleControl} />
+
 
 				<ProfileDashboardRoute exact path="/profile/organization/add/" component={NewOrganization}/>
 

@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.Predicate;
 
 @Service
 public class OrgProjectService {
@@ -29,5 +32,37 @@ public class OrgProjectService {
         }
     }
 
+    public List<OrgProjectMeta> notSubmitted(String organization, String user){
+        List<OrgProjectMeta> list = this.orgProjectRepository.findByOrganizationNameAndUser(organization, user);
+        list.removeIf(OrgProjectMeta::isSubmitted);
+        return list;
+    }
 
+
+    public ResponseEntity findProjectBasedOnId(String organization, Long id) {
+
+        ResponseEntity response = null;
+        OrgProjectMeta organizationProject = this.orgProjectRepository.findByOrganizationNameAndId(organization, id);
+
+        if (organizationProject != null) {
+            response = ResponseEntity.ok(organizationProject);
+        } else {
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project does not exist.");
+        }
+        return response;
+    }
+
+
+    public ResponseEntity<String> setSubmitted(String org, Long id) {
+
+       OrgProjectMeta orgProjectMeta = this.orgProjectRepository.findByOrganizationNameAndId(org,id);
+       if (orgProjectMeta != null){
+           orgProjectMeta.setSubmitted(true);
+           orgProjectRepository.save(orgProjectMeta);
+           return new ResponseEntity<>("OK", HttpStatus.OK);
+       } else {
+           return new ResponseEntity<>("Bad_Request", HttpStatus.BAD_REQUEST);
+       }
+    }
 }
+

@@ -199,7 +199,7 @@ function NewOrgProject() {
 				title="Create New Project"
 				breadcrumb={{ routes: routes, itemRender: breadcrumbItemRender }}
 			>
-				<Paragraph>Fill in the form below to create a new project for an organization</Paragraph>
+				<Paragraph>Fill in the form below to create a new project for {organizationName}</Paragraph>
 			</PageHeader>
 			<Content
 				style={{
@@ -209,7 +209,7 @@ function NewOrgProject() {
 					minHeight: 280,
 				}}
 			>
-				{redirect ? <Redirect to="/" /> : <div />}
+				{redirect ? <Redirect to={"/organization/pre-submission/" + organizationName}  /> : <div />}
 				<Form {...formItemLayout}>
 					<Form.Item
 						name="projectName"

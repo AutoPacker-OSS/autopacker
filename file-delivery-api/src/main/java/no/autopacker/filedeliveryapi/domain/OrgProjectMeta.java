@@ -18,7 +18,6 @@ public class OrgProjectMeta {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-
     private Date lastUpdated;
 
     @NotEmpty
@@ -38,8 +37,10 @@ public class OrgProjectMeta {
 
     private boolean isAccepted;
 
+    private boolean isSubmitted;
+
     public OrgProjectMeta(String organizationName, String user, JSONArray authors, String name,
-                          String desc, JSONArray links, JSONArray tags) throws JSONException {
+                          String desc, String links, JSONArray tags) throws JSONException {
         this.organizationName = organizationName;
         this.lastUpdated = new Date();
         this.user = user;
@@ -49,6 +50,8 @@ public class OrgProjectMeta {
         setLinks(links);
         setTags(tags);
         this.isAccepted = false;
+        this.isSubmitted = false;
+
     }
 
 
