@@ -1,6 +1,5 @@
 package no.autopacker.filedeliveryapi.database.mapper;
 
-import no.autopacker.filedeliveryapi.domain.ComposeBlock;
 import no.autopacker.filedeliveryapi.domain.Dockerfile;
 import org.springframework.jdbc.core.RowMapper;
 

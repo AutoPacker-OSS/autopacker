@@ -4,12 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.*;
 import com.mongodb.client.*;
 import no.autopacker.filedeliveryapi.config.AppConfig;
-import no.autopacker.filedeliveryapi.domain.ModuleMeta;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -21,7 +17,6 @@ import static com.mongodb.client.model.Filters.*;
 @Repository
 public class MongoDb {
 
-    private final MongoDatabase database;
     private final MongoCollection<Document> configCollection;
 
     @Autowired
@@ -30,7 +25,7 @@ public class MongoDb {
         System.out.println("PROPERTY: " + appConfig.getFdapiMongoUrl());
         MongoClientURI uri = new MongoClientURI(appConfig.getFdapiMongoUrl());
         MongoClient cli = new MongoClient(uri);
-        database = cli.getDatabase("apConfig");
+        MongoDatabase database = cli.getDatabase("apConfig");
         configCollection = database.getCollection("configParams");
         System.out.println(findByModuleId(2));
     }

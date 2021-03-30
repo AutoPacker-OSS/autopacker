@@ -1,13 +1,11 @@
 package no.autopacker.filedeliveryapi.service;
 
-import lombok.SneakyThrows;
 import no.autopacker.filedeliveryapi.config.DockerConfig;
 import no.autopacker.filedeliveryapi.database.ComposeBlockRepository;
 import no.autopacker.filedeliveryapi.database.DockerfileRepository;
 import no.autopacker.filedeliveryapi.domain.ComposeBlock;
 import no.autopacker.filedeliveryapi.domain.Dockerfile;
 import no.autopacker.filedeliveryapi.domain.ModuleMeta;
-import no.autopacker.filedeliveryapi.domain.ProjectMeta;
 import no.autopacker.filedeliveryapi.utils.Utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -22,8 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
