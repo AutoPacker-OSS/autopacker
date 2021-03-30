@@ -24,17 +24,18 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @CrossOrigin(origins = "*")
 @RestController
 public class ProjectController {
-    private ProjectRepository projectRepo;
-    private ModuleRepository moduleRepo;
-    private BuilderService builderService;
-    private MongoDb mongoDb;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ProjectRepository projectRepo;
+    private final ModuleRepository moduleRepo;
+    private final BuilderService builderService;
+    private final MongoDb mongoDb;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     public ProjectController(ProjectRepository projectRepo, ModuleRepository moduleRepo, BuilderService builderService, MongoDb mongoDb) {
@@ -61,7 +62,7 @@ public class ProjectController {
         ProjectMeta pm = projectRepo.findByOwnerAndName(username, projectName);
 
         if (pm != null) {
-            pm.setModules(moduleRepo.findAllModulesByProjectId(pm.getId()));
+            pm.setModules(moduleRepo.findAllByProjectId(pm.getId()));
             if (pm.isPrivate()) {
                 if (authenticatedUser != null) {
                     if (authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername().equalsIgnoreCase(username) || authenticatedUser.getKeycloakSecurityContext().getToken().getResourceAccess("file-delivery-api").isUserInRole("ADMIN")) {
@@ -94,7 +95,7 @@ public class ProjectController {
                 return ResponseEntity.ok(this.objectMapper.writeValueAsString(userProjects));
 
             } else {
-                List<ProjectMeta> userProjects = projectRepo.searchAllProjectsUserOwns(username, query);
+                List<ProjectMeta> userProjects = projectRepo.searchAllForUser(username, query);
                 return ResponseEntity.ok(this.objectMapper.writeValueAsString(userProjects));
             }
         } catch (JsonProcessingException e) {
@@ -128,16 +129,16 @@ public class ProjectController {
 
                 // Checks if the project has a valid name
                 Pattern pattern = Pattern.compile("[\\w-]*");
-                Matcher matcher = pattern.matcher(pm.getProjectName());
+                Matcher matcher = pattern.matcher(pm.getName());
 
                 if (matcher.matches()) {
                     // Check if userspace exists or create one, then assign a file directory (that hasn't been created yet)
                     Utils.instance().validateUserWorkspace(pm.getOwner());
-                    String projectPath = Utils.instance().getUserProjectDir(pm.getOwner(), pm.getProjectName());
+                    String projectPath = Utils.instance().getUserProjectDir(pm.getOwner(), pm.getName());
                     File projectFolder = new File(projectPath);
 
                     if (projectFolder.exists() ||
-                            projectRepo.findByOwnerAndName(pm.getOwner(), pm.getProjectName()) != null) {
+                            projectRepo.findByOwnerAndName(pm.getOwner(), pm.getName()) != null) {
                         response = ResponseEntity.status(HttpStatus.CONFLICT).body("Project already exists.");
                     } else {
                         if (projectFolder.mkdir()) {
@@ -188,7 +189,7 @@ public class ProjectController {
                 ProjectMeta pm = projectRepo.findByOwnerAndName(username, projectName);
 
                 if (pm != null) {
-                    pm.setModules(moduleRepo.findAllModulesByProjectId(pm.getId()));
+                    pm.setModules(moduleRepo.findAllByProjectId(pm.getId()));
 
                     // This is a switch in case something goes wrong when deleting module(s)
                     boolean moduleDeletionFailed = false;
@@ -208,7 +209,7 @@ public class ProjectController {
                                 if (!moduleDirectory.delete()) {
                                     moduleDeletionFailed = true;
                                 } else {
-                                    moduleRepo.delete(mm.getId());
+                                    moduleRepo.deleteById(mm.getId());
                                     mongoDb.deleteByModuleId(mm.getId());
                                 }
                             }
@@ -224,7 +225,7 @@ public class ProjectController {
                             e.printStackTrace();
                         }
                         if (!projectDir.exists() || projectDir.delete()) {
-                            projectRepo.delete(pm.getId());
+                            projectRepo.delete(pm);
                             response = ResponseEntity.ok("Project '" + projectName + "' deleted.");
                         } else {
                             response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -263,7 +264,7 @@ public class ProjectController {
 
     @RequestMapping(value = "/projects/{username}/public", method = RequestMethod.GET)
     public ResponseEntity<String> getAllPublicProjectsForUser(@PathVariable("username") String username) {
-        List<ProjectMeta> list = this.projectRepo.findAllPublicProjectsForUser(username);
+        List<ProjectMeta> list = this.projectRepo.findAllPublicForUser(username);
         try {
             return ResponseEntity.ok(this.objectMapper.writeValueAsString(list));
         } catch (JsonProcessingException e) {
@@ -275,7 +276,7 @@ public class ProjectController {
     @RequestMapping(value = "/projects/{username}/public/search", method = RequestMethod.GET)
     public ResponseEntity<String> searchAllPublicProjectsForUser(@PathVariable("username") String username,
                                                                  @RequestParam("q") String query) {
-        List<ProjectMeta> list = this.projectRepo.searchAllPublicProjectsForUser(username, query);
+        List<ProjectMeta> list = this.projectRepo.searchAllPublicForUser(username, query);
         try {
             return ResponseEntity.ok(this.objectMapper.writeValueAsString(list));
         } catch (JsonProcessingException e) {
@@ -284,17 +285,22 @@ public class ProjectController {
         }
     }
 
+    // TODO - should this be authorized only to user who owns the project?
     @GetMapping(value = "/project-overview/{projectId}")
     public ResponseEntity<String> getProjectOverview(@PathVariable("projectId") Long projectId) {
         ResponseEntity response;
         KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
                 .getContext().getAuthentication().getPrincipal();
         if (authenticatedUser != null) {
-            ProjectMeta projectMeta = this.projectRepo.findById(projectId);
-            try {
-                return ResponseEntity.ok(this.objectMapper.writeValueAsString(projectMeta));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
+            Optional<ProjectMeta> op = this.projectRepo.findById(projectId);
+            if (op.isPresent()) {
+                try {
+                    return ResponseEntity.ok(this.objectMapper.writeValueAsString(op.get()));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong while parsing projects");
+                }
+            } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong while parsing projects");
             }
         } else {
@@ -307,10 +313,10 @@ public class ProjectController {
     @GetMapping(value = "/project-overview/{username}/{projectId}")
     public ResponseEntity<String> getServerOverview(@PathVariable("username") String username,
                                                     @PathVariable("projectId") Long projectId) {
-        ResponseEntity response;
-        ProjectMeta projectMeta = this.projectRepo.findByOwnerAndProjectId(username, projectId);
-        projectMeta.setModules(this.moduleRepo.findAllModulesByProjectId(projectId));
+        ResponseEntity<String> response;
+        ProjectMeta projectMeta = this.projectRepo.findByOwnerAndId(username, projectId);
         if (projectMeta != null) {
+            projectMeta.setModules(this.moduleRepo.findAllByProjectId(projectId));
             try {
                 response = new ResponseEntity(this.objectMapper.writeValueAsString(projectMeta), HttpStatus.OK);
             } catch (JsonProcessingException e) {
@@ -325,11 +331,12 @@ public class ProjectController {
 
     @RequestMapping(value = "/projects", method = RequestMethod.GET)
     public ResponseEntity<String> getAllServers() {
-        ResponseEntity response;
+        ResponseEntity<String> response;
         KeycloakPrincipal<RefreshableKeycloakSecurityContext> authUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
                 .getContext().getAuthentication().getPrincipal();
         if (authUser != null) {
-            List<ProjectMeta> projects = this.projectRepo.findAllByOwner(authUser.getKeycloakSecurityContext().getToken().getPreferredUsername());
+            String username = authUser.getKeycloakSecurityContext().getToken().getPreferredUsername();
+            List<ProjectMeta> projects = this.projectRepo.findAllByOwner(username);
             try {
                 return ResponseEntity.ok(this.objectMapper.writeValueAsString(projects));
             } catch (JsonProcessingException e) {
@@ -345,18 +352,18 @@ public class ProjectController {
 
     @RequestMapping(value = "/projects/search", method = RequestMethod.GET)
     public ResponseEntity<String> searchPublicProjects(@RequestParam("q") String query) {
-        ResponseEntity responseEntity;
+        ResponseEntity<String> responseEntity;
         List<ProjectMeta> projectMetas;
         try {
             if (query.trim().equals("")) {
-                projectMetas = this.projectRepo.findAllPublicProjects();
+                projectMetas = this.projectRepo.findAllPublic();
             } else {
-                projectMetas = this.projectRepo.searchAllPublicProjects(query);
+                projectMetas = this.projectRepo.searchAllPublic(query);
             }
-            responseEntity = new ResponseEntity(this.objectMapper.writeValueAsString(projectMetas), HttpStatus.OK);
+            responseEntity = new ResponseEntity<>(this.objectMapper.writeValueAsString(projectMetas), HttpStatus.OK);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            responseEntity = new ResponseEntity("Something went wrong while parsing projects", HttpStatus.BAD_REQUEST);
+            responseEntity = new ResponseEntity<>("Something went wrong while parsing projects", HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
     }
@@ -388,7 +395,8 @@ public class ProjectController {
         KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
                 .getContext().getAuthentication().getPrincipal();
         if (authenticatedUser != null) {
-            List<ProjectMeta> projects = this.projectRepo.searchAllProjectsUserOwns(authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername(), search);
+            String username = authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername();
+            List<ProjectMeta> projects = this.projectRepo.searchAllForUser(username, search);
             try {
                 return ResponseEntity.ok(this.objectMapper.writeValueAsString(projects));
             } catch (JsonProcessingException e) {
@@ -411,7 +419,7 @@ public class ProjectController {
 
         if (project != null) {
             if (!project.isPrivate()) {
-                project.setModules(moduleRepo.findAllModulesByProjectId(project.getId()));
+                project.setModules(moduleRepo.findAllByProjectId(project.getId()));
 
                 if (project.getModules() != null && project.getModules().size() > 0) {
                     // Get the main docker-compose file that all the module services will be put in

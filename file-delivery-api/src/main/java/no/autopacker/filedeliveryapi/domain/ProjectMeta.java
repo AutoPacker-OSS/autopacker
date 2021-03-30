@@ -7,45 +7,52 @@ import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
-import java.util.ArrayList;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity(name="projects")
 public class ProjectMeta {
 	// Project Meta
+	@Id
 	private long id;
 	private String image;
-	private String projectName;
-	private String desc;
-	private Date lastUpdated;
+	@NotNull
+	private String name;
+	private String description;
+	private Date lastUpdated = new Date();
 	// TODO Maybe use another data type for tags?
 	private String tags;
 	private String website;
+	@NotNull
+    @Column(columnDefinition = "TINYINT(1) NOT NULL DEFAULT 0")
 	private boolean isPrivate;
-	private List<ModuleMeta> modules;
+	@OneToMany(mappedBy = "project")
+	private Set<ModuleMeta> modules = new HashSet<>();
 
 	// Administrative meta
+    @NotNull
 	private String owner;
+    @NotNull
 	private String location;
 
 	/**
 	 * Minimum argument constructor
 	 */
 	public ProjectMeta(String name, String owner, String location, boolean isPrivate) {
-		this.projectName = name;
+		this.name = name;
 		this.owner = owner;
 		this.location = location;
 		this.isPrivate = isPrivate;
-		this.lastUpdated = new Date();
-		this.modules = new ArrayList<>();
 	}
 
 	public ProjectMeta(JSONObject json) throws JSONException {
-		this.projectName = json.getString("projectName");
-		this.lastUpdated = new Date();
+		this.name = json.getString("projectName");
 		this.isPrivate = json.getBoolean("isPrivate");
 		// Conditionally set values
 		// Image (TODO Need to create a better setup for image shitty)
@@ -56,9 +63,9 @@ public class ProjectMeta {
 		}
 		// Description
 		if (json.has("desc")) {
-			this.desc = json.getString("desc");
+			this.description = json.getString("desc");
 		} else {
-			this.desc = "";
+			this.description = "";
 		}
 		// Tags
 		if (json.has("tags")) {
@@ -81,7 +88,6 @@ public class ProjectMeta {
 		} else {
 			this.website = "";
 		}
-		this.modules = new ArrayList<>();
 	}
 
 	public boolean isPrivate() {
