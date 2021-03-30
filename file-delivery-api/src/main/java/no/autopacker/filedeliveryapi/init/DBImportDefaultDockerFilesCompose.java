@@ -48,7 +48,7 @@ public class DBImportDefaultDockerFilesCompose implements CommandLineRunner {
      * @param entry     Dockerfile
      */
     public void addIfDockerFileNotExists(Dockerfile entry) {
-        if (dockerfileRepo.findByName(entry.getName()) == null) {
+        if (dockerfileRepo.findByNameIgnoreCase(entry.getName()) == null) {
             dockerfileRepo.save(entry);
         }
     }

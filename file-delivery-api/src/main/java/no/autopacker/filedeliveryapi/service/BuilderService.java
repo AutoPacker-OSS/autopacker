@@ -64,7 +64,7 @@ public class BuilderService {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Template already exists: " + tempName);
 			}
 		} else if (type.equals("dockerfile")) {
-			if (dockerfileRepo.findByName(tempName) == null) {
+			if (dockerfileRepo.findByNameIgnoreCase(tempName) == null) {
 				location = Utils.instance().getDockerFileLocation(tempName);
 
 				// Save to database
