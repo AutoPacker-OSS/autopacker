@@ -54,7 +54,7 @@ public class BuilderService {
 		String location;
 
 		if (type.equals("docker-compose")) {
-			if (composeRepo.findByName(tempName) == null) {
+			if (composeRepo.findByNameIgnoreCase(tempName) == null) {
 				location = Utils.instance().getDockerComposeTemplateDir() + "-" + tempName + ".yml";
 
 				// Save to database
@@ -137,7 +137,7 @@ public class BuilderService {
 	public String compileModuleComposeBlock(ModuleMeta module,
 											Map<String, Object> composeParams, String projectOwner) throws Exception {
 		// Import the templates
-		String componentTemplateLocation = composeRepo.findByName(module.getConfigType()).getLocation();
+		String componentTemplateLocation = composeRepo.findByNameIgnoreCase(module.getConfigType()).getLocation();
 		String componentTemplate = FileUtils.readFileToString(new File(componentTemplateLocation), "utf-8");
 
 		// Get the docker image name
