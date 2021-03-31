@@ -1,9 +1,9 @@
-package no.autopacker.filedeliveryapi.controller;
+package no.autopacker.userservice.controller.fdapi;
 
-import no.autopacker.filedeliveryapi.database.ModuleRepository;
-import no.autopacker.filedeliveryapi.database.ProjectRepository;
-import no.autopacker.filedeliveryapi.service.BuilderService;
-import no.autopacker.filedeliveryapi.service.DockerService;
+import no.autopacker.userservice.repository.fdapi.ModuleRepository;
+import no.autopacker.userservice.repository.organization.OrganizationProjectRepository;
+import no.autopacker.userservice.service.fdapi.BuilderService;
+import no.autopacker.userservice.service.fdapi.DockerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,12 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class BuilderController {
 	private final BuilderService builderService;
-	private final ProjectRepository projectRepo;
+	private final OrganizationProjectRepository projectRepo;
 	private final ModuleRepository moduleRepo;
 	private final DockerService dockerService;
 
 	@Autowired
-	public BuilderController(BuilderService builderService, ProjectRepository projectRepo, ModuleRepository moduleRepo, DockerService dockerService) {
+	public BuilderController(BuilderService builderService, OrganizationProjectRepository projectRepo, ModuleRepository moduleRepo, DockerService dockerService) {
 		this.builderService = builderService;
 		this.projectRepo = projectRepo;
 		this.moduleRepo = moduleRepo;

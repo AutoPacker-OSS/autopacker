@@ -1,4 +1,4 @@
-package no.autopacker.filedeliveryapi.domain;
+package no.autopacker.userservice.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

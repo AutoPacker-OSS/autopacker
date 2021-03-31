@@ -1,6 +1,6 @@
-package no.autopacker.filedeliveryapi.database;
+package no.autopacker.userservice.repository.fdapi;
 
-import no.autopacker.filedeliveryapi.domain.OrgProjectMeta;
+import no.autopacker.userservice.domain.OrgProjectMeta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

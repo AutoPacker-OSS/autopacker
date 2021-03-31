@@ -1,7 +1,8 @@
-package no.autopacker.filedeliveryapi.controller;
+package no.autopacker.userservice.controller.fdapi;
 
-import no.autopacker.filedeliveryapi.database.OrgProjectRepository;
-import no.autopacker.filedeliveryapi.domain.OrgProjectMeta;
+import no.autopacker.userservice.domain.OrgProjectMeta;
+import no.autopacker.userservice.repository.fdapi.OrgProjectRepository;
+import no.autopacker.userservice.service.fdapi.OrgProjectService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.keycloak.KeycloakPrincipal;
@@ -12,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import no.autopacker.filedeliveryapi.service.OrgProjectService;
 
 import java.util.List;
 

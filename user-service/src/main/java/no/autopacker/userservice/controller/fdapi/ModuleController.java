@@ -1,4 +1,4 @@
-package no.autopacker.filedeliveryapi.controller;
+package no.autopacker.userservice.controller.fdapi;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,12 +11,13 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-import no.autopacker.filedeliveryapi.database.ModuleRepository;
-import no.autopacker.filedeliveryapi.database.MongoDb;
-import no.autopacker.filedeliveryapi.database.ProjectRepository;
-import no.autopacker.filedeliveryapi.domain.ModuleMeta;
-import no.autopacker.filedeliveryapi.domain.ProjectMeta;
-import no.autopacker.filedeliveryapi.service.DockerService;
+
+import no.autopacker.userservice.domain.ModuleMeta;
+import no.autopacker.userservice.domain.ProjectMeta;
+import no.autopacker.userservice.repository.fdapi.ModuleRepository;
+import no.autopacker.userservice.repository.fdapi.MongoDb;
+import no.autopacker.userservice.repository.fdapi.ProjectRepository;
+import no.autopacker.userservice.service.fdapi.DockerService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.keycloak.KeycloakPrincipal;

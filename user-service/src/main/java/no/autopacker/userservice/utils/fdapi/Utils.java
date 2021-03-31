@@ -1,4 +1,4 @@
-package no.autopacker.filedeliveryapi.utils;
+package no.autopacker.userservice.utils.fdapi;
 
 import lombok.Data;
 import org.springframework.context.annotation.Bean;

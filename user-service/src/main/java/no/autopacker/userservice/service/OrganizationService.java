@@ -17,7 +17,7 @@ public class OrganizationService {
     private final MemberApplicationRepository memberApplicationRepository;
     private final OrganizationRepository organizationRepository;
     private final AuthorityRepository authorityRepository;
-    private final ProjectRepository projectRepository;
+    private final OrganizationProjectRepository projectRepository;
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
     private JavaMailSender javaMailSender;
@@ -27,7 +27,7 @@ public class OrganizationService {
                                MemberApplicationRepository memberApplicationRepository,
                                OrganizationRepository organizationRepository,
                                AuthorityRepository authorityRepository,
-                               ProjectRepository projectRepository,
+                               OrganizationProjectRepository projectRepository,
                                MemberRepository memberRepository,
                                RoleRepository roleRepository,
                                JavaMailSender javaMailSender) {

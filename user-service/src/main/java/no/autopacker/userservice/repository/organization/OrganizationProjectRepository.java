@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProjectRepository extends JpaRepository<OrganizationProject, Long> {
+public interface OrganizationProjectRepository extends JpaRepository<OrganizationProject, Long> {
 
         List<OrganizationProject> findAllByOrganization_NameAndIsAcceptedIsTrue(String name);
 

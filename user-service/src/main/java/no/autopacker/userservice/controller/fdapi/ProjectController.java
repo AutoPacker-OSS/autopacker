@@ -1,14 +1,14 @@
-package no.autopacker.filedeliveryapi.controller;
+package no.autopacker.userservice.controller.fdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.autopacker.filedeliveryapi.database.ModuleRepository;
-import no.autopacker.filedeliveryapi.database.MongoDb;
-import no.autopacker.filedeliveryapi.database.ProjectRepository;
-import no.autopacker.filedeliveryapi.domain.ModuleMeta;
-import no.autopacker.filedeliveryapi.domain.ProjectMeta;
-import no.autopacker.filedeliveryapi.service.BuilderService;
-import no.autopacker.filedeliveryapi.utils.Utils;
+import no.autopacker.userservice.domain.ModuleMeta;
+import no.autopacker.userservice.domain.ProjectMeta;
+import no.autopacker.userservice.repository.fdapi.ModuleRepository;
+import no.autopacker.userservice.repository.fdapi.MongoDb;
+import no.autopacker.userservice.repository.fdapi.ProjectRepository;
+import no.autopacker.userservice.service.fdapi.BuilderService;
+import no.autopacker.userservice.utils.fdapi.Utils;
 import org.apache.commons.io.FileUtils;
 import org.bson.Document;
 import org.keycloak.KeycloakPrincipal;
@@ -111,7 +111,7 @@ public class ProjectController {
      * @return Status forbidden if project created under another username, status bad request if json is
      * malformed, status ok if the project was created or status unauthorized if user is not
      * logged in.
-     * @see no.autopacker.filedeliveryapi.domain.ProjectMeta
+     * @see no.autopacker.userservice.domain.ProjectMeta
      */
     @RequestMapping(value = "/projects", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity createProject(@RequestBody String jsonString) {

@@ -31,6 +31,9 @@ public class AppConfig {
     @Value("${api.fdapi-url}")
     private String fdapiUrl;
 
+    @Value("${fdapi.mongo.url}")
+    private String fdapiMongoUrl;
+
     public String getRootUrl() {
         return apiRootUrl;
     }

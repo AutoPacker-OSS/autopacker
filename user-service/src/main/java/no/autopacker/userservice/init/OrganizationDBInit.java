@@ -8,7 +8,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * This class is only meant for manual testing and displaying dummy data
@@ -21,7 +20,7 @@ public class OrganizationDBInit implements CommandLineRunner {
     private final MemberApplicationRepository memberApplicationRepository;
     private final OrganizationRepository organizationRepository;
     private final AuthorityRepository authorityRepository;
-    private final ProjectRepository projectRepository;
+    private final OrganizationProjectRepository projectRepository;
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
 
@@ -30,7 +29,7 @@ public class OrganizationDBInit implements CommandLineRunner {
                               MemberApplicationRepository memberApplicationRepository,
                               OrganizationRepository organizationRepository,
                               AuthorityRepository authorityRepository,
-                              ProjectRepository projectRepository,
+                              OrganizationProjectRepository projectRepository,
                               MemberRepository memberRepository,
                               RoleRepository roleRepository) {
         this.projectApplicationRepository = projectApplicationRepository;

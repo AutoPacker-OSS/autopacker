@@ -31,3 +31,5 @@ build/
 .vscode/
 
 application.yml
+
+*.log

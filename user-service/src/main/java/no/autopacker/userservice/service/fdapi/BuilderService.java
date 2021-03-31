@@ -1,12 +1,12 @@
-package no.autopacker.filedeliveryapi.service;
+package no.autopacker.userservice.service.fdapi;
 
-import no.autopacker.filedeliveryapi.config.DockerConfig;
-import no.autopacker.filedeliveryapi.database.ComposeBlockRepository;
-import no.autopacker.filedeliveryapi.database.DockerfileRepository;
-import no.autopacker.filedeliveryapi.domain.ComposeBlock;
-import no.autopacker.filedeliveryapi.domain.Dockerfile;
-import no.autopacker.filedeliveryapi.domain.ModuleMeta;
-import no.autopacker.filedeliveryapi.utils.Utils;
+import no.autopacker.userservice.config.DockerConfig;
+import no.autopacker.userservice.domain.ComposeBlock;
+import no.autopacker.userservice.domain.Dockerfile;
+import no.autopacker.userservice.domain.ModuleMeta;
+import no.autopacker.userservice.repository.fdapi.ComposeBlockRepository;
+import no.autopacker.userservice.repository.fdapi.DockerfileRepository;
+import no.autopacker.userservice.utils.fdapi.Utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;

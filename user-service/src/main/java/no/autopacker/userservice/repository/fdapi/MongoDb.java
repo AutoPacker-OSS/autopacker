@@ -1,9 +1,9 @@
-package no.autopacker.filedeliveryapi.database;
+package no.autopacker.userservice.repository.fdapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.*;
 import com.mongodb.client.*;
-import no.autopacker.filedeliveryapi.config.AppConfig;
+import no.autopacker.userservice.config.AppConfig;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

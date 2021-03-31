@@ -7,7 +7,6 @@ import java.util.List;
 import no.autopacker.userservice.entity.organization.*;
 import no.autopacker.userservice.repository.organization.*;
 import no.autopacker.userservice.service.OrganizationService;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
@@ -16,10 +15,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
-import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
 
 @RestController
 @RequestMapping(value = "api/organization")
@@ -32,18 +28,18 @@ public class OrganizationController {
     private final ProjectApplicationRepository projectApplicationRepository;
     private final MemberApplicationRepository memberApplicationRepository;
     private final OrganizationRepository organizationRepository;
-    private final ProjectRepository projectRepository;
+    private final OrganizationProjectRepository projectRepository;
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
 
     @Autowired
     public OrganizationController(ProjectApplicationRepository projectApplicationRepository,
-                               MemberApplicationRepository memberApplicationRepository,
-                               OrganizationRepository organizationRepository,
-                               ProjectRepository projectRepository,
-                               MemberRepository memberRepository,
-                               RoleRepository roleRepository,
-                              OrganizationService organizationService) {
+                                  MemberApplicationRepository memberApplicationRepository,
+                                  OrganizationRepository organizationRepository,
+                                  OrganizationProjectRepository projectRepository,
+                                  MemberRepository memberRepository,
+                                  RoleRepository roleRepository,
+                                  OrganizationService organizationService) {
         this.projectApplicationRepository = projectApplicationRepository;
         this.memberApplicationRepository = memberApplicationRepository;
         this.organizationRepository = organizationRepository;

@@ -1,8 +1,7 @@
-package no.autopacker.filedeliveryapi.service;
+package no.autopacker.userservice.service.fdapi;
 
-
-import no.autopacker.filedeliveryapi.domain.OrgProjectMeta;
-import no.autopacker.filedeliveryapi.database.*;
+import no.autopacker.userservice.domain.OrgProjectMeta;
+import no.autopacker.userservice.repository.fdapi.OrgProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
