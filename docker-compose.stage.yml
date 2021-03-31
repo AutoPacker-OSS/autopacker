@@ -7,27 +7,15 @@ services:
   ###################
 
   web-app:
-    image: autopacker/webapp
+    image: autopacker.azurecr.io/webapp
 
   ####################
   # Backend Services #
   ####################
 
-  # Authentication Server
-  user-service:
-    image: autopacker/userservice
-
-  # General API
-  general-api:
-    image: autopacker/general-api
-
-  # Server Manager
-  server-manager:
-    image: autopacker/servermanager
-
-  # File Delivery API
-  fdapi:
-    image: autopacker/fsapi
+  # API
+  api:
+    image: autopacker.azurecr.io/api
     volumes:
       - fdapi_data:/usr/src/fdapi/data
 
@@ -36,12 +24,6 @@ services:
     image: autopacker/gateway-api
     volumes:
       - ${SSL_APP_LOCATION}:/home/dev/ssl/ap-stage.p12
-
-  # Config Server
-  config-srv:
-    image: autopacker/config-srv
-    volumes:
-      - /home/dev/AutoPacker-Configuration:/etc/autopacker/config
 
   #############
   # Databases #

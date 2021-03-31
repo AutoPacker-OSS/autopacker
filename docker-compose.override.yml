@@ -32,21 +32,9 @@ services:
   # Backend Services #
   ####################
 
-  # Authentication Server
-  user-service:
-    image: autopacker/local-userservice
-
-  # General API
-  general-api:
-    image: autopacker/local-general-api
-
-  # Server Manager
-  server-manager:
-    image: autopacker/local-servermanager
-
-  # File Delivery API
-  fdapi:
-    image: autopacker/local-fdapi
+  # API
+  api:
+    image: autopacker/local-api
 
   #############
   # Databases #
@@ -63,12 +51,6 @@ services:
       MYSQL_USER: "root"
       MYSQL_PASSWORD: ""
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
-
-  # postgres:
-  #   environment:
-  #   POSTGRES_DB: keycloak
-  #   POSTGRES_USER: root
-  #   POSTGRES_PASSWORD: toor
 
   ############
   # Keycloak #

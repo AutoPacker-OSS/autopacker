@@ -1,5 +1,3 @@
-# Manual action for deploying the latest changes for Web Application
-# in [master] branch to the staging server
 name: Deploy Web Application
 
 on:
@@ -14,6 +12,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Login to azure container registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: contoso.azurecr.io
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+        run: |
+          docker image pull autopacker.azurecr.io/webapp
+
     - name: Deploy changes
       uses: appleboy/ssh-action@master
       with:
@@ -23,5 +30,4 @@ jobs:
         port: ${{ secrets.STAGING_PORT }}
         script: |
           cd ./AutoPacker
-          docker image pull autopacker/webapp
           docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d --force-recreate web-app

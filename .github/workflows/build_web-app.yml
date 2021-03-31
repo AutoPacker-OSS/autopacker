@@ -1,31 +1,27 @@
-# This workflow should be executed when a merge request to
-# develop or master including changes to file delivery api is accepted
 name: Web Application Build
 
 on:
   push:
     branches:
-      - master
       - develop
     paths:
       - web-application/**
 
 jobs:
-  
   # Build and publish docker image for web app
   build_web-app:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-      
-    - name: Build and push the web application docker image
-      uses: docker/build-push-action@v1
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_TOKEN }}
-        repository: autopacker/webapp
-        tags: latest
-        path: ./web-application
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build and push the web application docker image
+        uses: azure/docker-login@v1
+        with:
+          login-server: contoso.azurecr.io
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+        run: |
+          docker image build -t autopacker.azurecr.io/webapp .
+          docker image push autopacker.azurecr.io/webapp

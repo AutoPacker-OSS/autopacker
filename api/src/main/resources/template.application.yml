@@ -63,6 +63,13 @@ api:
   keycloak-url: http://127.0.0.1:8080
   client-username: ${API_CLIENT_USERNAME}
   client-password: ${API_CLIENT_PASSWORD}
+  fdapi-url: http://127.0.0.1:8081
+
+# Docker constants
+docker:
+  username: coreautopacker
+  token: a4c0980e-19d4-4700-8821-899a9cce8c24
+  repository: docker.io
 
 ######################
 # Actuator & Logging #
