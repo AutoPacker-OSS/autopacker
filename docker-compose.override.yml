@@ -6,7 +6,7 @@ services:
   # Web Application #
   ###################
 
-  web-app:
+  webapp:
     image: autopacker/local-webapp
 
   # web-app:

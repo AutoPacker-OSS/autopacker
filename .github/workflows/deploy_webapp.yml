@@ -1,9 +1,9 @@
-name: Deploy User Service
+name: Deploy Web Application
 
 on:
   workflow_run:
     workflows:
-      - User Service Build
+      - Web Application Build
     types:
       - completed
 
@@ -21,6 +21,5 @@ jobs:
           port: ${{ secrets.STAGING_PORT }}
           script: |
             cd ./AutoPacker
-            git pull
-            docker image build -t autopacker/api .
-            docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d --force-recreate api
+            docker image pull autopacker/webapp
+            docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d --force-recreate webapp

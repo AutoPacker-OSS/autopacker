@@ -6,8 +6,8 @@ services:
   # Web Application #
   ###################
 
-  web-app:
-    container_name: web-app
+  webapp:
+    container_name: webapp
     depends_on:
       - keycloak
     ports:
@@ -19,7 +19,7 @@ services:
 
   # API
   api:
-    container_name: user-service
+    container_name: api
     depends_on:
       - mysql-backend
       - keycloak

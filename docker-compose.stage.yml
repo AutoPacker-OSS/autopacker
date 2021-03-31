@@ -6,8 +6,8 @@ services:
   # Web Application #
   ###################
 
-  web-app:
-    image: autopacker.azurecr.io/webapp
+  webapp:
+    image: autopacker/webapp
 
   ####################
   # Backend Services #
@@ -15,7 +15,7 @@ services:
 
   # API
   api:
-    image: autopacker.azurecr.io/api
+    image: autopacker/api
     volumes:
       - fdapi_data:/usr/src/fdapi/data
 
