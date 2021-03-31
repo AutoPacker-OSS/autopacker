@@ -1,6 +1,0 @@
-  # Module java-8
-  ${CONTAINER_NAME}:
-    container_name: ${CONTAINER_NAME}
-    image: ${IMAGE_NAME}
-    ports:
-      - ${PORT}:${PORT}

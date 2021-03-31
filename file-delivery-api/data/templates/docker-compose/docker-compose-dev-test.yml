@@ -1,6 +1,0 @@
-  # Module dev-test
-  ${CONTAINER_NAME}:
-    container_name: ${CONTAINER_NAME}
-    image: ${IMAGE_NAME}
-    something: ${PARAM_1}
-    gucci: ${PARAM_2}
