@@ -138,10 +138,10 @@ function Projects() {
 								onClick={() => {
 									sessionStorage.setItem(
 										"selectedProjectName",
-										project.projectName
+										project.name
 									);
 									sessionStorage.setItem("selectedProjectId", project.id);
-									setSelectedCard(project.projectName);
+									setSelectedCard(project.name);
 								}}
 								cover={
 									<img
@@ -153,9 +153,9 @@ function Projects() {
 								}
 							>
 								<Meta
-									title={project.projectName}
+									title={project.name}
 									description={
-										<Paragraph ellipsis={{ rows: 3 }}>{project.desc}</Paragraph>
+										<Paragraph ellipsis={{ rows: 3 }}>{project.description}</Paragraph>
 									}
 								/>
 								<div

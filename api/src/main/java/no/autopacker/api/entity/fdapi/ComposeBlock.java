@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "compose_blocks")
+@Entity
 public class ComposeBlock {
 
     @Id

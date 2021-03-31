@@ -546,7 +546,7 @@ function ServerOverview() {
 													setDeployProjectModalOpen(true);
 													setProjectToDeploy({
 														projectId: project.id,
-														projectName: project.projectName,
+														projectName: project.name,
 													});
 												}}
 											/>,
@@ -560,7 +560,7 @@ function ServerOverview() {
 												onClick={() =>
 													selectModalToDelete(
 														project.id,
-														project.projectName
+														project.name
 													)
 												}
 											/>,
@@ -576,9 +576,9 @@ function ServerOverview() {
 											/>
 											<Meta
 												style={{ padding: 20 }}
-												title={project.projectName}
+												title={project.name}
 												description={
-													<Paragraph ellipsis>{project.desc}</Paragraph>
+													<Paragraph ellipsis>{project.description}</Paragraph>
 												}
 											/>
 										</div>
@@ -601,7 +601,7 @@ function ServerOverview() {
 				)}
 				{selectedCard !== null ? (
 					<Modal
-						title={selectedCard.projectName}
+						title={selectedCard.name}
 						centered
 						visible={modalOpen}
 						onCancel={() => setModalOpen(false)}
@@ -669,7 +669,7 @@ function ServerOverview() {
 									></Avatar>
 									<div style={{ verticalAlign: "middle" }}>
 										<Text style={{ marginLeft: 16 }}>
-											{project.projectName}
+											{project.name}
 										</Text>
 										<Checkbox
 											checked={getProjectCheckedValue(project.id)}
@@ -701,7 +701,7 @@ function ServerOverview() {
 										></Avatar>
 										<div style={{ verticalAlign: "middle" }}>
 											<Text style={{ marginLeft: 16 }}>
-												{project.projectName}
+												{project.name}
 											</Text>
 											<Checkbox
 												checked={true}
@@ -729,7 +729,7 @@ function ServerOverview() {
 										></Avatar>
 										<div style={{ verticalAlign: "middle" }}>
 											<Text style={{ marginLeft: 16 }}>
-												{project.projectName}
+												{project.name}
 											</Text>
 											<Checkbox
 												checked={getProjectCheckedValue(project.id)}
@@ -817,7 +817,7 @@ function ServerOverview() {
 						centered
 						visible={deployProjectModalOpen}
 						onOk={() =>
-							deployProject(projectToDeploy.projectId, projectToDeploy.projectName)
+							deployProject(projectToDeploy.projectId, projectToDeploy.name)
 						}
 						okButtonProps={{ disabled: serverPassword.length > 0 ? false : true }}
 						okText="Yes"

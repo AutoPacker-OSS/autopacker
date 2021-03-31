@@ -272,7 +272,7 @@ function ProfileOrganizationOverview() {
 																		</Text>
 																	</Link>
 																	<Paragraph ellipsis>
-																		{project.description}
+																		{project.descriptionription}
 																	</Paragraph>
 																</div>
 															</Col>

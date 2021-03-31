@@ -3,7 +3,7 @@ package no.autopacker.api.service.fdapi;
 import no.autopacker.api.config.DockerConfig;
 import no.autopacker.api.entity.fdapi.ComposeBlock;
 import no.autopacker.api.entity.fdapi.Dockerfile;
-import no.autopacker.api.entity.fdapi.ModuleMeta;
+import no.autopacker.api.entity.fdapi.Module;
 import no.autopacker.api.repository.fdapi.ComposeBlockRepository;
 import no.autopacker.api.repository.fdapi.DockerfileRepository;
 import no.autopacker.api.utils.fdapi.Utils;
@@ -134,7 +134,7 @@ public class BuilderService {
 		return result.toString();
 	}
 
-	public String compileModuleComposeBlock(ModuleMeta module,
+	public String compileModuleComposeBlock(Module module,
 											Map<String, Object> composeParams, String projectOwner) throws Exception {
 		// Import the templates
 		String componentTemplateLocation = composeRepo.findByNameIgnoreCase(module.getConfigType()).getLocation();

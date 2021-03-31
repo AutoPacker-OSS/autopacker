@@ -5,14 +5,17 @@ import lombok.NoArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Data
-@Entity(name = "org_project")
+@Entity
 @NoArgsConstructor
-public class OrgProjectMeta {
+public class OrgProject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,8 +42,8 @@ public class OrgProjectMeta {
 
     private boolean isSubmitted;
 
-    public OrgProjectMeta(String organizationName, String user, JSONArray authors, String name,
-                          String desc, String links, JSONArray tags) throws JSONException {
+    public OrgProject(String organizationName, String user, JSONArray authors, String name,
+                      String desc, String links, JSONArray tags) throws JSONException {
         this.organizationName = organizationName;
         this.lastUpdated = new Date();
         this.user = user;

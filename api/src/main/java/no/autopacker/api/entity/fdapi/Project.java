@@ -9,30 +9,30 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Data
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name="projects")
-public class ProjectMeta {
+public class Project {
 	// Project Meta
 	@Id
-	private long id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 	private String image;
 	@NotNull
-	private String projectName;
-	private String desc;
+	private String name;
+	private String description;
 	private Date lastUpdated = new Date();
 	// TODO Maybe use another data type for tags?
 	private String tags;
 	private String website;
-	@NotNull
-    @Column(columnDefinition = "TINYINT(1) NOT NULL DEFAULT 0")
 	private boolean isPrivate;
 	@OneToMany(mappedBy = "project")
-	private List<ModuleMeta> modules;
+	private List<Module> modules;
 
 	// Administrative meta
     @NotNull
@@ -43,15 +43,16 @@ public class ProjectMeta {
 	/**
 	 * Minimum argument constructor
 	 */
-	public ProjectMeta(String name, String owner, String location, boolean isPrivate) {
-		this.projectName = name;
+	public Project(String name, String owner, String location, boolean isPrivate) {
+		this.name = name;
 		this.owner = owner;
 		this.location = location;
 		this.isPrivate = isPrivate;
+		this.modules = new ArrayList<>();
 	}
 
-	public ProjectMeta(JSONObject json) throws JSONException {
-		this.projectName = json.getString("projectName");
+	public Project(JSONObject json) throws JSONException {
+		this.name = json.getString("name");
 		this.isPrivate = json.getBoolean("isPrivate");
 		// Conditionally set values
 		// Image (TODO Need to create a better setup for image shitty)
@@ -61,10 +62,10 @@ public class ProjectMeta {
 			this.image = "";
 		}
 		// Description
-		if (json.has("desc")) {
-			this.desc = json.getString("desc");
+		if (json.has("description")) {
+			this.description = json.getString("description");
 		} else {
-			this.desc = "";
+			this.description = "";
 		}
 		// Tags
 		if (json.has("tags")) {

@@ -57,7 +57,7 @@ function ProfileProjectOverview() {
 
 	const title = (
 		<div>
-			{project.projectName}
+			{project.name}
 			<GlobalOutlined style={{ marginLeft: 20 }} />
 			{project.private ? " Private" : " Public"}
 		</div>
@@ -99,7 +99,7 @@ function ProfileProjectOverview() {
 								onBack={() => window.history.back()}
 								title={title}
 							>
-								<Paragraph>{project.desc}</Paragraph>
+								<Paragraph>{project.description}</Paragraph>
 								<Paragraph style={{ color: "blue" }}>
 									{project.website !== "" ? (
 										<a

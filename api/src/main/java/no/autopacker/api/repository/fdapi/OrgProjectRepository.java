@@ -1,17 +1,17 @@
 package no.autopacker.api.repository.fdapi;
 
-import no.autopacker.api.entity.fdapi.OrgProjectMeta;
+import no.autopacker.api.entity.fdapi.OrgProject;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface OrgProjectRepository extends JpaRepository<OrgProjectMeta, Long>{
+public interface OrgProjectRepository extends JpaRepository<OrgProject, Long>{
 
-    OrgProjectMeta findByOrganizationNameAndName(String organization, String projectName);
+    OrgProject findByOrganizationNameAndName(String organization, String projectName);
 
-    List<OrgProjectMeta> findByOrganizationNameAndUser(String organization, String user);
+    List<OrgProject> findByOrganizationNameAndUser(String organization, String user);
 
-    OrgProjectMeta findByOrganizationNameAndId(String organization, Long id);
+    OrgProject findByOrganizationNameAndId(String organization, Long id);
 }

@@ -144,7 +144,7 @@ function SearchResult(props) {
 															cursor: "pointer",
 														}}
 													>
-														{project.projectName.charAt(0).toUpperCase()}
+														{project.name.charAt(0).toUpperCase()}
 													</Avatar>
 
 													<Link
@@ -152,7 +152,7 @@ function SearchResult(props) {
 															sessionStorage.setItem("selectedPublicUser", project.owner);
 															sessionStorage.setItem("selectedPublicProject", project.id);
 														}}
-														to={"/account/" + project.owner + "/project/" + project.projectName}
+														to={"/account/" + project.owner + "/project/" + project.name}
 													>
 														<Text
 															strong
@@ -160,10 +160,10 @@ function SearchResult(props) {
 																cursor: "pointer",
 															}}
 														>
-															{project.owner} / {project.projectName}
+															{project.owner} / {project.name}
 														</Text>
 													</Link>
-													<Paragraph ellipsis>{project.desc}</Paragraph>
+													<Paragraph ellipsis>{project.description}</Paragraph>
 													<Divider />
 												</Col>
 											))}

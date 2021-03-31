@@ -1,6 +1,6 @@
 package no.autopacker.api.controller.fdapi;
 
-import no.autopacker.api.entity.fdapi.OrgProjectMeta;
+import no.autopacker.api.entity.fdapi.OrgProject;
 import no.autopacker.api.repository.fdapi.OrgProjectRepository;
 import no.autopacker.api.service.fdapi.OrgProjectService;
 import org.json.JSONException;
@@ -32,7 +32,7 @@ public class OrgProjectController {
             String body = httpEntity.getBody();
             if (body != null) {
                 JSONObject jsonObject = new JSONObject(body);
-                return this.orgProjectService.createProject(new OrgProjectMeta(
+                return this.orgProjectService.createProject(new OrgProject(
                         jsonObject.getString("organizationName"),
                         jsonObject.getString("user"),
                         jsonObject.getJSONArray("authors"),
@@ -48,8 +48,8 @@ public class OrgProjectController {
     }
 
     @GetMapping(value = "/{organization}/projects/{user}")
-    public List<OrgProjectMeta> findAllPersonalProjectsNotSubmitted(@PathVariable("organization") String organization,
-                                                        @PathVariable("user") String user) {
+    public List<OrgProject> findAllPersonalProjectsNotSubmitted(@PathVariable("organization") String organization,
+                                                                @PathVariable("user") String user) {
        return  this.orgProjectService.notSubmitted( organization, user);
     }
 

@@ -1,7 +1,7 @@
 package no.autopacker.api.service.fdapi;
 
 import no.autopacker.api.config.DockerConfig;
-import no.autopacker.api.entity.fdapi.ModuleMeta;
+import no.autopacker.api.entity.fdapi.Module;
 import no.autopacker.api.repository.fdapi.DockerfileRepository;
 import no.autopacker.api.utils.fdapi.Utils;
 import org.apache.commons.io.FileUtils;
@@ -92,7 +92,7 @@ public class DockerService {
 		return exitCode;
 	}
 
-	public void buildDockerImage(ModuleMeta module, String ownerUsername) throws Exception {
+	public void buildDockerImage(Module module, String ownerUsername) throws Exception {
 		String location = module.getLocation();
 
 		String dockerFileLocation = dockerfileRepo.findByNameIgnoreCase(module.getConfigType()).getLocation();

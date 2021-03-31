@@ -14,7 +14,7 @@ function GeneralSetting(props) {
 
 	const { Title, Text } = Typography;
 	const owner = props.project.owner;
-	const projectName = props.project.projectName;
+	const projectName = props.project.name;
 
 	const [keycloak] = useKeycloak();
 

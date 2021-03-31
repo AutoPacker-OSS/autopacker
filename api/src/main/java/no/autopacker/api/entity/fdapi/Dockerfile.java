@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "dockerfiles")
+@Entity
 public class Dockerfile {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

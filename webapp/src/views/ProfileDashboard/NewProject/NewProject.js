@@ -117,8 +117,8 @@ function NewProject() {
 					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 				},
 				data: {
-					projectName: newProjectName,
-					desc: newProjectDescription,
+					name: newProjectName,
+					description: newProjectDescription,
 					website: newProjectWebsite,
 					tags: tags,
 					isPrivate: privateProject,

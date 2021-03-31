@@ -374,7 +374,7 @@ function SubmitProject(props) {
 							/>
 							<Text>
 								{selectedProject !== null ? (
-									" " + selectedProject.projectName
+									" " + selectedProject.name
 								) : (
 									<div />
 								)}
@@ -420,7 +420,7 @@ function SubmitProject(props) {
 										/>
 										<div style={{ verticalAlign: "middle" }}>
 											<Text style={{ marginLeft: 16 }}>
-												{project.projectName}
+												{project.name}
 											</Text>
 											<Radio value={project.id} style={{ float: "right" }} />
 										</div>

@@ -11,14 +11,15 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "modules")
-public class ModuleMeta {
+@Entity
+public class Module {
     // Module Meta
     @Id
-    private long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     @NotNull
     private String name;
-    private String desc;
+    private String description;
     private String image;
     private int port;
     private String framework;
@@ -28,19 +29,19 @@ public class ModuleMeta {
 
     // Administrative Meta
     private String configType;
-    @Column(unique = true)
     private String location;
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "project_id")
-    private ProjectMeta project;
+    private Project project;
 
-    public ModuleMeta(String name, int port, String language, String version, String configType, String location) {
+    public Module(String name, int port, String language, String version, String configType, String location, Project project) {
         this.name = name;
         this.port = port;
         this.language = language;
         this.version = version;
         this.configType = configType;
         this.location = location;
+        this.project = project;
     }
 }

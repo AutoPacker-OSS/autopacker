@@ -127,7 +127,7 @@ function ProfilePage() {
 																	cursor: "pointer",
 																}}
 															>
-																{project.projectName.charAt(0).toUpperCase()}
+																{project.name.charAt(0).toUpperCase()}
 															</Avatar>
 															<div>
 																<Link
@@ -138,7 +138,7 @@ function ProfilePage() {
 																		)
 																	}
 																	to={
-																		"/account/" + username + "/project/" + project.projectName
+																		"/account/" + username + "/project/" + project.name
 																	}
 																>
 																	<Text
@@ -147,10 +147,10 @@ function ProfilePage() {
 																			cursor: "pointer",
 																		}}
 																	>
-																		{project.projectName}
+																		{project.name}
 																	</Text>
 																</Link>
-																<Paragraph ellipsis>{project.desc}</Paragraph>
+																<Paragraph ellipsis>{project.description}</Paragraph>
 																<div>
 																	<div
 																		style={{

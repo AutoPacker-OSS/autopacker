@@ -12,8 +12,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import no.autopacker.api.entity.fdapi.ModuleMeta;
-import no.autopacker.api.entity.fdapi.ProjectMeta;
+import no.autopacker.api.entity.fdapi.Module;
+import no.autopacker.api.entity.fdapi.Project;
 import no.autopacker.api.repository.fdapi.ModuleRepository;
 import no.autopacker.api.repository.fdapi.MongoDb;
 import no.autopacker.api.repository.fdapi.ProjectRepository;
@@ -68,7 +68,7 @@ public class ModuleController {
         @RequestParam("config-params") String configParamsJson,
         @RequestParam("module-file") List<MultipartFile> moduleFiles) {
         ResponseEntity response;
-        ProjectMeta project = projectRepo.findByOwnerAndProjectName(username, projectName);
+        Project project = projectRepo.findByOwnerAndName(username, projectName);
         KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
             .getContext().getAuthentication().getPrincipal();
 
@@ -112,8 +112,8 @@ public class ModuleController {
                                     .body("Something wrong happened parsing port(s)");
                             }
 
-                            ModuleMeta module = new ModuleMeta(moduleName, port, language, version,
-                                configType, modulePath);
+                            Module module = new Module(moduleName, port, language, version,
+                                configType, modulePath, project);
                             module.setProject(project);
                             moduleRepo.save(module);
                             // ID should be set by the save command
@@ -222,7 +222,7 @@ public class ModuleController {
         // If something went wrong after the module was added to the database, remove it from db
         if (response.getStatusCode() == HttpStatus.BAD_REQUEST) {
             // Find module
-            ModuleMeta module = moduleRepo.findForProject(username, projectName, moduleName);
+            Module module = moduleRepo.findForProject(username, projectName, moduleName);
             if (module != null) {
                 // Remove from database
                 mongo.deleteByModuleId(module.getId());
@@ -266,7 +266,7 @@ public class ModuleController {
                 .getContext().getAuthentication().getPrincipal();
         if (authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername().equalsIgnoreCase(username)) {
 
-            ProjectMeta project = this.projectRepo.findByOwnerAndProjectName(username, projectName);
+            Project project = this.projectRepo.findByOwnerAndName(username, projectName);
             if (project != null) {
                 // Check if module by given name already exists
                 if (moduleRepo.countByProjectIdAndName(project.getId(), moduleName) == 0) {
@@ -294,8 +294,8 @@ public class ModuleController {
                         }
 
                         // Create the module meta entity
-                        ModuleMeta module = new ModuleMeta(moduleName, port, configType, serverVersion,
-                                configType, modulePath);
+                        Module module = new Module(moduleName, port, configType, serverVersion,
+                                configType, modulePath, project);
                         module.setProject(project);
                         moduleRepo.save(module);
                         // The ID will be set by the .save() operation
@@ -331,7 +331,7 @@ public class ModuleController {
     public ResponseEntity deleteProjectModule(@PathVariable("username") String username,
         @PathVariable("project") String projectName,
         @PathVariable("module") String moduleName) {
-        ProjectMeta pm = projectRepo.findByOwnerAndProjectName(username, projectName);
+        Project pm = projectRepo.findByOwnerAndName(username, projectName);
         KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
             .getContext().getAuthentication().getPrincipal();
         ResponseEntity response;
@@ -341,7 +341,7 @@ public class ModuleController {
                 .equalsIgnoreCase(username) || authenticatedUser.getKeycloakSecurityContext()
                 .getToken().getResourceAccess("file-delivery-api").isUserInRole("ADMIN")) {
                 if (pm != null) {
-                    ModuleMeta module = moduleRepo.findByProjectIdAndName(pm.getId(), moduleName);
+                    Module module = moduleRepo.findByProjectIdAndName(pm.getId(), moduleName);
                     if (module != null) {
                         File moduleDir = new File(module.getLocation());
                         if (moduleDir.exists()) {

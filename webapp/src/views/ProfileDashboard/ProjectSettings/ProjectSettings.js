@@ -45,7 +45,7 @@ function ProjectSettings() {
 		},
 		{
 			path: "/overview/" + project.id,
-			breadcrumbName: project.projectName,
+			breadcrumbName: project.name,
 		},
 		{
 			path: "/settings",
@@ -71,7 +71,7 @@ function ProjectSettings() {
 					border: "1px solid rgb(235, 237, 240)",
 					backgroundColor: "#FFFFFF",
 				}}
-				title={project.projectName + " Settings"}
+				title={project.name + " Settings"}
 				onBack={() => window.history.back()}
 				breadcrumb={{ routes: routes, itemRender: breadcrumbItemRender }}
 			></PageHeader>

@@ -1,6 +1,6 @@
 package no.autopacker.api.service.fdapi;
 
-import no.autopacker.api.entity.fdapi.OrgProjectMeta;
+import no.autopacker.api.entity.fdapi.OrgProject;
 import no.autopacker.api.repository.fdapi.OrgProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,18 +20,18 @@ public class OrgProjectService {
     }
 
 
-    public ResponseEntity<String> createProject(OrgProjectMeta orgProjectMeta) {
-        if (orgProjectMeta != null ){
-           orgProjectRepository.save(orgProjectMeta);
+    public ResponseEntity<String> createProject(OrgProject orgProject) {
+        if (orgProject != null ){
+           orgProjectRepository.save(orgProject);
             return new ResponseEntity<>("OK", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Bad_Request", HttpStatus.BAD_REQUEST);
         }
     }
 
-    public List<OrgProjectMeta> notSubmitted(String organization, String user){
-        List<OrgProjectMeta> list = this.orgProjectRepository.findByOrganizationNameAndUser(organization, user);
-        list.removeIf(OrgProjectMeta::isSubmitted);
+    public List<OrgProject> notSubmitted(String organization, String user){
+        List<OrgProject> list = this.orgProjectRepository.findByOrganizationNameAndUser(organization, user);
+        list.removeIf(OrgProject::isSubmitted);
         return list;
     }
 
@@ -39,7 +39,7 @@ public class OrgProjectService {
     public ResponseEntity findProjectBasedOnId(String organization, Long id) {
 
         ResponseEntity response = null;
-        OrgProjectMeta organizationProject = this.orgProjectRepository.findByOrganizationNameAndId(organization, id);
+        OrgProject organizationProject = this.orgProjectRepository.findByOrganizationNameAndId(organization, id);
 
         if (organizationProject != null) {
             response = ResponseEntity.ok(organizationProject);
@@ -52,10 +52,10 @@ public class OrgProjectService {
 
     public ResponseEntity<String> setSubmitted(String org, Long id) {
 
-       OrgProjectMeta orgProjectMeta = this.orgProjectRepository.findByOrganizationNameAndId(org,id);
-       if (orgProjectMeta != null){
-           orgProjectMeta.setSubmitted(true);
-           orgProjectRepository.save(orgProjectMeta);
+       OrgProject orgProject = this.orgProjectRepository.findByOrganizationNameAndId(org,id);
+       if (orgProject != null){
+           orgProject.setSubmitted(true);
+           orgProjectRepository.save(orgProject);
            return new ResponseEntity<>("OK", HttpStatus.OK);
        } else {
            return new ResponseEntity<>("Bad_Request", HttpStatus.BAD_REQUEST);

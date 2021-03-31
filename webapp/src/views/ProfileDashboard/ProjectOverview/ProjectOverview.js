@@ -69,13 +69,13 @@ function ProjectOverview() {
 		},
 		{
 			path: "/overview/" + project.id,
-			breadcrumbName: project.projectName,
+			breadcrumbName: project.name,
 		},
 	];
 
 	const title = (
 		<div>
-			{project.projectName}
+			{project.name}
 			<GlobalOutlined style={{ marginLeft: 20 }} />
 			{project.private ? " Private" : " Public"}
 		</div>
@@ -161,13 +161,13 @@ function ProjectOverview() {
 						id="project-settings-link"
 						key={2}
 						style={{ marginLeft: 10, marginRight: 10 }}
-						to={"/profile/projects/overview/" + project.projectName + "/settings"}
+						to={"/profile/projects/overview/" + project.name + "/settings"}
 					>
 						<SettingOutlined /> Settings
 					</Link>,
 				]}
 			>
-				<Paragraph>{project.desc}</Paragraph>
+				<Paragraph>{project.description}</Paragraph>
 				<Paragraph style={{ color: "blue" }}>
 					{project.website !== "" ? (
 						<a href={project.website} target="_blank" rel="noopener noreferrer">
