@@ -1,13 +1,11 @@
 package no.autopacker.filedeliveryapi.service;
 
-import lombok.SneakyThrows;
 import no.autopacker.filedeliveryapi.config.DockerConfig;
 import no.autopacker.filedeliveryapi.database.ComposeBlockRepository;
 import no.autopacker.filedeliveryapi.database.DockerfileRepository;
 import no.autopacker.filedeliveryapi.domain.ComposeBlock;
 import no.autopacker.filedeliveryapi.domain.Dockerfile;
 import no.autopacker.filedeliveryapi.domain.ModuleMeta;
-import no.autopacker.filedeliveryapi.domain.ProjectMeta;
 import no.autopacker.filedeliveryapi.utils.Utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -22,8 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,7 +54,7 @@ public class BuilderService {
 		String location;
 
 		if (type.equals("docker-compose")) {
-			if (composeRepo.findByName(tempName) == null) {
+			if (composeRepo.findByNameIgnoreCase(tempName) == null) {
 				location = Utils.instance().getDockerComposeTemplateDir() + "-" + tempName + ".yml";
 
 				// Save to database
@@ -68,7 +64,7 @@ public class BuilderService {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Template already exists: " + tempName);
 			}
 		} else if (type.equals("dockerfile")) {
-			if (dockerfileRepo.findByName(tempName) == null) {
+			if (dockerfileRepo.findByNameIgnoreCase(tempName) == null) {
 				location = Utils.instance().getDockerFileLocation(tempName);
 
 				// Save to database
@@ -141,7 +137,7 @@ public class BuilderService {
 	public String compileModuleComposeBlock(ModuleMeta module,
 											Map<String, Object> composeParams, String projectOwner) throws Exception {
 		// Import the templates
-		String componentTemplateLocation = composeRepo.findByName(module.getConfigType()).getLocation();
+		String componentTemplateLocation = composeRepo.findByNameIgnoreCase(module.getConfigType()).getLocation();
 		String componentTemplate = FileUtils.readFileToString(new File(componentTemplateLocation), "utf-8");
 
 		// Get the docker image name

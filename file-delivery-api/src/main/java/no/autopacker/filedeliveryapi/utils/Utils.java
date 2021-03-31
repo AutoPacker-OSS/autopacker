@@ -1,8 +1,6 @@
 package no.autopacker.filedeliveryapi.utils;
 
 import lombok.Data;
-import org.apache.commons.io.FileUtils;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 import java.io.File;

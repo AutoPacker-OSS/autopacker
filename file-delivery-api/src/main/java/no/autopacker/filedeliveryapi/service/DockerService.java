@@ -95,7 +95,7 @@ public class DockerService {
 	public void buildDockerImage(ModuleMeta module, String ownerUsername) throws Exception {
 		String location = module.getLocation();
 
-		String dockerFileLocation = dockerfileRepo.findByName(module.getConfigType()).getLocation();
+		String dockerFileLocation = dockerfileRepo.findByNameIgnoreCase(module.getConfigType()).getLocation();
 
 		String moduleImageName = Utils.instance().getModuleImageName(ownerUsername, module.getName());
 		Runtime cmd = Runtime.getRuntime();

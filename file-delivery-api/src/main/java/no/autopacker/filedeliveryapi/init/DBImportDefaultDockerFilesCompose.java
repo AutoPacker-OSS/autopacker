@@ -10,7 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,7 +48,7 @@ public class DBImportDefaultDockerFilesCompose implements CommandLineRunner {
      * @param entry     Dockerfile
      */
     public void addIfDockerFileNotExists(Dockerfile entry) {
-        if (dockerfileRepo.findByName(entry.getName()) == null) {
+        if (dockerfileRepo.findByNameIgnoreCase(entry.getName()) == null) {
             dockerfileRepo.save(entry);
         }
     }
@@ -59,7 +58,7 @@ public class DBImportDefaultDockerFilesCompose implements CommandLineRunner {
      * @param entry     docker-compose
      */
     public void addIfDockerComposeNotExists(ComposeBlock entry) {
-        if (composeRepo.findByName(entry.getName()) == null) {
+        if (composeRepo.findByNameIgnoreCase(entry.getName()) == null) {
             composeRepo.save(entry);
         }
     }

@@ -1,9 +1,10 @@
 package no.autopacker.filedeliveryapi.database;
 
 import no.autopacker.filedeliveryapi.domain.ComposeBlock;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ComposeBlockRepository {
-    void save(ComposeBlock composeBlock);
-    void delete(Long id);
-    ComposeBlock findByName(String name);
+@Repository
+public interface ComposeBlockRepository extends CrudRepository<ComposeBlock, Long> {
+    ComposeBlock findByNameIgnoreCase(String name);
 }

@@ -24,7 +24,6 @@ import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -77,7 +76,7 @@ public class ModuleController {
                 .equalsIgnoreCase(username) || authenticatedUser.getKeycloakSecurityContext()
                 .getToken().getResourceAccess("file-delivery-api").isUserInRole("ADMIN")) {
                 if (project != null) {
-                    if (!moduleRepo.moduleExists(project.getId(), moduleName)) {
+                    if (moduleRepo.countByProjectIdAndName(project.getId(), moduleName) == 0) {
                         // Checks if the project has a valid name
                         Pattern pattern = Pattern.compile("[\\w-]*");
                         Matcher matcher = pattern.matcher(moduleName);
@@ -113,15 +112,11 @@ public class ModuleController {
                             }
 
                             ModuleMeta module = new ModuleMeta(moduleName, port, language, version,
-                                configType, modulePath, project.getId());
+                                configType, modulePath);
+                            module.setProject(project);
                             moduleRepo.save(module);
-
-                            // Get module id after module has been inserted and put it in mongodb
-                            long moduleId = moduleRepo
-                                .findModuleByUsernameAndProjectNameAndModuleName(username,
-                                    projectName, moduleName)
-                                .getId();
-                            mongo.save(moduleId, configParamsJson);
+                            // ID should be set by the save command
+                            mongo.save(module.getId(), configParamsJson);
 
                             try {
                                 // Create the module directory
@@ -226,13 +221,11 @@ public class ModuleController {
         // If something went wrong after the module was added to the database, remove it from db
         if (response.getStatusCode() == HttpStatus.BAD_REQUEST) {
             // Find module
-            ModuleMeta module = moduleRepo
-                .findModuleByUsernameAndProjectNameAndModuleName(username, projectName, moduleName);
-
+            ModuleMeta module = moduleRepo.findForProject(username, projectName, moduleName);
             if (module != null) {
                 // Remove from database
                 mongo.deleteByModuleId(module.getId());
-                moduleRepo.delete(module.getId());
+                moduleRepo.delete(module);
 
                 // Delete the module files and folders
                 File moduleDir = new File(module.getLocation());
@@ -260,6 +253,7 @@ public class ModuleController {
      * @return status ok if module was added, status unauthorized if user is not logged in, status
      *         not found if project was not found or status bad request if something failed
      */
+    // TODO - refactor this - almost the same as uploadModuleToProject()
     @PostMapping(value = "/projects/{username}/{project}/{module}/game-module/add")
     public ResponseEntity<String> uploadGameServerToProject(@PathVariable("username") String username,
                                                             @PathVariable("project") String projectName,
@@ -274,7 +268,7 @@ public class ModuleController {
             ProjectMeta project = this.projectRepo.findByOwnerAndName(username, projectName);
             if (project != null) {
                 // Check if module by given name already exists
-                if (!moduleRepo.moduleExists(project.getId(), moduleName)) {
+                if (moduleRepo.countByProjectIdAndName(project.getId(), moduleName) == 0) {
                     // Checks if the project has a valid name
                     Pattern pattern = Pattern.compile("[\\w-]*");
                     Matcher matcher = pattern.matcher(moduleName);
@@ -300,15 +294,11 @@ public class ModuleController {
 
                         // Create the module meta entity
                         ModuleMeta module = new ModuleMeta(moduleName, port, configType, serverVersion,
-                                configType, modulePath, project.getId());
+                                configType, modulePath);
+                        module.setProject(project);
                         moduleRepo.save(module);
-
-                        // Get module id after module has been inserted and put it in mongodb
-                        long moduleId = moduleRepo
-                                .findModuleByUsernameAndProjectNameAndModuleName(username,
-                                        projectName, moduleName)
-                                .getId();
-                        mongo.save(moduleId, configParamsJson);
+                        // The ID will be set by the .save() operation
+                        mongo.save(module.getId(), configParamsJson);
 
                         return ResponseEntity.ok("Module successfully added to the project");
                     } else {
@@ -350,8 +340,7 @@ public class ModuleController {
                 .equalsIgnoreCase(username) || authenticatedUser.getKeycloakSecurityContext()
                 .getToken().getResourceAccess("file-delivery-api").isUserInRole("ADMIN")) {
                 if (pm != null) {
-                    ModuleMeta module = moduleRepo
-                        .findModuleByProjectIdAndName(pm.getId(), moduleName);
+                    ModuleMeta module = moduleRepo.findByProjectIdAndName(pm.getId(), moduleName);
                     if (module != null) {
                         File moduleDir = new File(module.getLocation());
                         if (moduleDir.exists()) {
@@ -364,7 +353,7 @@ public class ModuleController {
 
                             // If the module files are deleted, remove the reference to database
                             if (!moduleDir.exists() || moduleDir.delete()) {
-                                moduleRepo.delete(module.getId());
+                                moduleRepo.delete(module);
                                 mongo.deleteByModuleId(module.getId());
                                 response = ResponseEntity.ok("Module '" + moduleName + "' deleted");
                             } else {
