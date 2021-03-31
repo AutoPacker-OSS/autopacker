@@ -6,8 +6,8 @@ services:
   # Web Application #
   ###################
 
-  web-app:
-    container_name: web-app
+  webapp:
+    container_name: webapp
     depends_on:
       - keycloak
     ports:
@@ -17,12 +17,13 @@ services:
   # Backend Services #
   ####################
 
-  # Authentication Server
-  user-service:
-    container_name: user-service
+  # API
+  api:
+    container_name: api
     depends_on:
       - mysql-backend
       - keycloak
+      - fdapi-mongo
     restart: on-failure:10
     ports:
       - 8081:8081
@@ -30,48 +31,8 @@ services:
       - backend-network
     volumes:
       - user-mvn:/root/.m2/repository
-
-  # General API
-  general-api:
-    container_name: general-api
-    depends_on:
-      - mysql-backend
-      - keycloak
-    restart: on-failure:10
-    ports:
-      - 8083:8083
-    networks:
-      - backend-network
-    volumes:
-      - general-mvn:/root/.m2/repository
-
-  # Server Manager
-  server-manager:
-    container_name: server-manager
-    depends_on:
-      - mysql-backend
-      - keycloak
-    restart: on-failure:10
-    ports:
-      - 8082:8082
-    networks:
-      - backend-network
-    volumes:
       - servers-mvn:/root/.m2/repository
-
-  # File Delivery API
-  fdapi:
-    container_name: fdapi
-    ports:
-      - "8090:8090"
-    depends_on:
-      - mysql-backend
-      - fdapi-mongo
-      - keycloak
-    restart: on-failure:10
-    networks:
-      - backend-network
-    volumes:
+      - general-mvn:/root/.m2/repository
       - ap-fs:/opt/fs/
       - fdapi-mvn:/root/.m2/repository
       - /var/run/docker.sock:/var/run/docker.sock

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Front-End DEMO</title>
+    <!-- NES-CSS import -->
+    <link href="https://unpkg.com/nes.css/css/nes.min.css" rel="stylesheet"/>
+    <!-- Press Start 2P Front -->
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet"/>
+    <!-- Custom css -->
+    <link href="css/index.css" rel="stylesheet" type="text/css"/>
+    <link href="css/modal.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<header>
+    <h1>A Simple Front-End demo for Course Systemutvikling og modellering</h1>
+</header>
+
+<section class="nes-container with-title with-title">
+    <h2 class="title">Table containing users</h2>
+    <div class="balloon">
+        <div class="messages">
+            <div class="message -right">
+                <div class="nes-balloon from-right">
+                    <p class="nes-text">
+                        Here the table displays all the users fetched from the database.
+                        You can also add users by pressing this <b>big</b> awesome flashy button
+                        <button class="nes-btn is-success">Add User</button>.
+                        To delete a user just find him/her below in the table and press this
+                        red *really* <b>big</b> satisfying button
+                        <button class="nes-btn is-error">Delete</button>
+                    </p>
+                </div>
+                <i class="nes-charmander"></i>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Trigger -->
+    <button id="btn-modal" type="button" class="nes-btn is-success btn-add">
+        Add User
+    </button>
+    <!-- Modal -->
+    <div id="modal-add" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="title">Add User</h2>
+            <form class="form">
+                <div class="nes-field">
+                    <label for="name_field">Name</label>
+                    <input type="text" id="name_field" class="nes-input">
+                </div>
+                <div class="nes-field">
+                    <label for="email_field">Email</label>
+                    <input type="text" id="email_field" class="nes-input">
+                </div>
+                <div>
+                    <div class="nes-field w-50p left">
+                        <label for="phone_field">Phone</label>
+                        <input type="text" id="phone_field" class="nes-input">
+                    </div>
+                    <div class="nes-field w-50p right">
+                        <label for="age_field">Age</label>
+                        <input type="number" id="age_field" class="nes-input">
+                    </div>
+                </div>
+                <div class="btn-center">
+                    <button type="button" onclick="createUser()" class="nes-btn is-success">Create User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Table -->
+    <table class="nes-table is-bordered is-centered">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Age</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody id="table_body">
+        </tbody>
+    </table>
+</section>
+<!-- Scripts -->
+<script type="text/javascript" src="js/modal.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+
+</body>
+</html>

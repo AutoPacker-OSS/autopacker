@@ -73,3 +73,5 @@ general-api/src/main/resources/logs/
 server-manager/src/main/resources/logs/
 
 user-service/src/main/resources/logs/
+
+user-service/src/main/resources/application.yml
