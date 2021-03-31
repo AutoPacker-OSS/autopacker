@@ -1,7 +1,7 @@
-package no.autopacker.general.service;
+package no.autopacker.userservice.service;
 
-import no.autopacker.general.entity.organization.*;
-import no.autopacker.general.repository.organization.*;
+import no.autopacker.userservice.entity.organization.*;
+import no.autopacker.userservice.repository.organization.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,7 +63,7 @@ public class OrganizationService {
     ----------------------------*/
 
     public ResponseEntity<String> submitProjectToOrganization(
-        OrganizationProject organizationProject, String comment) {
+            OrganizationProject organizationProject, String comment) {
         OrganizationProject foundOrganizationProject = this.projectRepository.findByOrganization_NameAndName(
             organizationProject.getOrganization().getName(), organizationProject.getName());
         if (foundOrganizationProject == null) {

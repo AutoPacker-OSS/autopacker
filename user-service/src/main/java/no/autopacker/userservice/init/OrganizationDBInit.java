@@ -1,11 +1,7 @@
-package no.autopacker.general.init;
+package no.autopacker.userservice.init;
 
-import no.autopacker.general.entity.organization.*;
-import no.autopacker.general.entity.tools.Language;
-import no.autopacker.general.entity.tools.Version;
-import no.autopacker.general.repository.organization.*;
-import no.autopacker.general.repository.tools.LanguageRepository;
-import no.autopacker.general.repository.tools.VersionRepository;
+import no.autopacker.userservice.entity.organization.*;
+import no.autopacker.userservice.repository.organization.*;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -18,7 +14,7 @@ import java.util.List;
  * This class is only meant for manual testing and displaying dummy data
  */
 @Service
-public class DBInit implements CommandLineRunner {
+public class OrganizationDBInit implements CommandLineRunner {
 
     // Organization Repositories
     private final ProjectApplicationRepository projectApplicationRepository;
@@ -29,20 +25,14 @@ public class DBInit implements CommandLineRunner {
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
 
-    // Language Repositories
-    private LanguageRepository languageRepository;
-    private VersionRepository versionRepository;
-
     @Autowired
-    public DBInit(ProjectApplicationRepository projectApplicationRepository,
-                  MemberApplicationRepository memberApplicationRepository,
-                  OrganizationRepository organizationRepository,
-                  AuthorityRepository authorityRepository,
-                  ProjectRepository projectRepository,
-                  MemberRepository memberRepository,
-                  RoleRepository roleRepository,
-                  LanguageRepository languageRepository,
-                  VersionRepository versionRepository) {
+    public OrganizationDBInit(ProjectApplicationRepository projectApplicationRepository,
+                              MemberApplicationRepository memberApplicationRepository,
+                              OrganizationRepository organizationRepository,
+                              AuthorityRepository authorityRepository,
+                              ProjectRepository projectRepository,
+                              MemberRepository memberRepository,
+                              RoleRepository roleRepository) {
         this.projectApplicationRepository = projectApplicationRepository;
         this.memberApplicationRepository = memberApplicationRepository;
         this.organizationRepository = organizationRepository;
@@ -50,34 +40,10 @@ public class DBInit implements CommandLineRunner {
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
         this.roleRepository = roleRepository;
-        this.languageRepository = languageRepository;
-        this.versionRepository = versionRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
-
-        /*------------------------------
-        Language
-        ----------------------------*/
-
-        this.versionRepository.deleteAll();
-
-        this.languageRepository.deleteAll();
-
-        Language java = new Language("Java");
-
-        Language python = new Language("Python");
-        Version firstGen = new Version(11, java);
-        Version secondGen = new Version(13, java);
-        Version thirdGen = new Version(30, python);
-
-        List<Language> languages = Arrays.asList(java, python);
-
-        this.languageRepository.saveAll(languages);
-
-        List<Version> versions = Arrays.asList(firstGen, secondGen, thirdGen);
-        this.versionRepository.saveAll(versions);
 
         /*------------------------------
         Organization

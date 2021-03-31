@@ -1,17 +1,16 @@
-package no.autopacker.general.entity.organization;
+package no.autopacker.userservice.entity.organization;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Data
 @Entity
 @NoArgsConstructor
-public class MemberApplication {
+public class ProjectApplication {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,6 +22,10 @@ public class MemberApplication {
     @JoinColumn(nullable = false, name = "member_id")
     private Member member;
 
+    @OneToOne(targetEntity = OrganizationProject.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "organization_project_id")
+    private OrganizationProject organizationProject;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "organization_id")
@@ -33,9 +36,10 @@ public class MemberApplication {
 
     private boolean isAccepted;
 
-    public MemberApplication(Member member, String comment) {
+    public ProjectApplication(Member member, OrganizationProject organizationProject, String comment) {
         this.organization = member.getOrganization();
         this.member = member;
+        this.organizationProject = organizationProject;
         this.comment = comment;
         this.isAccepted = false;
     }
@@ -44,4 +48,5 @@ public class MemberApplication {
     protected void onCreate() {
         this.created = new Date();
     }
+
 }

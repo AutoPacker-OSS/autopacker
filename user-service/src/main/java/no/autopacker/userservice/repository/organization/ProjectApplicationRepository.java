@@ -1,6 +1,6 @@
-package no.autopacker.general.repository.organization;
+package no.autopacker.userservice.repository.organization;
 
-import no.autopacker.general.entity.organization.ProjectApplication;
+import no.autopacker.userservice.entity.organization.ProjectApplication;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

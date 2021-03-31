@@ -1,4 +1,4 @@
-package no.autopacker.general.entity.organization;
+package no.autopacker.userservice.entity.organization;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

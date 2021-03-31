@@ -1,7 +1,7 @@
-package no.autopacker.general.repository.organization;
+package no.autopacker.userservice.repository.organization;
 
-import no.autopacker.general.entity.organization.Role;
-import no.autopacker.general.entity.tools.Language;
+
+import no.autopacker.userservice.entity.organization.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

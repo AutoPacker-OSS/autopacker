@@ -1,21 +1,12 @@
-package no.autopacker.general.controller;
+package no.autopacker.userservice.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
-import no.autopacker.general.entity.organization.Member;
-import no.autopacker.general.entity.organization.MemberApplication;
-import no.autopacker.general.entity.organization.Organization;
-import no.autopacker.general.entity.organization.OrganizationProject;
-import no.autopacker.general.entity.organization.ProjectApplication;
-import no.autopacker.general.repository.organization.AuthorityRepository;
-import no.autopacker.general.repository.organization.MemberApplicationRepository;
-import no.autopacker.general.repository.organization.MemberRepository;
-import no.autopacker.general.repository.organization.OrganizationRepository;
-import no.autopacker.general.repository.organization.ProjectApplicationRepository;
-import no.autopacker.general.repository.organization.ProjectRepository;
-import no.autopacker.general.repository.organization.RoleRepository;
-import no.autopacker.general.service.OrganizationService;
+
+import no.autopacker.userservice.entity.organization.*;
+import no.autopacker.userservice.repository.organization.*;
+import no.autopacker.userservice.service.OrganizationService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.keycloak.KeycloakPrincipal;
@@ -41,7 +32,6 @@ public class OrganizationController {
     private final ProjectApplicationRepository projectApplicationRepository;
     private final MemberApplicationRepository memberApplicationRepository;
     private final OrganizationRepository organizationRepository;
-    private final AuthorityRepository authorityRepository;
     private final ProjectRepository projectRepository;
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
@@ -50,7 +40,6 @@ public class OrganizationController {
     public OrganizationController(ProjectApplicationRepository projectApplicationRepository,
                                MemberApplicationRepository memberApplicationRepository,
                                OrganizationRepository organizationRepository,
-                               AuthorityRepository authorityRepository,
                                ProjectRepository projectRepository,
                                MemberRepository memberRepository,
                                RoleRepository roleRepository,
@@ -58,7 +47,6 @@ public class OrganizationController {
         this.projectApplicationRepository = projectApplicationRepository;
         this.memberApplicationRepository = memberApplicationRepository;
         this.organizationRepository = organizationRepository;
-        this.authorityRepository = authorityRepository;
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
         this.roleRepository = roleRepository;
