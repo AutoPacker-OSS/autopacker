@@ -171,7 +171,10 @@ function OrganizationDashboardLayout({ children }) {
 								}
 							>
 								<Menu.Item key="8">
-									<Link to={"/organization/submit-project/" + organizationName}>Submit Project</Link>
+									<Link to={"/organization/create-project/" + organizationName}>Create Project</Link>
+								</Menu.Item>
+								<Menu.Item key="11">
+									<Link to={"/organization/pre-submission/" + organizationName}>Projects</Link>
 								</Menu.Item>
 								<Menu.Item key="9">
 									<Link to={"/organization/submissions/" + organizationName}>Submissions</Link>

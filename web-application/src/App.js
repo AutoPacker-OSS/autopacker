@@ -26,12 +26,14 @@ const ProfilePage = React.lazy(() => import("./views/ProfilePage/ProfilePage"));
 const ProfileProjectOverview = React.lazy(() => import("./views/ProfileProjectOverview/ProfileProjectOverview"));
 const Settings = React.lazy(() => import("./views/ProfileDashboard/Settings/Settings"));
 const OrganizationDashboard = React.lazy(() => import("./views/OrganizationDashboard/Dashboard/OrganizationDashboard"));
+const OrgPersonalProject = React.lazy(() => import("./views/OrganizationDashboard/OrgPersonalProject/OrgPersonalProject"));
+const PreSubmissionOverview = React.lazy(() => import("./views/OrganizationDashboard/PreSubmissionOverview/PreSubmissionOverview"));
 const Organizations = React.lazy(() => import("./views/ProfileDashboard/Organizations/Organizations"));
 const Members = React.lazy(() => import("./views/OrganizationDashboard/Members/Members"));
 const Applicants = React.lazy(() => import("./views/OrganizationDashboard/Applicants/Applicants"));
 const ProjectRequests = React.lazy(() => import("./views/OrganizationDashboard/ProjectRequests/ProjectRequests"));
 const ProjectSettings = React.lazy(() => import("./views/ProfileDashboard/ProjectSettings/ProjectSettings"));
-const SubmitProject = React.lazy(() => import("./views/OrganizationDashboard/SubmitProject/SubmitProject"));
+const NewOrgProject = React.lazy(() => import("./views/OrganizationDashboard/NewOrgProject/NewOrgProject"));
 const ProfileOrganizationOverview = React.lazy(() => import("./views/ProfileOrganizationOverview/ProfileOrganizationOverview"));
 const ProfileOrganizationForm = React.lazy(() => import("./views/ProfileOrganizationForm/ProfileOrganizationForm"));
 const Submissions = React.lazy(() => import("./views/OrganizationDashboard/Submissions/Submissions"));
@@ -52,12 +54,15 @@ function App() {
 
 				<OrganizationDashboardRoute path="/organization/submissions/:organization" component={Submissions} />
 				<OrganizationDashboardRoute path="/organization/project-requests/:organization" component={ProjectRequests} />
-				<OrganizationDashboardRoute path="/organization/submit-project/:organization" component={SubmitProject} />
+				<OrganizationDashboardRoute path="/organization/create-project/:organization" component={NewOrgProject} />
 				<OrganizationDashboardRoute path="/organization/dashboard/:organization" component={OrganizationDashboard} />
 				<OrganizationDashboardRoute path="/organization/:organization/overview/:project" component={OrgProjectOverview} />
 				<OrganizationDashboardRoute path="/organization/applicants/:organization" component={Applicants} />
 				<OrganizationDashboardRoute path="/organization/members/:organization" component={Members} />
+				<OrganizationDashboardRoute path="/organization/pre-submission/:organization" component={OrgPersonalProject} />
+				<OrganizationDashboardRoute path="/organization/pre-submission-overview/:organization/:project" component={PreSubmissionOverview} />
 				<OrganizationDashboardRoute path="/organization/rolecontrol/:organization" component={RoleControl} />
+
 
 				<ProfileDashboardRoute exact path="/profile/organization/add/" component={NewOrganization}/>
 

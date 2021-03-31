@@ -24,7 +24,7 @@ import AuthorInput from "./components/AuthorInput";
 import LinkInput from "./components/LinkInput";
 import { QuestionCircleOutlined, UploadOutlined } from "@ant-design/icons";
 
-// TODO - refactor. A lot of code duplicated from NewProject.js?
+// TODO - refactor. A lot of code duplicated from NewOrgProject.js?
 function SubmitProject(props) {
 	// Form state
 	const [projectName, setProjectName] = React.useState("");
