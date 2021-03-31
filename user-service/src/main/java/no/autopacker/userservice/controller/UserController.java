@@ -28,13 +28,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping(value = "api/auth")
 @CrossOrigin(origins = "*")
-public class RESTController {
+public class UserController {
 
     private final UserService userService;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public RESTController(UserService userService,
+    public UserController(UserService userService,
                           ObjectMapper objectMapper) {
         this.userService = userService;
         this.objectMapper = objectMapper;

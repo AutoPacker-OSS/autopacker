@@ -28,4 +28,19 @@ public class AppConfig {
     @Value("${api.client-password}")
     private String apiClientPassword;
 
+    @Value("${api.fdapi-url}")
+    private String fdapiUrl;
+
+    public String getRootUrl() {
+        return apiRootUrl;
+    }
+
+    public String getApplicationUrl() {
+        return serviceUrl;
+    }
+
+    public String getFileDeliveryAPIApplicationUrl() {
+        return fdapiUrl;
+    }
+
 }

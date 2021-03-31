@@ -1,6 +1,6 @@
-package no.autopacker.servermanager.repository;
+package no.autopacker.userservice.repository;
 
-import no.autopacker.servermanager.entity.Server;
+import no.autopacker.userservice.entity.Server;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

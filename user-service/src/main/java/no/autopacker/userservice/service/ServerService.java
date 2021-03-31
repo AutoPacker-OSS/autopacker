@@ -1,18 +1,19 @@
-package no.autopacker.servermanager.service;
+package no.autopacker.userservice.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
-import no.autopacker.servermanager.entity.Server;
-import no.autopacker.servermanager.repository.ServerRepository;
+
+import no.autopacker.userservice.entity.Server;
+import no.autopacker.userservice.repository.ServerRepository;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Contains the main logic for handling server related features
@@ -26,7 +27,7 @@ public class ServerService {
 
     @Autowired
     public ServerService(ServerRepository serverRepository, RemoteScriptExec remoteScriptExec,
-        ObjectMapper objectMapper) {
+                         ObjectMapper objectMapper) {
         this.serverRepository = serverRepository;
         this.remoteScriptExec = remoteScriptExec;
         this.objectMapper = objectMapper;

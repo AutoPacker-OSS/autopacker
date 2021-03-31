@@ -1,4 +1,4 @@
-package no.autopacker.servermanager.entity;
+package no.autopacker.userservice.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

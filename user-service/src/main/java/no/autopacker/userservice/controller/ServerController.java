@@ -1,10 +1,11 @@
-package no.autopacker.servermanager.controller;
+package no.autopacker.userservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.autopacker.servermanager.entity.Server;
-import no.autopacker.servermanager.repository.ServerRepository;
-import no.autopacker.servermanager.service.RemoteScriptExec;
-import no.autopacker.servermanager.service.ServerService;
+
+import no.autopacker.userservice.entity.Server;
+import no.autopacker.userservice.repository.ServerRepository;
+import no.autopacker.userservice.service.RemoteScriptExec;
+import no.autopacker.userservice.service.ServerService;
 import org.json.JSONObject;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = "api/server")
-public class RESTController {
+public class ServerController {
 
     private final ServerService serverService;
     private final RemoteScriptExec remoteScriptExec;
@@ -34,8 +34,8 @@ public class RESTController {
     private ObjectMapper objectMapper;
 
     @Autowired
-    public RESTController(ServerService serverService, ServerRepository serverRepository,
-        RemoteScriptExec remoteScriptExec) {
+    public ServerController(ServerService serverService, ServerRepository serverRepository,
+                            RemoteScriptExec remoteScriptExec) {
         this.serverService = serverService;
         this.serverRepository = serverRepository;
         this.remoteScriptExec = remoteScriptExec;

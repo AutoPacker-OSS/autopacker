@@ -1,4 +1,4 @@
-package no.autopacker.servermanager.service;
+package no.autopacker.userservice.service;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
@@ -11,9 +11,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import lombok.NoArgsConstructor;
-import no.autopacker.servermanager.config.AppConfig;
-import no.autopacker.servermanager.entity.Server;
+
+import no.autopacker.userservice.config.AppConfig;
+import no.autopacker.userservice.entity.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
