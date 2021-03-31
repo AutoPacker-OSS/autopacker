@@ -12,8 +12,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import no.autopacker.api.domain.ModuleMeta;
-import no.autopacker.api.domain.ProjectMeta;
+import no.autopacker.api.entity.fdapi.ModuleMeta;
+import no.autopacker.api.entity.fdapi.ProjectMeta;
 import no.autopacker.api.repository.fdapi.ModuleRepository;
 import no.autopacker.api.repository.fdapi.MongoDb;
 import no.autopacker.api.repository.fdapi.ProjectRepository;
@@ -68,7 +68,7 @@ public class ModuleController {
         @RequestParam("config-params") String configParamsJson,
         @RequestParam("module-file") List<MultipartFile> moduleFiles) {
         ResponseEntity response;
-        ProjectMeta project = projectRepo.findByOwnerAndName(username, projectName);
+        ProjectMeta project = projectRepo.findByOwnerAndProjectName(username, projectName);
         KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
             .getContext().getAuthentication().getPrincipal();
 
@@ -266,7 +266,7 @@ public class ModuleController {
                 .getContext().getAuthentication().getPrincipal();
         if (authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername().equalsIgnoreCase(username)) {
 
-            ProjectMeta project = this.projectRepo.findByOwnerAndName(username, projectName);
+            ProjectMeta project = this.projectRepo.findByOwnerAndProjectName(username, projectName);
             if (project != null) {
                 // Check if module by given name already exists
                 if (moduleRepo.countByProjectIdAndName(project.getId(), moduleName) == 0) {
@@ -331,7 +331,7 @@ public class ModuleController {
     public ResponseEntity deleteProjectModule(@PathVariable("username") String username,
         @PathVariable("project") String projectName,
         @PathVariable("module") String moduleName) {
-        ProjectMeta pm = projectRepo.findByOwnerAndName(username, projectName);
+        ProjectMeta pm = projectRepo.findByOwnerAndProjectName(username, projectName);
         KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
             .getContext().getAuthentication().getPrincipal();
         ResponseEntity response;

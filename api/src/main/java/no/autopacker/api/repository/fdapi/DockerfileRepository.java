@@ -1,6 +1,6 @@
 package no.autopacker.api.repository.fdapi;
 
-import no.autopacker.api.domain.Dockerfile;
+import no.autopacker.api.entity.fdapi.Dockerfile;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

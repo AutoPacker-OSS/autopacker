@@ -1,6 +1,6 @@
 package no.autopacker.api.repository.fdapi;
 
-import no.autopacker.api.domain.ProjectMeta;
+import no.autopacker.api.entity.fdapi.ProjectMeta;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ProjectRepository extends CrudRepository<ProjectMeta, Long> {
-    ProjectMeta findByOwnerAndName(String owner, String name);
+    ProjectMeta findByOwnerAndProjectName(String owner, String name);
 
     List<ProjectMeta> findAllByOwner(String owner);
 

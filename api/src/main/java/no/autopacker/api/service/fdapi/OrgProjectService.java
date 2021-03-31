@@ -1,6 +1,6 @@
 package no.autopacker.api.service.fdapi;
 
-import no.autopacker.api.domain.OrgProjectMeta;
+import no.autopacker.api.entity.fdapi.OrgProjectMeta;
 import no.autopacker.api.repository.fdapi.OrgProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

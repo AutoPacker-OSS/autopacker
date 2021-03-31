@@ -1,4 +1,4 @@
-package no.autopacker.api.domain;
+package no.autopacker.api.entity.fdapi;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

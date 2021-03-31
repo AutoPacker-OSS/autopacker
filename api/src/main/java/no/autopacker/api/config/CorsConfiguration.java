@@ -13,7 +13,6 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 public class CorsConfiguration {
 
-    // TODO Check this bean, fix this etc etc.
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {
         final org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();

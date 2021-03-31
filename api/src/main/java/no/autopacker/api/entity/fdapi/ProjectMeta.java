@@ -1,4 +1,4 @@
-package no.autopacker.api.domain;
+package no.autopacker.api.entity.fdapi;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +11,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -23,8 +24,8 @@ public class ProjectMeta {
 	private long id;
 	private String image;
 	@NotNull
-	private String name;
-	private String description;
+	private String projectName;
+	private String desc;
 	private Date lastUpdated = new Date();
 	// TODO Maybe use another data type for tags?
 	private String tags;
@@ -33,7 +34,7 @@ public class ProjectMeta {
     @Column(columnDefinition = "TINYINT(1) NOT NULL DEFAULT 0")
 	private boolean isPrivate;
 	@OneToMany(mappedBy = "project")
-	private Set<ModuleMeta> modules = new HashSet<>();
+	private List<ModuleMeta> modules;
 
 	// Administrative meta
     @NotNull
@@ -45,14 +46,14 @@ public class ProjectMeta {
 	 * Minimum argument constructor
 	 */
 	public ProjectMeta(String name, String owner, String location, boolean isPrivate) {
-		this.name = name;
+		this.projectName = name;
 		this.owner = owner;
 		this.location = location;
 		this.isPrivate = isPrivate;
 	}
 
 	public ProjectMeta(JSONObject json) throws JSONException {
-		this.name = json.getString("projectName");
+		this.projectName = json.getString("projectName");
 		this.isPrivate = json.getBoolean("isPrivate");
 		// Conditionally set values
 		// Image (TODO Need to create a better setup for image shitty)
@@ -63,9 +64,9 @@ public class ProjectMeta {
 		}
 		// Description
 		if (json.has("desc")) {
-			this.description = json.getString("desc");
+			this.desc = json.getString("desc");
 		} else {
-			this.description = "";
+			this.desc = "";
 		}
 		// Tags
 		if (json.has("tags")) {

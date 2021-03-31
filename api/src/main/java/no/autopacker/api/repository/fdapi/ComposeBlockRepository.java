@@ -1,6 +1,6 @@
 package no.autopacker.api.repository.fdapi;
 
-import no.autopacker.api.domain.ComposeBlock;
+import no.autopacker.api.entity.fdapi.ComposeBlock;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

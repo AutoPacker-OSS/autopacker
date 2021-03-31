@@ -1,9 +1,9 @@
 package no.autopacker.api.service.fdapi;
 
 import no.autopacker.api.config.DockerConfig;
-import no.autopacker.api.domain.ComposeBlock;
-import no.autopacker.api.domain.Dockerfile;
-import no.autopacker.api.domain.ModuleMeta;
+import no.autopacker.api.entity.fdapi.ComposeBlock;
+import no.autopacker.api.entity.fdapi.Dockerfile;
+import no.autopacker.api.entity.fdapi.ModuleMeta;
 import no.autopacker.api.repository.fdapi.ComposeBlockRepository;
 import no.autopacker.api.repository.fdapi.DockerfileRepository;
 import no.autopacker.api.utils.fdapi.Utils;

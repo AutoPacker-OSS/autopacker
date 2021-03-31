@@ -1,6 +1,6 @@
 package no.autopacker.api.controller.fdapi;
 
-import no.autopacker.api.domain.OrgProjectMeta;
+import no.autopacker.api.entity.fdapi.OrgProjectMeta;
 import no.autopacker.api.repository.fdapi.OrgProjectRepository;
 import no.autopacker.api.service.fdapi.OrgProjectService;
 import org.json.JSONException;

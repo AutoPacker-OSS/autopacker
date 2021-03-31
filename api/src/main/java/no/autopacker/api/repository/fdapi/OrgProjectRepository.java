@@ -1,6 +1,6 @@
 package no.autopacker.api.repository.fdapi;
 
-import no.autopacker.api.domain.OrgProjectMeta;
+import no.autopacker.api.entity.fdapi.OrgProjectMeta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,17 +1,17 @@
-package no.autopacker.api.domain;
+package no.autopacker.api.entity.fdapi;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "dockerfiles")
-public class Dockerfile {
+@Entity(name = "compose_blocks")
+public class ComposeBlock {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -19,7 +19,7 @@ public class Dockerfile {
     private String name;
     private String location;
 
-    public Dockerfile(String name, String location) {
+    public ComposeBlock(String name, String location) {
         this.name = name;
         this.location = location;
     }

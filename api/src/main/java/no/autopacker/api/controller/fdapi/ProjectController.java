@@ -2,8 +2,8 @@ package no.autopacker.api.controller.fdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.autopacker.api.domain.ModuleMeta;
-import no.autopacker.api.domain.ProjectMeta;
+import no.autopacker.api.entity.fdapi.ModuleMeta;
+import no.autopacker.api.entity.fdapi.ProjectMeta;
 import no.autopacker.api.repository.fdapi.ModuleRepository;
 import no.autopacker.api.repository.fdapi.MongoDb;
 import no.autopacker.api.repository.fdapi.ProjectRepository;
@@ -59,7 +59,7 @@ public class ProjectController {
 
         KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
                 .getContext().getAuthentication().getPrincipal();
-        ProjectMeta pm = projectRepo.findByOwnerAndName(username, projectName);
+        ProjectMeta pm = projectRepo.findByOwnerAndProjectName(username, projectName);
 
         if (pm != null) {
             pm.setModules(moduleRepo.findAllByProjectId(pm.getId()));
@@ -111,7 +111,7 @@ public class ProjectController {
      * @return Status forbidden if project created under another username, status bad request if json is
      * malformed, status ok if the project was created or status unauthorized if user is not
      * logged in.
-     * @see no.autopacker.api.domain.ProjectMeta
+     * @see ProjectMeta
      */
     @RequestMapping(value = "/projects", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity createProject(@RequestBody String jsonString) {
@@ -129,16 +129,16 @@ public class ProjectController {
 
                 // Checks if the project has a valid name
                 Pattern pattern = Pattern.compile("[\\w-]*");
-                Matcher matcher = pattern.matcher(pm.getName());
+                Matcher matcher = pattern.matcher(pm.getProjectName());
 
                 if (matcher.matches()) {
                     // Check if userspace exists or create one, then assign a file directory (that hasn't been created yet)
                     Utils.instance().validateUserWorkspace(pm.getOwner());
-                    String projectPath = Utils.instance().getUserProjectDir(pm.getOwner(), pm.getName());
+                    String projectPath = Utils.instance().getUserProjectDir(pm.getOwner(), pm.getProjectName());
                     File projectFolder = new File(projectPath);
 
                     if (projectFolder.exists() ||
-                            projectRepo.findByOwnerAndName(pm.getOwner(), pm.getName()) != null) {
+                            projectRepo.findByOwnerAndProjectName(pm.getOwner(), pm.getProjectName()) != null) {
                         response = ResponseEntity.status(HttpStatus.CONFLICT).body("Project already exists.");
                     } else {
                         if (projectFolder.mkdir()) {
@@ -186,7 +186,7 @@ public class ProjectController {
         if (authenticatedUser != null) {
             if (authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername().equals(username) ||
                     authenticatedUser.getKeycloakSecurityContext().getToken().getResourceAccess("file-delivery-api").isUserInRole("ADMIN")) {
-                ProjectMeta pm = projectRepo.findByOwnerAndName(username, projectName);
+                ProjectMeta pm = projectRepo.findByOwnerAndProjectName(username, projectName);
 
                 if (pm != null) {
                     pm.setModules(moduleRepo.findAllByProjectId(pm.getId()));
@@ -415,7 +415,7 @@ public class ProjectController {
     public ResponseEntity getProjectDockerCompose(@PathVariable("username") String username,
                                                   @PathVariable("project-name") String projectName) throws Exception {
         ResponseEntity response;
-        ProjectMeta project = projectRepo.findByOwnerAndName(username, projectName);
+        ProjectMeta project = projectRepo.findByOwnerAndProjectName(username, projectName);
 
         if (project != null) {
             if (!project.isPrivate()) {

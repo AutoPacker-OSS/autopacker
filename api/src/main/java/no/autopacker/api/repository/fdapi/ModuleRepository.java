@@ -1,19 +1,20 @@
 package no.autopacker.api.repository.fdapi;
 
-import no.autopacker.api.domain.ModuleMeta;
+import no.autopacker.api.entity.fdapi.ModuleMeta;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
 public interface ModuleRepository extends CrudRepository<ModuleMeta, Long> {
-    Set<ModuleMeta> findAllByProjectId(long id);
+    List<ModuleMeta> findAllByProjectId(long id);
 
     @Query(value = "SELECT m.* FROM modules m JOIN projects p ON m.project_id = p.id WHERE p.owner = ?1 AND p.name = ?2",
             nativeQuery = true)
-    Set<ModuleMeta> findForProject(String projectOwner, String projectName);
+    List<ModuleMeta> findForProject(String projectOwner, String projectName);
 
     @Query(value = "SELECT m.* FROM modules m JOIN projects p ON m.project_id = p.id WHERE p.owner = ?1 AND p.name = ?2 AND m.name = ?3",
             nativeQuery = true)

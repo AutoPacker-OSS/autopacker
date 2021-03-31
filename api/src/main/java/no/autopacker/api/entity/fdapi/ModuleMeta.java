@@ -1,5 +1,6 @@
-package no.autopacker.api.domain;
+package no.autopacker.api.entity.fdapi;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ public class ModuleMeta {
     private long id;
     @NotNull
     private String name;
-    private String description;
+    private String desc;
     private String image;
     private int port;
     private String framework;
@@ -29,8 +30,9 @@ public class ModuleMeta {
     private String configType;
     @Column(unique = true)
     private String location;
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
+    @JoinColumn(name = "project_id")
     private ProjectMeta project;
 
     public ModuleMeta(String name, int port, String language, String version, String configType, String location) {
