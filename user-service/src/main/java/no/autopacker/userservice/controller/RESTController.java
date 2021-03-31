@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Controls all REST endpoints
@@ -148,4 +149,15 @@ public class RESTController {
         }
     }
 
+    @PostMapping(value = "/upload")
+    public ResponseEntity<String> uploadProfileImage(HttpEntity<String> httpEntity) {
+        // Get request body
+        String body = httpEntity.getBody();
+        if (body != null) {
+            JSONObject jsonObject = new JSONObject(body);
+            return this.userService.uploadProfileImage(jsonObject.getString("image"));
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

@@ -33,6 +33,8 @@ public class User {
     @ValidEmail
     private String email;
 
+    private String image;
+
     /**
      * Constructor for objects of type User
      *
@@ -44,4 +46,15 @@ public class User {
         this.email = email;
     }
 
+    /**
+     * Constructor for objects of type User
+     *
+     * @param username the users' username
+     * @param email    the users' email
+     * @param image    the users' profile image
+     */
+    public User(String username, String email, String image) {
+        this.username = username;
+        this.email = email;
+    }
 }

@@ -3,9 +3,12 @@ package no.autopacker.userservice.service;
 import no.autopacker.userservice.entity.User;
 import no.autopacker.userservice.repository.UserRepository;
 import no.autopacker.userservice.userinterface.UserService;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -180,5 +183,23 @@ public class UserServiceImpl implements UserService {
         Pattern pattern = Pattern.compile(VALID_PATTERN);
         Matcher matcher = pattern.matcher(password);
         return matcher.matches();
+    }
+
+    /**
+     * Uploads a profile image to the user entity
+     */
+    @Override
+    public ResponseEntity<String> uploadProfileImage(String base64File) {
+        KeycloakPrincipal<RefreshableKeycloakSecurityContext> principal = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
+                .getContext().getAuthentication().getPrincipal();
+
+        User foundUser = this.userRepository.findByUsername(principal.getKeycloakSecurityContext().getToken().getPreferredUsername());
+        if (foundUser != null) {
+            foundUser.setImage(base64File);
+            this.userRepository.save(foundUser);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
