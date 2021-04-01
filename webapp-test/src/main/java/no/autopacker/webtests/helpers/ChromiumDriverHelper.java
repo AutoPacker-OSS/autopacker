@@ -77,7 +77,7 @@ public class ChromiumDriverHelper {
             case Linux:
                 return basePath + "linux" + File.separatorChar + "chromedriver";
             case MacOS:
-                return basePath + "macos" + File.separatorChar + "/chromedriver";
+                return basePath + "macos" + File.separatorChar + "chromedriver";
             default:
                 return null;
         }

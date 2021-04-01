@@ -4,8 +4,8 @@
 # Save this file as application.yml in the resources folder, set the necessary values
 
 # Credentials for AutoPacker user to use for SignIn
-username: testusername
-password: testpassword
+username: user
+password: user
 
 # Base URL of the web-app
 url: http://localhost:3000

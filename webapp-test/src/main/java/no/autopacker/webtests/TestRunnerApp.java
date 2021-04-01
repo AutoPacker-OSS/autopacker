@@ -18,7 +18,7 @@ public class TestRunnerApp {
         TestConfig config = readConfigFile();
         runner = new TestRunner(config);
         if (!runner.openMainPage()) quitTests();
-        if (runner.signIn("user", "user")) quitTests();
+        if (runner.signIn("wronguser", "wrongpassword")) quitTests();
         if (!runner.openMainPage()) quitTests();
         if (!runner.signIn(config.getUsername(), config.getPassword())) quitTests();
         if (!runner.goToDashboard()) quitTests();
@@ -49,7 +49,7 @@ public class TestRunnerApp {
      * @return TestConfig object with the configuration or null on error
      */
     private static TestConfig readConfigFile() {
-        InputStream configFileStream = TestRunner.class.getClassLoader().getResourceAsStream("application-template.yml");
+        InputStream configFileStream = TestRunner.class.getClassLoader().getResourceAsStream("application.yml");
         if (configFileStream == null) {
             throw new InvalidArgumentException("application.yml resource file not found!");
         }
