@@ -35,8 +35,6 @@ public class DefaultUserImport implements CommandLineRunner {
             user = new User(username, fakeEmail);
             user.setId(username + ".fake");
             userRepository.save(user);
-        } else {
-            System.out.println("Tried to add user " + username + ", but it existed already, skipping...");
         }
     }
 }
