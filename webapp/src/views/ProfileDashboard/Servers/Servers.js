@@ -104,7 +104,7 @@ function Servers() {
 					onChange={(e) => setSearch(e.target.value)}
 				/>
 				<Button style={{ width: "17%" }} type="primary">
-					<Link to="/profile/servers/add">New Server</Link>
+					<Link id="new-server-link" to="/profile/servers/add">New Server</Link>
 				</Button>
 				<Row style={{ marginTop: 20 }} gutter={[24, 24]}>
 					{servers.map((server) => (

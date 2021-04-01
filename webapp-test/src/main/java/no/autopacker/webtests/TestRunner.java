@@ -121,7 +121,7 @@ public class TestRunner {
 
     /**
      * Checks if breadcrumb menu has correct links
-     * Assumes that we start in Your Projects page. Finishes test in Your Project page.
+     * Assumes that we start in Your Projects page. Finishes in Your Project page.
      *
      * @return True on success, false on failure
      */
@@ -129,6 +129,11 @@ public class TestRunner {
         if (driver == null) throw new IllegalStateException(WEBDRIVER_INIT_ERROR);
 
         boolean linksOK = true;
+
+        // If no projects exist, create one
+        if (!haveProjects()) {
+            createNewProject("StaticProj", "This project is needed for testing", new String[]{});
+        }
 
         // Check links in project overview page first
         if (goToFirstProjectOverview()) {
@@ -147,6 +152,11 @@ public class TestRunner {
         }
 
         goToYourServers();
+        if (!haveServers()) {
+            createNewServer("StaticServer", "This server is needed for testing",
+                    "10.11.12.13", "igarj");
+        }
+
         if (goToFirstServerOverview()) {
             linksOK = checkBreadcrumbLinks() && linksOK;
             if (linksOK) {
@@ -164,6 +174,16 @@ public class TestRunner {
 
         goToYourProjects();
         return linksOK;
+    }
+
+    /**
+     * Check if the user currently has any projects
+     * Assumes that we start in Your Projects page. Finishes test in Your Project page.
+     *
+     * @return True if the user has at least one project visible, false otherwise
+     */
+    private boolean haveProjects() {
+        return !driver.findElements(By.cssSelector(".project-card")).isEmpty();
     }
 
     /**
@@ -280,7 +300,7 @@ public class TestRunner {
         logger.info("Attempting logout...");
         WebElement userDropdownMenu = driver.findElement(By.xpath(USER_DROPDOWN_MENU_XPATH));
         if (userDropdownMenu != null) {
-          
+
             moveMouseOver(userDropdownMenu);
             Thread.sleep(500);
             driver.findElement(By.xpath("//*[@id=\"logout\"]")).click();
@@ -322,7 +342,7 @@ public class TestRunner {
     private boolean createNewProject(String name, String description, String[] tags) throws InterruptedException {
         logger.info("Create a new project");
         if (!clickOnElement("#new-project-link")) return false;
-        if (!clickAndEnterText("#name", name)) return false;
+        if (!clickAndEnterText("#projectName", name)) return false;
         if (!clickAndEnterText("#project-description", description)) return false;
         final String TAG_SELECTOR = "#project-tags";
         if (checkElementCount(TAG_SELECTOR) != 1) return false;
@@ -391,7 +411,7 @@ public class TestRunner {
      */
     private boolean deleteProject() throws InterruptedException {
         logger.info("Deleting project...");
-        if (!clickOnElement(".ant-btn")) return false;
+        if (!clickOnElement("#delete-project-button")) return false;
         Thread.sleep(500);
         if (!clickAndEnterText(".ant-input:nth-child(3)", "delete")) return false;
         if (!clickOnElement(".ant-btn:nth-child(2)")) return false;
@@ -410,6 +430,39 @@ public class TestRunner {
         if (!clickOnElement(".server-card")) {
             return false;
         }
+        Thread.sleep(1000);
+        return true;
+    }
+
+    /**
+     * Check if the user currently has any servers
+     * Assumes that we start in Your Servers page. Finishes in Your Servers page.
+     *
+     * @return True if the user has at least one server visible, false otherwise
+     */
+    private boolean haveServers() {
+        return !driver.findElements(By.cssSelector(".server-card")).isEmpty();
+    }
+
+    /**
+     * Creates a new server. Assumes that we are on Your Servers page.
+     *
+     * @param title       Server title
+     * @param description Server description
+     * @param ipAddress   IP address
+     * @param username    Username
+     * @return True on success, false on failure.
+     * @throws InterruptedException When thread-sleep interrupted
+     */
+    private boolean createNewServer(String title, String description, String ipAddress, String username) throws InterruptedException {
+        logger.info("Create a new server");
+        if (!clickOnElement("#new-server-link")) return false;
+        if (!clickAndEnterText("#serverTitle", title)) return false;
+        if (!clickAndEnterText("#server-description", description)) return false;
+        if (!clickAndEnterText("#ipAddress", ipAddress)) return false;
+        if (!clickAndEnterText("#username", username)) return false;
+        if (!clickOnElement("#create-server-btn")) return false;
+
         Thread.sleep(1000);
         return true;
     }

@@ -204,7 +204,7 @@ function NewServer() {
 						label="Server Description"
 						style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}
 					>
-						<TextArea onChange={(e) => setDesc(e.target.value)} />
+						<TextArea id="server-description" onChange={(e) => setDesc(e.target.value)} />
 					</Form.Item>
 					<Form.Item
 						name="ipAddress"
@@ -304,6 +304,7 @@ function NewServer() {
 							</div>
 						) : (
 							<Button
+								id="create-server-btn"
 								disabled={
 									!validName || !validIp || username.length <= 0
 									// || !radioChecked

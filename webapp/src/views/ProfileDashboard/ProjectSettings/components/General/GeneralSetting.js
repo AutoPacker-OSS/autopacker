@@ -84,6 +84,7 @@ function GeneralSetting(props) {
 			</Text>
 			<br />
 			<Button
+				id="delete-project-button"
 				style={{ marginTop: 10 }}
 				type="danger"
 				onClick={() => {
