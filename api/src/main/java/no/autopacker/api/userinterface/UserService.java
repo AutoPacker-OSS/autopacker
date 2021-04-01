@@ -30,4 +30,9 @@ public interface UserService {
 
     ResponseEntity<String> uploadProfileImage(String base64File);
 
+    /**
+     * Return the current user or null if the user has not logged in
+     * @return
+     */
+    User getAuthenticatedUser();
 }

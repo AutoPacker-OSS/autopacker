@@ -190,10 +190,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ResponseEntity<String> uploadProfileImage(String base64File) {
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> principal = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
-
-        User foundUser = this.userRepository.findByUsername(principal.getKeycloakSecurityContext().getToken().getPreferredUsername());
+        User foundUser = getAuthenticatedUser();
         if (foundUser != null) {
             foundUser.setImage(base64File);
             this.userRepository.save(foundUser);
@@ -201,5 +198,20 @@ public class UserServiceImpl implements UserService {
         } else {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @Override
+    public User getAuthenticatedUser() {
+        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser =
+                (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
+                .getContext().getAuthentication().getPrincipal();
+        User user = null;
+        if (authenticatedUser != null) {
+            String username = authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername();
+            if (username != null) {
+                user = this.userRepository.findByUsername(username);
+            }
+        }
+        return user;
     }
 }

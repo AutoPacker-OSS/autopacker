@@ -19,7 +19,6 @@ public class OrganizationDBInit implements CommandLineRunner {
     private final ProjectApplicationRepository projectApplicationRepository;
     private final MemberApplicationRepository memberApplicationRepository;
     private final OrganizationRepository organizationRepository;
-    private final AuthorityRepository authorityRepository;
     private final OrganizationProjectRepository projectRepository;
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
@@ -28,14 +27,12 @@ public class OrganizationDBInit implements CommandLineRunner {
     public OrganizationDBInit(ProjectApplicationRepository projectApplicationRepository,
                               MemberApplicationRepository memberApplicationRepository,
                               OrganizationRepository organizationRepository,
-                              AuthorityRepository authorityRepository,
                               OrganizationProjectRepository projectRepository,
                               MemberRepository memberRepository,
                               RoleRepository roleRepository) {
         this.projectApplicationRepository = projectApplicationRepository;
         this.memberApplicationRepository = memberApplicationRepository;
         this.organizationRepository = organizationRepository;
-        this.authorityRepository = authorityRepository;
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
         this.roleRepository = roleRepository;
@@ -52,7 +49,6 @@ public class OrganizationDBInit implements CommandLineRunner {
         this.projectApplicationRepository.deleteAll();
         this.memberApplicationRepository.deleteAll();
         this.projectRepository.deleteAll();
-        this.authorityRepository.deleteAll();
         this.memberRepository.deleteAll();
         this.roleRepository.deleteAll();
         this.organizationRepository.deleteAll();

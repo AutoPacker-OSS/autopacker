@@ -12,24 +12,25 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+import no.autopacker.api.entity.User;
 import no.autopacker.api.entity.fdapi.Module;
 import no.autopacker.api.entity.fdapi.Project;
 import no.autopacker.api.repository.fdapi.ModuleRepository;
 import no.autopacker.api.repository.fdapi.MongoDb;
 import no.autopacker.api.repository.fdapi.ProjectRepository;
 import no.autopacker.api.service.fdapi.DockerService;
+import no.autopacker.api.userinterface.UserService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import static no.autopacker.api.security.AuthConstants.ROLE_ADMIN;
 
 @RestController
 public class ModuleController {
@@ -38,14 +39,16 @@ public class ModuleController {
     private final ModuleRepository moduleRepo;
     private final DockerService dockerService;
     private final MongoDb mongo;
+    private final UserService userService;
 
     @Autowired
     public ModuleController(ProjectRepository projectRepo, ModuleRepository moduleRepo,
-        DockerService dockerService, MongoDb mongo) {
+        DockerService dockerService, MongoDb mongo, UserService userService) {
         this.projectRepo = projectRepo;
         this.moduleRepo = moduleRepo;
         this.dockerService = dockerService;
         this.mongo = mongo;
+        this.userService = userService;
     }
 
     /**
@@ -69,13 +72,12 @@ public class ModuleController {
         @RequestParam("module-file") List<MultipartFile> moduleFiles) {
         ResponseEntity response;
         Project project = projectRepo.findByOwnerAndName(username, projectName);
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-            .getContext().getAuthentication().getPrincipal();
+        User authenticatedUser = userService.getAuthenticatedUser();
 
+        // TODO - this method is too long and involves too many levels of detail, split it (extract a FileService?)
         if (authenticatedUser != null) {
-            if (authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername()
-                .equalsIgnoreCase(username) || authenticatedUser.getKeycloakSecurityContext()
-                .getToken().getResourceAccess("file-delivery-api").isUserInRole("ADMIN")) {
+            // User has access to it's own projects. Admin has access to all projects
+            if (authenticatedUser.getUsername().equalsIgnoreCase(username) || authenticatedUser.hasSystemRole(ROLE_ADMIN)) {
                 if (project != null) {
                     if (moduleRepo.countByProjectIdAndName(project.getId(), moduleName) == 0) {
                         // Checks if the project has a valid name
@@ -262,10 +264,8 @@ public class ModuleController {
                                                             @RequestParam("config-type") String configType,
                                                             @RequestParam("server-version") String serverVersion,
                                                             @RequestParam("config-params") String configParamsJson) {
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
-        if (authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername().equalsIgnoreCase(username)) {
-
+        User authenticatedUser = userService.getAuthenticatedUser();
+        if (authenticatedUser != null && authenticatedUser.getUsername().equalsIgnoreCase(username)) {
             Project project = this.projectRepo.findByOwnerAndName(username, projectName);
             if (project != null) {
                 // Check if module by given name already exists
@@ -332,14 +332,10 @@ public class ModuleController {
         @PathVariable("project") String projectName,
         @PathVariable("module") String moduleName) {
         Project pm = projectRepo.findByOwnerAndName(username, projectName);
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-            .getContext().getAuthentication().getPrincipal();
         ResponseEntity response;
-
+        User authenticatedUser = userService.getAuthenticatedUser();
         if (authenticatedUser != null) {
-            if (authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername()
-                .equalsIgnoreCase(username) || authenticatedUser.getKeycloakSecurityContext()
-                .getToken().getResourceAccess("file-delivery-api").isUserInRole("ADMIN")) {
+            if (authenticatedUser.getUsername().equalsIgnoreCase(username) || authenticatedUser.hasSystemRole(ROLE_ADMIN)) {
                 if (pm != null) {
                     Module module = moduleRepo.findByProjectIdAndName(pm.getId(), moduleName);
                     if (module != null) {

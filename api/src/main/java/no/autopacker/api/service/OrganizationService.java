@@ -16,7 +16,6 @@ public class OrganizationService {
     private final ProjectApplicationRepository projectApplicationRepository;
     private final MemberApplicationRepository memberApplicationRepository;
     private final OrganizationRepository organizationRepository;
-    private final AuthorityRepository authorityRepository;
     private final OrganizationProjectRepository projectRepository;
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
@@ -26,7 +25,6 @@ public class OrganizationService {
     public OrganizationService(ProjectApplicationRepository projectApplicationRepository,
                                MemberApplicationRepository memberApplicationRepository,
                                OrganizationRepository organizationRepository,
-                               AuthorityRepository authorityRepository,
                                OrganizationProjectRepository projectRepository,
                                MemberRepository memberRepository,
                                RoleRepository roleRepository,
@@ -34,7 +32,6 @@ public class OrganizationService {
         this.projectApplicationRepository = projectApplicationRepository;
         this.memberApplicationRepository = memberApplicationRepository;
         this.organizationRepository = organizationRepository;
-        this.authorityRepository = authorityRepository;
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
         this.roleRepository = roleRepository;
