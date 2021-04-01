@@ -5,6 +5,7 @@ import no.autopacker.api.repository.organization.*;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import java.util.Arrays;
  * This class is only meant for manual testing and displaying dummy data
  */
 @Service
+@Order(value = 2)
 public class OrganizationDBInit implements CommandLineRunner {
 
     // Organization Repositories
