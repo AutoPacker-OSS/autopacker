@@ -1,7 +1,8 @@
-FROM maven:3-jdk-11
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-RUN apt-get -y update && apt-get install -y google-chrome-stable
+FROM markhobson/maven-chrome:jdk-11
+#FROM maven:3-jdk-11
+#RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+#RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+#RUN apt-get -y update && apt-get install -y google-chrome-stable
 
 # install chromedriver
 #RUN apt-get install -yqq unzip
@@ -12,7 +13,7 @@ RUN apt-get -y update && apt-get install -y google-chrome-stable
 #
 
 # Cleanup
-RUN rm -rf /var/lib/apt/lists/*
+#RUN rm -rf /var/lib/apt/lists/*
 
 #
 ## Add Chrome as a user
@@ -24,14 +25,17 @@ RUN rm -rf /var/lib/apt/lists/*
 #    CHROME_PATH=/usr/lib/chromium/
 #
 
+
+
 COPY . /usr/src/webapptest
 WORKDIR /usr/src/webapptest
+
+RUN cp /usr/bin/chromedriver /usr/src/webapptest/target/classes/chromedriver/linux/
 
 ## RUN mvn clean compile exec:java
 RUN mvn clean compile
 
 #RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/src/webapptest/target/classes/chromedriver/linux
 RUN chmod a+x /usr/src/webapptest/target/classes/chromedriver/linux/chromedriver
-
 
 ENTRYPOINT ["mvn", "exec:java"]
