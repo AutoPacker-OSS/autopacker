@@ -2,17 +2,17 @@ package no.autopacker.api.controller.fdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.autopacker.api.entity.User;
 import no.autopacker.api.entity.fdapi.Module;
 import no.autopacker.api.entity.fdapi.Project;
 import no.autopacker.api.repository.fdapi.ModuleRepository;
 import no.autopacker.api.repository.fdapi.MongoDb;
 import no.autopacker.api.repository.fdapi.ProjectRepository;
 import no.autopacker.api.service.fdapi.BuilderService;
+import no.autopacker.api.userinterface.UserService;
 import no.autopacker.api.utils.fdapi.Utils;
 import org.apache.commons.io.FileUtils;
 import org.bson.Document;
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -28,6 +28,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static no.autopacker.api.security.AuthConstants.ROLE_ADMIN;
+
 @CrossOrigin(origins = "*")
 @RestController
 public class ProjectController {
@@ -36,13 +38,16 @@ public class ProjectController {
     private final BuilderService builderService;
     private final MongoDb mongoDb;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final UserService userService;
 
     @Autowired
-    public ProjectController(ProjectRepository projectRepo, ModuleRepository moduleRepo, BuilderService builderService, MongoDb mongoDb) {
+    public ProjectController(ProjectRepository projectRepo, ModuleRepository moduleRepo, BuilderService builderService,
+                             MongoDb mongoDb, UserService userService) {
         this.projectRepo = projectRepo;
         this.moduleRepo = moduleRepo;
         this.builderService = builderService;
         this.mongoDb = mongoDb;
+        this.userService = userService;
     }
 
     /**
@@ -57,15 +62,15 @@ public class ProjectController {
                                                 @PathVariable("project-name") String projectName) {
         ResponseEntity response = null;
 
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
+        User authenticatedUser = userService.getAuthenticatedUser();
         Project pm = projectRepo.findByOwnerAndName(username, projectName);
 
         if (pm != null) {
             pm.setModules(moduleRepo.findAllByProjectId(pm.getId()));
             if (pm.isPrivate()) {
                 if (authenticatedUser != null) {
-                    if (authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername().equalsIgnoreCase(username) || authenticatedUser.getKeycloakSecurityContext().getToken().getResourceAccess("file-delivery-api").isUserInRole("ADMIN")) {
+                    if (authenticatedUser.getUsername().equalsIgnoreCase(username)
+                            || authenticatedUser.hasSystemRole(ROLE_ADMIN)) {
                         response = ResponseEntity.ok(pm);
                     } else {
                         ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -119,13 +124,11 @@ public class ProjectController {
 
         try {
             JSONObject json = new JSONObject(jsonString);
-
-            KeycloakPrincipal<RefreshableKeycloakSecurityContext> authUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-                    .getContext().getAuthentication().getPrincipal();
+            User authUser = userService.getAuthenticatedUser();
 
             if (authUser != null) {
                 Project pm = new Project(json);
-                pm.setOwner(authUser.getKeycloakSecurityContext().getToken().getPreferredUsername());
+                pm.setOwner(authUser.getUsername());
 
                 // Checks if the project has a valid name
                 Pattern pattern = Pattern.compile("[\\w-]*");
@@ -179,13 +182,12 @@ public class ProjectController {
     @RequestMapping(value = "/projects/{username}/{project}", method = RequestMethod.DELETE)
     public ResponseEntity deleteUserProject(@PathVariable("username") String username,
                                             @PathVariable("project") String projectName) {
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
+        User authenticatedUser = userService.getAuthenticatedUser();
         ResponseEntity response;
 
         if (authenticatedUser != null) {
-            if (authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername().equals(username) ||
-                    authenticatedUser.getKeycloakSecurityContext().getToken().getResourceAccess("file-delivery-api").isUserInRole("ADMIN")) {
+            if (authenticatedUser.getUsername().equalsIgnoreCase(username)
+                    || authenticatedUser.hasSystemRole(ROLE_ADMIN)) {
                 Project pm = projectRepo.findByOwnerAndName(username, projectName);
 
                 if (pm != null) {
@@ -289,8 +291,7 @@ public class ProjectController {
     @GetMapping(value = "/project-overview/{projectId}")
     public ResponseEntity<String> getProjectOverview(@PathVariable("projectId") Long projectId) {
         ResponseEntity response;
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
+        User authenticatedUser = userService.getAuthenticatedUser();
         if (authenticatedUser != null) {
             Optional<Project> op = this.projectRepo.findById(projectId);
             if (op.isPresent()) {
@@ -332,11 +333,9 @@ public class ProjectController {
     @RequestMapping(value = "/projects", method = RequestMethod.GET)
     public ResponseEntity<String> getAllServers() {
         ResponseEntity<String> response;
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
+        User authUser = userService.getAuthenticatedUser();
         if (authUser != null) {
-            String username = authUser.getKeycloakSecurityContext().getToken().getPreferredUsername();
-            List<Project> projects = this.projectRepo.findAllByOwner(username);
+            List<Project> projects = this.projectRepo.findAllByOwner(authUser.getUsername());
             try {
                 return ResponseEntity.ok(this.objectMapper.writeValueAsString(projects));
             } catch (JsonProcessingException e) {
@@ -377,10 +376,9 @@ public class ProjectController {
     @RequestMapping(value = "/projects/all", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity getAllProjects() {
         ResponseEntity response;
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
+        User authenticatedUser = userService.getAuthenticatedUser();
 
-        if (authenticatedUser.getKeycloakSecurityContext().getToken().getResourceAccess("file-delivery-api").isUserInRole("ADMIN")) {
+        if (authenticatedUser.hasSystemRole(ROLE_ADMIN)) {
             response = ResponseEntity.ok(projectRepo.findAll());
         } else {
             response = ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have permissions to view all projects");
@@ -392,11 +390,9 @@ public class ProjectController {
     @RequestMapping(value = "/projects/search/{search}", method = RequestMethod.GET)
     public ResponseEntity<String> searchAllProjects(@PathVariable("search") String search) {
         ResponseEntity response;
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
+        User authenticatedUser = userService.getAuthenticatedUser();
         if (authenticatedUser != null) {
-            String username = authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername();
-            List<Project> projects = this.projectRepo.searchAllForUser(username, search);
+            List<Project> projects = this.projectRepo.searchAllForUser(authenticatedUser.getUsername(), search);
             try {
                 return ResponseEntity.ok(this.objectMapper.writeValueAsString(projects));
             } catch (JsonProcessingException e) {
