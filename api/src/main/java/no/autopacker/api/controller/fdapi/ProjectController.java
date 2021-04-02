@@ -18,7 +18,6 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
@@ -110,7 +109,7 @@ public class ProjectController {
     }
 
     /**
-     * Create a project under your username. Admins can create projects how they want.
+     * Create a project with the authenticated user as the owner. Admins can create projects how they want.
      *
      * @param jsonString A json string containing username, project name and project visibility, see ProjectMeta
      * @return Status forbidden if project created under another username, status bad request if json is
@@ -128,20 +127,21 @@ public class ProjectController {
 
             if (authUser != null) {
                 Project pm = new Project(json);
-                pm.setOwner(authUser.getUsername());
+                pm.setOwner(authUser);
 
                 // Checks if the project has a valid name
                 Pattern pattern = Pattern.compile("[\\w-]*");
                 Matcher matcher = pattern.matcher(pm.getName());
 
                 if (matcher.matches()) {
+                    String username = authUser.getUsername();
                     // Check if userspace exists or create one, then assign a file directory (that hasn't been created yet)
-                    Utils.instance().validateUserWorkspace(pm.getOwner());
-                    String projectPath = Utils.instance().getUserProjectDir(pm.getOwner(), pm.getName());
+                    Utils.instance().validateUserWorkspace(username);
+                    String projectPath = Utils.instance().getUserProjectDir(username, pm.getName());
                     File projectFolder = new File(projectPath);
 
                     if (projectFolder.exists() ||
-                            projectRepo.findByOwnerAndName(pm.getOwner(), pm.getName()) != null) {
+                            projectRepo.findByOwnerAndName(username, pm.getName()) != null) {
                         response = ResponseEntity.status(HttpStatus.CONFLICT).body("Project already exists.");
                     } else {
                         if (projectFolder.mkdir()) {

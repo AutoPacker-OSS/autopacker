@@ -1,6 +1,7 @@
 package no.autopacker.api.repository.fdapi;
 
 import no.autopacker.api.entity.fdapi.Project;
+import no.autopacker.api.entity.organization.Organization;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -33,4 +34,12 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
             nativeQuery = true)
     List<Project> searchAllPublicForUser(String owner, String search);
 
+    @Query(value = "SELECT p.* FROM project p INNER JOIN organization o ON p.organization_id = o.id WHERE o.name = ?1",
+            nativeQuery = true)
+    List<Project> findAllByOrganizationName(String organizationName);
+
+    @Query(value = "SELECT p.* FROM project p INNER JOIN organization o ON p.organization_id = o.id " +
+            "WHERE o.name = ?1 AND LOWER(p.name) LIKE CONCAT('%', ?2, '%')",
+            nativeQuery = true)
+    List<Project> searchAllForOrganization(String organizationName, String projectNameQuery);
 }

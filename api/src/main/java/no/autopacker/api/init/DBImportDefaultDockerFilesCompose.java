@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-@Order(value = 3)
+@Order(value = 1)
 public class DBImportDefaultDockerFilesCompose implements CommandLineRunner {
     private final DockerfileRepository dockerfileRepo;
     private final ComposeBlockRepository composeRepo;

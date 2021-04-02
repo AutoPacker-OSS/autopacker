@@ -32,6 +32,7 @@ function Organizations() {
 	useEffect(
 		() => {
 			// Make sure we have a value (user has entered something in input)
+			// TODO - refactor - copy-paste code in both if-else blocks
 			if (debouncedSearchTerm) {
 				// Fire off our API call
 				axios({

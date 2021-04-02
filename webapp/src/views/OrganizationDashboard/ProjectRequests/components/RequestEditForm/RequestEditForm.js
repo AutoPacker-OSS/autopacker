@@ -7,6 +7,7 @@ import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
+// TODO - this should not be necessary - reuse project editing form
 function RequestEditForm(props) {
 	// Form state
 	const [projectName, setProjectName] = React.useState("");

@@ -188,7 +188,7 @@ public class ModuleController {
                                 }
 
                                 // Build the module (may take some time)
-                                dockerService.buildDockerImage(module, project.getOwner());
+                                dockerService.buildDockerImage(module, project.getOwner().getUsername());
                                 response = ResponseEntity.ok("Module has been added to project!");
                             } catch (Exception e) {
                                 e.printStackTrace();

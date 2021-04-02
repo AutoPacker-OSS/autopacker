@@ -30,9 +30,10 @@ function Members() {
 			},
 		}).then(function (response) {
 			let arr = [];
+			let memberNr = 0;
 			response.data.forEach((member) => {
 				arr.push({
-					key: member.id,
+					key: ++memberNr,
 					username: member.username,
 					role: member.role.name,
 				});

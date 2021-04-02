@@ -3,6 +3,7 @@ package no.autopacker.api.entity.organization;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.autopacker.api.entity.fdapi.Project;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,13 +19,9 @@ public class ProjectApplication {
 
     private String comment;
 
-    @OneToOne(targetEntity = Member.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "member_id")
-    private Member member;
-
-    @OneToOne(targetEntity = OrganizationProject.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "organization_project_id")
-    private OrganizationProject organizationProject;
+    @OneToOne(targetEntity = Project.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "project_id")
+    private Project project;
 
     @JsonIgnore
     @ManyToOne
@@ -36,10 +33,9 @@ public class ProjectApplication {
 
     private boolean isAccepted;
 
-    public ProjectApplication(Member member, OrganizationProject organizationProject, String comment) {
-        this.organization = member.getOrganization();
-        this.member = member;
-        this.organizationProject = organizationProject;
+    public ProjectApplication(Project project, Organization organization, String comment) {
+        this.organization = organization;
+        this.project = project;
         this.comment = comment;
         this.isAccepted = false;
     }

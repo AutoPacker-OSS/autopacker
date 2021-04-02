@@ -1,7 +1,6 @@
 package no.autopacker.api.controller.fdapi;
 
 import no.autopacker.api.repository.fdapi.ModuleRepository;
-import no.autopacker.api.repository.organization.OrganizationProjectRepository;
 import no.autopacker.api.service.fdapi.BuilderService;
 import no.autopacker.api.service.fdapi.DockerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class BuilderController {
 	private final BuilderService builderService;
-	private final OrganizationProjectRepository projectRepo;
-	private final ModuleRepository moduleRepo;
-	private final DockerService dockerService;
 
 	@Autowired
-	public BuilderController(BuilderService builderService, OrganizationProjectRepository projectRepo, ModuleRepository moduleRepo, DockerService dockerService) {
+	public BuilderController(BuilderService builderService, ModuleRepository moduleRepo, DockerService dockerService) {
 		this.builderService = builderService;
-		this.projectRepo = projectRepo;
-		this.moduleRepo = moduleRepo;
-		this.dockerService = dockerService;
 	}
 
 	/**
