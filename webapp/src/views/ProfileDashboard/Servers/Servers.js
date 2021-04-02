@@ -19,10 +19,25 @@ function Servers() {
 
 	const debouncedSearchTerm = useDebounce(search, 500);
 
+	//Button width/height size initial state
+	const [btnWidth, setBtnWidth] = React.useState(0);
+	const [btnHeight, setBtnHeight] = React.useState(0);
+	const ref = React.useRef(null);
+
 	// Get antd sub components
 	const { Paragraph } = Typography;
 	const { Content } = Layout;
 	const { Search } = Input;
+
+
+	useEffect(() => {
+		if (ref.current && ref.current.getBoundingClientRect().width) {
+			setBtnWidth(ref.current.getBoundingClientRect().width);
+		}
+		if (ref.current && ref.current.getBoundingClientRect().height) {
+			setBtnHeight(ref.current.getBoundingClientRect().height);
+		}
+	});
 
 	// Inspired from https://dev.to/gabe_ragland/debouncing-with-react-hooks-jci
 	useEffect(
@@ -98,14 +113,21 @@ function Servers() {
 					minHeight: 280,
 				}}
 			>
-				<Search
-					style={{ width: "80%", marginRight: "3%" }}
+				<div style={{ display: "flex" }}>
+					<Search
+						style={{ width: "90%", marginRight: "5%" }}
 					placeholder="Search server.."
 					onChange={(e) => setSearch(e.target.value)}
 				/>
-				<Button style={{ width: "17%" }} type="primary">
+				<Button style={btnWidth && btnHeight
+					? {
+						width: `${btnWidth}px`,
+						height: `${btnHeight}px`,
+					}
+					: {}} type="primary">
 					<Link id="new-server-link" to="/profile/servers/add">New Server</Link>
 				</Button>
+				</div>
 				<Row style={{ marginTop: 20 }} gutter={[24, 24]}>
 					{servers.map((server) => (
 						<Col xs={24} key={server.serverId}>
