@@ -60,13 +60,13 @@ application.properties
 jwt.pub
 
 ### File Delivery API ###
-file-delivery-api/data/templates/docker-compose/generated
-file-delivery-api/data/workspace
+api/data/templates/docker-compose/generated
+api/data/workspace
 
 ### Chrome Drivers ###
 webapp-test/src/main/resources/chromedriver/windows/
 
-file-delivery-api/src/main/resources/logs/
+api/src/main/resources/logs/
 
 general-api/src/main/resources/logs/
 

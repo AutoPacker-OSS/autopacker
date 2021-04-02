@@ -4,13 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.autopacker.api.entity.Server;
+import no.autopacker.api.entity.User;
 import no.autopacker.api.repository.ServerRepository;
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
+import no.autopacker.api.userinterface.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,16 +20,18 @@ import java.util.List;
 @Service
 public class ServerService {
 
-    private ServerRepository serverRepository;
-    private RemoteScriptExec remoteScriptExec;
-    private ObjectMapper objectMapper;
+    private final ServerRepository serverRepository;
+    private final RemoteScriptExec remoteScriptExec;
+    private final ObjectMapper objectMapper;
+    private final UserService userService;
 
     @Autowired
     public ServerService(ServerRepository serverRepository, RemoteScriptExec remoteScriptExec,
-                         ObjectMapper objectMapper) {
+                         ObjectMapper objectMapper, UserService userService) {
         this.serverRepository = serverRepository;
         this.remoteScriptExec = remoteScriptExec;
         this.objectMapper = objectMapper;
+        this.userService = userService;
     }
 
     /**
@@ -89,18 +90,14 @@ public class ServerService {
      * context
      */
     public ResponseEntity<String> getAllServers() {
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-            .getContext().getAuthentication().getPrincipal();
+        User authUser = userService.getAuthenticatedUser();
         if (authUser != null) {
-            List<Server> servers = this.serverRepository
-                .findAllByOwner(authUser.getKeycloakSecurityContext().getToken().getPreferredUsername());
+            List<Server> servers = serverRepository.findAllByOwner(authUser.getUsername());
             try {
-                return new ResponseEntity<>(this.objectMapper.writeValueAsString(servers),
-                    HttpStatus.OK);
+                return new ResponseEntity<>(objectMapper.writeValueAsString(servers), HttpStatus.OK);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
-                return new ResponseEntity<>("Something went wrong while parsing servers",
-                    HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Something went wrong while parsing servers", HttpStatus.BAD_REQUEST);
             }
         } else {
             return new ResponseEntity<>("Couldn't get the authenticated user", HttpStatus.OK);
@@ -116,12 +113,10 @@ public class ServerService {
      * match the search criteria for the servers title
      */
     public ResponseEntity<String> searchAllServers(String search) {
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-            .getContext().getAuthentication().getPrincipal();
-
+        User authUser = userService.getAuthenticatedUser();
         if (authUser != null) {
             List<Server> servers = this.serverRepository.findAllByTitleContainingAndAndOwner(search,
-                authUser.getKeycloakSecurityContext().getToken().getPreferredUsername());
+                authUser.getUsername());
             try {
                 return new ResponseEntity<>(this.objectMapper.writeValueAsString(servers),
                     HttpStatus.OK);
@@ -144,30 +139,24 @@ public class ServerService {
      * not
      */
     public ResponseEntity<String> findServerById(Long serverId) {
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-            .getContext().getAuthentication().getPrincipal();
+        User authUser = userService.getAuthenticatedUser();
 
-        if (authUser != null) {
-            Server server = this.serverRepository.findByServerId(serverId);
-            if (server.getOwner().equals(authUser.getKeycloakSecurityContext().getToken().getPreferredUsername())) {
-                if (server != null) {
-                    try {
-                        return new ResponseEntity<>(this.objectMapper.writeValueAsString(server),
-                            HttpStatus.OK);
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                        return new ResponseEntity<>("Something went wrong while parsing server",
-                            HttpStatus.BAD_REQUEST);
-                    }
-                } else {
-                    return new ResponseEntity<>("Server not found", HttpStatus.BAD_REQUEST);
-                }
-            } else {
-                return new ResponseEntity<>("Can't access another this server",
-                    HttpStatus.BAD_REQUEST);
-            }
-        } else {
+        if (authUser == null) {
             return new ResponseEntity<>("User not authenticated", HttpStatus.BAD_REQUEST);
+        }
+        Server server = this.serverRepository.findByServerId(serverId);
+        if (server == null) {
+            return new ResponseEntity<>("Server not found", HttpStatus.BAD_REQUEST);
+        }
+        if (!server.getOwner().equals(authUser.getUsername())) {
+            return new ResponseEntity<>("Can't access another this server",
+                    HttpStatus.BAD_REQUEST);
+        }
+        try {
+            return new ResponseEntity<>(this.objectMapper.writeValueAsString(server), HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Something went wrong while parsing server", HttpStatus.BAD_REQUEST);
         }
     }
 

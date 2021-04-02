@@ -1,19 +1,16 @@
 package no.autopacker.api.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import no.autopacker.api.entity.Server;
+import no.autopacker.api.entity.User;
 import no.autopacker.api.repository.ServerRepository;
 import no.autopacker.api.service.RemoteScriptExec;
 import no.autopacker.api.service.ServerService;
+import no.autopacker.api.userinterface.UserService;
 import org.json.JSONObject;
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,47 +27,48 @@ public class ServerController {
 
     private final ServerService serverService;
     private final RemoteScriptExec remoteScriptExec;
-    private ServerRepository serverRepository;
-    private ObjectMapper objectMapper;
+    private final ServerRepository serverRepository;
+    private final UserService userService;
 
     @Autowired
     public ServerController(ServerService serverService, ServerRepository serverRepository,
-                            RemoteScriptExec remoteScriptExec) {
+                            RemoteScriptExec remoteScriptExec, UserService userService) {
         this.serverService = serverService;
         this.serverRepository = serverRepository;
         this.remoteScriptExec = remoteScriptExec;
-        this.objectMapper = new ObjectMapper();
+        this.userService = userService;
     }
 
     @PostMapping(value = "/deployProject")
     public ResponseEntity<String> deployProjectToServer(HttpEntity<String> httpEntity) {
         String body = httpEntity.getBody();
-        if (body != null) {
-            JSONObject jsonObject = new JSONObject(body);
-
-            KeycloakPrincipal<RefreshableKeycloakSecurityContext> authUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-                    .getContext().getAuthentication().getPrincipal();
-
-            Server server = this.serverRepository.findByServerId(jsonObject.getLong("serverId"));
-            if (server.getOwner().equals(authUser.getKeycloakSecurityContext().getToken().getPreferredUsername())) {
-                if (this.remoteScriptExec.startDockerCompose(server,
-                        authUser.getKeycloakSecurityContext().getToken().getPreferredUsername(),
-                        jsonObject.getString("projectName"),
-                        jsonObject.getString("password")
-                        )) {
-                    // TODO Return IP and PORT (maybe) back to web application to give user info where he/she can view the deployed project
-                    // Returning OK for now
-                    return ResponseEntity.ok().build();
-                } else {
-                    return ResponseEntity.badRequest().build();
-                }
-            } else {
-                return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-            }
-
-        } else {
+        if (body == null) {
             return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
         }
+        JSONObject jsonObject = new JSONObject(body);
+
+        Server server = this.serverRepository.findByServerId(jsonObject.getLong("serverId"));
+        if (server == null) {
+            return new ResponseEntity<>("Server not found", HttpStatus.NOT_FOUND);
+        }
+        User authUser = userService.getAuthenticatedUser();
+
+        if (authUser != null && server.getOwner().equals(authUser.getUsername())) {
+            if (this.remoteScriptExec.startDockerCompose(server,
+                    authUser.getUsername(),
+                    jsonObject.getString("projectName"),
+                    jsonObject.getString("password")
+            )) {
+                // TODO Return IP and PORT (maybe) back to web application to give user info where he/she can view the deployed project
+                // Returning OK for now
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        } else {
+            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
+
     }
 
     /**
@@ -82,59 +80,54 @@ public class ServerController {
     @PostMapping(value = "/new-server")
     public ResponseEntity<String> addNewServer(HttpEntity<String> httpEntity) {
         String body = httpEntity.getBody();
-        if (body != null) {
-            JSONObject jsonObject = new JSONObject(body);
-
-            KeycloakPrincipal<RefreshableKeycloakSecurityContext> authUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
-
-            String user_username = authUser.getKeycloakSecurityContext().getToken().getPreferredUsername();
-
-            Server serverExists = this.serverRepository
-                .findByTitleAndOwnerIgnoreCase(jsonObject.getString("title"), user_username);
-
-            if (serverExists == null) {
-                Server server = new Server(
-                    jsonObject.getString("title"),
-                    jsonObject.getString("ip"),
-                    jsonObject.getString("username"),
-                    user_username
-                );
-                if (jsonObject.has("ssh")) {
-                    server.setSsh(jsonObject.getString("ssh"));
-                }
-                if (jsonObject.has("desc")) {
-                    server.setDescription(jsonObject.getString("desc"));
-                }
-                this.serverRepository.save(server);
-                return new ResponseEntity<>("Server successfully added", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Server already exists", HttpStatus.CONFLICT);
-            }
-
-        } else {
+        if (body == null) {
             return new ResponseEntity<>("Body can't be empty", HttpStatus.BAD_REQUEST);
         }
+        JSONObject jsonObject = new JSONObject(body);
+
+        User authUser = userService.getAuthenticatedUser();
+        String user_username = authUser.getUsername();
+
+        Server serverExists = serverRepository
+                .findByTitleAndOwnerIgnoreCase(jsonObject.getString("title"), user_username);
+        if (serverExists != null) {
+            return new ResponseEntity<>("Server already exists", HttpStatus.CONFLICT);
+        }
+        Server server = new Server(
+                jsonObject.getString("title"),
+                jsonObject.getString("ip"),
+                jsonObject.getString("username"),
+                user_username
+        );
+        if (jsonObject.has("ssh")) {
+            server.setSsh(jsonObject.getString("ssh"));
+        }
+        if (jsonObject.has("desc")) {
+            server.setDescription(jsonObject.getString("desc"));
+        }
+        this.serverRepository.save(server);
+        return new ResponseEntity<>("Server successfully added", HttpStatus.OK);
     }
 
     @PostMapping(value = "/init")
     public ResponseEntity<String> initializeServer(HttpEntity<String> httpEntity) {
         String body = httpEntity.getBody();
-        if (body != null) {
-            JSONObject jsonObject = new JSONObject(body);
-            Server server = this.serverRepository.findByServerId(jsonObject.getLong("serverId"));
-
-            KeycloakPrincipal<RefreshableKeycloakSecurityContext> authUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-                    .getContext().getAuthentication().getPrincipal();
-
-            if (authUser.getKeycloakSecurityContext().getToken().getPreferredUsername().equals(server.getOwner())) {
-                this.remoteScriptExec.serverInit(server, jsonObject.getString("password"));
-                return ResponseEntity.ok().build();
-            } else {
-                return new ResponseEntity<>("Not Authorized", HttpStatus.UNAUTHORIZED);
-            }
-        } else{
+        if (body == null) {
             return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
+        }
+
+        JSONObject jsonObject = new JSONObject(body);
+        Server server = this.serverRepository.findByServerId(jsonObject.getLong("serverId"));
+        if (server == null) {
+            return new ResponseEntity<>("Server not found", HttpStatus.NOT_FOUND);
+        }
+
+        User authUser = userService.getAuthenticatedUser();
+        if (authUser != null && authUser.getUsername().equals(server.getOwner())) {
+            this.remoteScriptExec.serverInit(server, jsonObject.getString("password"));
+            return ResponseEntity.ok().build();
+        } else {
+            return new ResponseEntity<>("Not Authorized", HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -143,17 +136,15 @@ public class ServerController {
         @PathVariable("server") Long serverId) {
         Server server = this.serverRepository.findByServerId(Long.valueOf(serverId));
         if (server != null) {
-            KeycloakPrincipal<RefreshableKeycloakSecurityContext> authUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
-
-            if (authUser.getKeycloakSecurityContext().getToken().getPreferredUsername().equals(username)) {
+            User authUser = userService.getAuthenticatedUser();
+            if (authUser != null && authUser.getUsername().equals(username)) {
                 this.serverRepository.deleteById(Long.valueOf(serverId));
                 return ResponseEntity.ok().build();
             } else {
                 return new ResponseEntity<>("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
             }
         } else {
-            return ResponseEntity.badRequest().build();
+            return new ResponseEntity<>("Server not found", HttpStatus.NOT_FOUND);
         }
     }
 

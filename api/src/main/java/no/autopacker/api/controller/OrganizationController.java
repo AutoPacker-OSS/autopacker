@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 
+import no.autopacker.api.entity.User;
 import no.autopacker.api.entity.organization.*;
 import no.autopacker.api.repository.organization.*;
 import no.autopacker.api.service.OrganizationService;
+import no.autopacker.api.userinterface.UserService;
 import org.json.JSONObject;
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class OrganizationController {
 
     private final OrganizationService organizationService;
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     // Repositories
     private final ProjectApplicationRepository projectApplicationRepository;
@@ -31,6 +31,7 @@ public class OrganizationController {
     private final OrganizationProjectRepository projectRepository;
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
+    private final UserService userService;
 
     @Autowired
     public OrganizationController(ProjectApplicationRepository projectApplicationRepository,
@@ -39,7 +40,8 @@ public class OrganizationController {
                                   OrganizationProjectRepository projectRepository,
                                   MemberRepository memberRepository,
                                   RoleRepository roleRepository,
-                                  OrganizationService organizationService) {
+                                  OrganizationService organizationService,
+                                  UserService userService) {
         this.projectApplicationRepository = projectApplicationRepository;
         this.memberApplicationRepository = memberApplicationRepository;
         this.organizationRepository = organizationRepository;
@@ -48,6 +50,7 @@ public class OrganizationController {
         this.roleRepository = roleRepository;
         this.organizationService = organizationService;
         this.objectMapper = new ObjectMapper();
+        this.userService = userService;
     }
 
     @PostMapping(value = "/new-organization")
@@ -93,8 +96,7 @@ public class OrganizationController {
 
     @PostMapping(value = "/submitProject")
     public ResponseEntity<String> submitProjectToOrganization(HttpEntity<String> httpEntity) {
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-            .getContext().getAuthentication().getPrincipal();
+        User authUser = userService.getAuthenticatedUser();
         if (authUser != null) {
             String body = httpEntity.getBody();
             if (body != null) {
@@ -102,7 +104,7 @@ public class OrganizationController {
                 return this.organizationService.submitProjectToOrganization(
                         new OrganizationProject(
                                 this.organizationRepository.findByName(jsonObject.getString("organizationName")),
-                                this.memberRepository.findByUsernameIgnoreCaseAndIsEnabledIsTrue(authUser.getKeycloakSecurityContext().getToken().getPreferredUsername()),
+                                this.memberRepository.findByUsernameIgnoreCaseAndIsEnabledIsTrue(authUser.getUsername()),
                                 jsonObject.getJSONArray("authors"),
                                 jsonObject.getLong("actualProject"),
                                 jsonObject.getString("projectName"),
@@ -122,17 +124,16 @@ public class OrganizationController {
 
     @PostMapping(value = "/updateProjectSubmission")
     public ResponseEntity<String> updateProjectSubmission(HttpEntity<String> httpEntity) {
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser = (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-            .getContext().getAuthentication().getPrincipal();
+        User authUser = userService.getAuthenticatedUser();
 
-        if (authenticatedUser != null) {
+        if (authUser != null) {
             String body = httpEntity.getBody();
             if (body != null) {
                 JSONObject jsonObject = new JSONObject(body);
                 return this.organizationService.updateProjectSubmission(
                         new OrganizationProject(
                                 this.organizationRepository.findByName(jsonObject.getString("organizationName")),
-                                this.memberRepository.findByUsernameIgnoreCaseAndIsEnabledIsTrue(authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername()),
+                                this.memberRepository.findByUsernameIgnoreCaseAndIsEnabledIsTrue(authUser.getUsername()),
                                 jsonObject.getJSONArray("authors"),
                                 0L, // Dummy id, this won't get used
                                 jsonObject.getString("projectName"),

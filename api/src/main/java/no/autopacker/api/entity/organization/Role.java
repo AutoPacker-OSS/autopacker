@@ -21,12 +21,8 @@ public class Role {
     @Column(unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER)
-    private List<Authority> authorities;
-
     public Role(String name) {
         this.name = name;
-        this.authorities = new ArrayList<>();
     }
 
 }

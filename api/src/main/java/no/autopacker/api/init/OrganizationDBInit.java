@@ -5,6 +5,7 @@ import no.autopacker.api.repository.organization.*;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -13,13 +14,13 @@ import java.util.Arrays;
  * This class is only meant for manual testing and displaying dummy data
  */
 @Service
+@Order(value = 2)
 public class OrganizationDBInit implements CommandLineRunner {
 
     // Organization Repositories
     private final ProjectApplicationRepository projectApplicationRepository;
     private final MemberApplicationRepository memberApplicationRepository;
     private final OrganizationRepository organizationRepository;
-    private final AuthorityRepository authorityRepository;
     private final OrganizationProjectRepository projectRepository;
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
@@ -28,14 +29,12 @@ public class OrganizationDBInit implements CommandLineRunner {
     public OrganizationDBInit(ProjectApplicationRepository projectApplicationRepository,
                               MemberApplicationRepository memberApplicationRepository,
                               OrganizationRepository organizationRepository,
-                              AuthorityRepository authorityRepository,
                               OrganizationProjectRepository projectRepository,
                               MemberRepository memberRepository,
                               RoleRepository roleRepository) {
         this.projectApplicationRepository = projectApplicationRepository;
         this.memberApplicationRepository = memberApplicationRepository;
         this.organizationRepository = organizationRepository;
-        this.authorityRepository = authorityRepository;
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
         this.roleRepository = roleRepository;
@@ -52,7 +51,6 @@ public class OrganizationDBInit implements CommandLineRunner {
         this.projectApplicationRepository.deleteAll();
         this.memberApplicationRepository.deleteAll();
         this.projectRepository.deleteAll();
-        this.authorityRepository.deleteAll();
         this.memberRepository.deleteAll();
         this.roleRepository.deleteAll();
         this.organizationRepository.deleteAll();
