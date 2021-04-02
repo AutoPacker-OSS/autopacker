@@ -16,6 +16,7 @@ public class Dockerfile {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @NotNull
+    @Column(unique = true)
     private String name;
     private String location;
 

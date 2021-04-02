@@ -10,8 +10,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 @Order(value = 3)
@@ -26,20 +33,37 @@ public class DBImportDefaultDockerFilesCompose implements CommandLineRunner {
     }
 
     /**
-     * Add dockerfiles and docker-compose into database for easier development
-     * @param args
-     * @throws Exception
+     * Add dockerfiles and docker-compose into database for easier development. It searches through the docker folders
+     * inside ./data/templates/ to fetch all file names and inserts them into the database.
+     *
+     * @param args              ignored.
+     * @throws IOException      when docker folders could not be found
      */
     @Override
-    public void run(String... args) throws Exception {
-        // List of docker-compose and Dockerfile (NOTE: file must be present in both docker-compose and dockerfiles folder)
-        List<String> configTypes = Arrays.asList("java-11", "java-8", "dev-test", "angular",
-            "mysql", "mysql-empty-password", "postgres", "postgres-empty-password", "react",
-            "java-8-jar", "java-11-jar", "spring-boot", "staticsite", "vanilla-minecraft", "ftb-infinity-evolved", "factorio-stable");
+    public void run(String... args) throws IOException {
+        // Target docker-compose/dockerfile prefix and file extensions
+        String extAndPrefixRegex = "^([\\w-]*)\\.Dockerfile$|^docker-compose-([\\w-]*)\\.yml$";
 
-        configTypes.forEach(type -> {
-            addIfDockerFileNotExists(new Dockerfile(type, Utils.instance().getDockerFileLocation(type)));
-            addIfDockerComposeNotExists(new ComposeBlock(type, Utils.instance().getDockerComposeLocation(type)));
+        // Dockerfile
+        Path dockerFilePath = new File(Utils.instance().getDockerFileTemplateDir()).toPath();
+
+        Files.list(dockerFilePath).forEach(file -> {
+            String fileName = file.getFileName().toString();
+
+            // Remove file extension and prefixes
+            fileName = fileName.replaceAll(extAndPrefixRegex, "$1$2");
+            addIfDockerFileNotExists(new Dockerfile(fileName, Utils.instance().getDockerFileLocation(fileName)));
+        });
+
+        // Docker-compose
+        Path dockerComposePath = new File(Utils.instance().getDockerComposeTemplateDir()).toPath();
+
+        Files.list(dockerComposePath).forEach(file -> {
+            String fileName = file.getFileName().toString();
+
+            // Remove file extension and prefixes
+            fileName = fileName.replaceAll(extAndPrefixRegex, "$1$2");
+            addIfDockerComposeNotExists(new ComposeBlock(fileName, Utils.instance().getDockerComposeLocation(fileName)));
         });
     }
 
