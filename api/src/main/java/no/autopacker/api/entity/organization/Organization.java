@@ -1,5 +1,6 @@
 package no.autopacker.api.entity.organization;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.autopacker.api.entity.User;
@@ -36,12 +37,14 @@ public class Organization {
 
     private Boolean isPublic;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "organization")
     private List<Project> projects;
 
     @ManyToOne
     private User owner;
 
+    @JsonIgnore
     @OneToMany(
             mappedBy = "organization",
             cascade = CascadeType.ALL,
@@ -49,9 +52,11 @@ public class Organization {
     )
     private List<Member> members;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "organization")
     private List<MemberApplication> memberApplications;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "organization")
     private List<ProjectApplication> projectApplications;
 

@@ -1,5 +1,6 @@
 package no.autopacker.api.entity.fdapi;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,8 @@ public class Project {
     private String tags;
     private String website;
     private boolean isPrivate;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "project")
     private List<Module> modules;
 
@@ -43,6 +46,7 @@ public class Project {
     @NotNull
     private String location;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organization organization;

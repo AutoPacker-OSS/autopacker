@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.autopacker.api.entity.User;
 import no.autopacker.api.entity.fdapi.Module;
 import no.autopacker.api.entity.fdapi.Project;
+import no.autopacker.api.repository.UserRepository;
 import no.autopacker.api.repository.fdapi.ModuleRepository;
 import no.autopacker.api.repository.fdapi.MongoDb;
 import no.autopacker.api.repository.fdapi.ProjectRepository;
@@ -38,15 +39,17 @@ public class ProjectController {
     private final MongoDb mongoDb;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @Autowired
     public ProjectController(ProjectRepository projectRepo, ModuleRepository moduleRepo, BuilderService builderService,
-                             MongoDb mongoDb, UserService userService) {
+                             MongoDb mongoDb, UserService userService, UserRepository userRepository) {
         this.projectRepo = projectRepo;
         this.moduleRepo = moduleRepo;
         this.builderService = builderService;
         this.mongoDb = mongoDb;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -62,7 +65,8 @@ public class ProjectController {
         ResponseEntity response = null;
 
         User authenticatedUser = userService.getAuthenticatedUser();
-        Project pm = projectRepo.findByOwnerAndName(username, projectName);
+        User owner = userRepository.findByUsername(username);
+        Project pm = projectRepo.findByOwnerAndName(owner, projectName);
 
         if (pm != null) {
             pm.setModules(moduleRepo.findAllByProjectId(pm.getId()));
@@ -94,7 +98,7 @@ public class ProjectController {
                                                     @RequestParam("q") String query) {
         try {
             if (query.trim().equals("")) {
-                List<Project> userProjects = projectRepo.findAllByOwner(username);
+                List<Project> userProjects = projectRepo.findAllByOwner(userRepository.findByUsername(username));
 
                 return ResponseEntity.ok(this.objectMapper.writeValueAsString(userProjects));
 
@@ -139,9 +143,9 @@ public class ProjectController {
                     Utils.instance().validateUserWorkspace(username);
                     String projectPath = Utils.instance().getUserProjectDir(username, pm.getName());
                     File projectFolder = new File(projectPath);
-
+                    User owner = userRepository.findByUsername(username);
                     if (projectFolder.exists() ||
-                            projectRepo.findByOwnerAndName(username, pm.getName()) != null) {
+                            projectRepo.findByOwnerAndName(owner, pm.getName()) != null) {
                         response = ResponseEntity.status(HttpStatus.CONFLICT).body("Project already exists.");
                     } else {
                         if (projectFolder.mkdir()) {
@@ -184,11 +188,12 @@ public class ProjectController {
                                             @PathVariable("project") String projectName) {
         User authenticatedUser = userService.getAuthenticatedUser();
         ResponseEntity response;
+        User owner = userRepository.findByUsername(username);
 
         if (authenticatedUser != null) {
             if (authenticatedUser.getUsername().equalsIgnoreCase(username)
                     || authenticatedUser.hasSystemRole(ROLE_ADMIN)) {
-                Project pm = projectRepo.findByOwnerAndName(username, projectName);
+                Project pm = projectRepo.findByOwnerAndName(owner, projectName);
 
                 if (pm != null) {
                     pm.setModules(moduleRepo.findAllByProjectId(pm.getId()));
@@ -260,7 +265,7 @@ public class ProjectController {
      */
     @RequestMapping(value = "/projects/{username}", method = RequestMethod.GET)
     public ResponseEntity getAllProjectsFromUser(@PathVariable("username") String username) {
-        List userProjects = projectRepo.findAllByOwner(username);
+        List<Project> userProjects = projectRepo.findAllByOwner(userRepository.findByUsername(username));
         return ResponseEntity.ok(userProjects);
     }
 
@@ -315,7 +320,7 @@ public class ProjectController {
     public ResponseEntity<String> getServerOverview(@PathVariable("username") String username,
                                                     @PathVariable("projectId") Long projectId) {
         ResponseEntity<String> response;
-        Project project = this.projectRepo.findByOwnerAndId(username, projectId);
+        Project project = this.projectRepo.findByOwnerAndId(userRepository.findByUsername(username), projectId);
         if (project != null) {
             project.setModules(this.moduleRepo.findAllByProjectId(projectId));
             try {
@@ -331,11 +336,11 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/projects", method = RequestMethod.GET)
-    public ResponseEntity<String> getAllServers() {
+    public ResponseEntity<String> getAllUserProjects() {
         ResponseEntity<String> response;
         User authUser = userService.getAuthenticatedUser();
         if (authUser != null) {
-            List<Project> projects = this.projectRepo.findAllByOwner(authUser.getUsername());
+            List<Project> projects = this.projectRepo.findAllByOwner(authUser);
             try {
                 return ResponseEntity.ok(this.objectMapper.writeValueAsString(projects));
             } catch (JsonProcessingException e) {
@@ -411,7 +416,8 @@ public class ProjectController {
     public ResponseEntity getProjectDockerCompose(@PathVariable("username") String username,
                                                   @PathVariable("project-name") String projectName) throws Exception {
         ResponseEntity response;
-        Project project = projectRepo.findByOwnerAndName(username, projectName);
+        User owner = userRepository.findByUsername(username);
+        Project project = projectRepo.findByOwnerAndName(owner, projectName);
 
         if (project != null) {
             if (!project.isPrivate()) {

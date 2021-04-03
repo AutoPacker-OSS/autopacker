@@ -187,7 +187,7 @@ function Projects() {
 											textAlign: "center",
 										}}
 									>
-										{project.tags.length > 0 ? (
+										{ (project.tags && project.tags.length) > 0 ? (
 											project.tags.split(",", 3).map((tag) => (
 												<span key={tag} style={{ display: "inline-block" }}>
 													<Tag color="blue">{tag}</Tag>
