@@ -8,6 +8,8 @@ import axios from "axios";
 import { createAlert } from "../../../store/actions/generalActions";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
 import { GlobalOutlined, PlusCircleOutlined, SettingOutlined, GitlabOutlined, DeleteOutlined } from "@ant-design/icons";
+import {format} from "date-fns";
+import Moment from "moment";
 
 function ProjectOverview() {
 	// State
@@ -189,7 +191,7 @@ function ProjectOverview() {
 							<div />
 						)}
 					</div>
-					<Paragraph style={{ float: "right" }}>Last updated {project.lastUpdated}</Paragraph>
+					<Paragraph style={{ float: "right" }}>Last updated {Moment(project.lastUpdated).format('DD/MM/yyyy')}</Paragraph>
 				</div>
 			</PageHeader>
 			{/* Can add the Content thingy to route to be common, but might want to do something about the breadcrumb thingy */}
