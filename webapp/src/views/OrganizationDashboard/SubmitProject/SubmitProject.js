@@ -107,13 +107,15 @@ function SubmitProject(props) {
 				},
 				data: {
 					organizationName: organizationName,
-					projectName: projectName,
-					desc: desc,
-					type: type,
-					authors: authors,
-					links: links,
-					tags: tags,
-					actualProject: actualProject.id,
+					// projectName: projectName,
+					// desc: desc,
+					// type: type,
+					// authors: authors,
+					// links: links,
+					// tags: tags,
+					// TODO - remove all unnecessary fields from the component (and UI)
+					projectId: actualProject.id,
+					// actualProject: actualProject.id,
 					comment: comment,
 				},
 			})

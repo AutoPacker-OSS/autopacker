@@ -4,6 +4,7 @@ import java.util.List;
 
 import no.autopacker.api.entity.organization.Organization;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -11,14 +12,13 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 
     Organization findByName(String name);
 
-    Organization findByNameIgnoreCase(String name);
-
     List<Organization> findAllByNameContaining(String search);
 
-    List<Organization> findOrganizationsByMembersUsernameAndMembersIsEnabled(String username,
-        boolean isEnabled);
-
-    List<Organization> findOrganizationsByMembersUsernameAndMembersIsEnabledAndNameContaining(
-        String username, boolean isEnabled, String search);
-
+    // TODO - test this
+    @Query(value = "SELECT o.* FROM organization o " +
+            "INNER JOIN member m ON m.organization_id = o.id " +
+            "INNER JOIN user u ON u.id = m.user_id " +
+            "WHERE u.username = ?1 AND LOWER(o.name) LIKE CONCAT('%', ?2, '%')",
+            nativeQuery = true)
+    List<Organization> searchOrganizationsForUser(String username, String query);
 }

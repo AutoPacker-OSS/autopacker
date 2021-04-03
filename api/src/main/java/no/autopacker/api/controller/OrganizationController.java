@@ -2,20 +2,29 @@ package no.autopacker.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import no.autopacker.api.entity.User;
+import no.autopacker.api.entity.fdapi.Project;
 import no.autopacker.api.entity.organization.*;
+import no.autopacker.api.repository.UserRepository;
+import no.autopacker.api.repository.fdapi.ProjectRepository;
 import no.autopacker.api.repository.organization.*;
 import no.autopacker.api.service.OrganizationService;
 import no.autopacker.api.userinterface.UserService;
+import no.autopacker.api.utils.OrgAuthInfo;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import static no.autopacker.api.security.AuthConstants.ROLE_ADMIN;
 
 @RestController
 @RequestMapping(value = "api/organization")
@@ -28,29 +37,26 @@ public class OrganizationController {
     private final ProjectApplicationRepository projectApplicationRepository;
     private final MemberApplicationRepository memberApplicationRepository;
     private final OrganizationRepository organizationRepository;
-    private final OrganizationProjectRepository projectRepository;
-    private final MemberRepository memberRepository;
-    private final RoleRepository roleRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
+    private final ProjectRepository projectRepository;
 
     @Autowired
     public OrganizationController(ProjectApplicationRepository projectApplicationRepository,
                                   MemberApplicationRepository memberApplicationRepository,
                                   OrganizationRepository organizationRepository,
-                                  OrganizationProjectRepository projectRepository,
-                                  MemberRepository memberRepository,
-                                  RoleRepository roleRepository,
                                   OrganizationService organizationService,
-                                  UserService userService) {
+                                  UserService userService,
+                                  UserRepository userRepository,
+                                  ProjectRepository projectRepository) {
         this.projectApplicationRepository = projectApplicationRepository;
         this.memberApplicationRepository = memberApplicationRepository;
         this.organizationRepository = organizationRepository;
-        this.projectRepository = projectRepository;
-        this.memberRepository = memberRepository;
-        this.roleRepository = roleRepository;
         this.organizationService = organizationService;
+        this.projectRepository = projectRepository;
         this.objectMapper = new ObjectMapper();
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping(value = "/new-organization")
@@ -58,22 +64,15 @@ public class OrganizationController {
         String body = httpEntity.getBody();
         if (body != null) {
             JSONObject jsonObject = new JSONObject(body);
-           return this.organizationService.createNewOrg( new Organization(
-                   jsonObject.getString("orgName"),
-                   jsonObject.getString("orgDesc"),
-                   jsonObject.getString("url"),
-                   jsonObject.getBoolean ("isPublic")),
-
-                   jsonObject.getString("username"),
-                   jsonObject.getString("email"),
-                   jsonObject.getString("name"),
-                   this.roleRepository.findByName(jsonObject.getString("role"))
-            );
+            return this.organizationService.createNewOrg(
+                    jsonObject.getString("organizationName"),
+                    jsonObject.getString("orgDesc"),
+                    jsonObject.getString("username"),
+                    jsonObject.getString("url"),
+                    jsonObject.getBoolean("isPublic"));
         } else {
             return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
         }
-
-
     }
 
 
@@ -82,13 +81,11 @@ public class OrganizationController {
         String body = httpEntity.getBody();
         if (body != null) {
             JSONObject jsonObject = new JSONObject(body);
-            return this.organizationService.requestMembership(new Member(
-                    this.organizationRepository.findByName(jsonObject.getString("organizationName")),
-                    this.roleRepository.findByName(jsonObject.getString("role")),
+            return this.organizationService.requestMembership(
                     jsonObject.getString("username"),
-                    jsonObject.getString("name"),
-                    jsonObject.getString("email")
-            ), jsonObject.getString("comment"));
+                    jsonObject.getString("organizationName"),
+                    jsonObject.getString("role"),
+                    jsonObject.getString("comment"));
         } else {
             return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
         }
@@ -101,19 +98,10 @@ public class OrganizationController {
             String body = httpEntity.getBody();
             if (body != null) {
                 JSONObject jsonObject = new JSONObject(body);
-                return this.organizationService.submitProjectToOrganization(
-                        new OrganizationProject(
-                                this.organizationRepository.findByName(jsonObject.getString("organizationName")),
-                                this.memberRepository.findByUsernameIgnoreCaseAndIsEnabledIsTrue(authUser.getUsername()),
-                                jsonObject.getJSONArray("authors"),
-                                jsonObject.getLong("actualProject"),
-                                jsonObject.getString("projectName"),
-                                jsonObject.getString("type"),
-                                jsonObject.getString("desc"),
-                                jsonObject.getJSONArray("links"),
-                                jsonObject.getJSONArray("tags")
-                        ), jsonObject.getString("comment")
-                );
+                return organizationService.submitProjectToOrganization(
+                        jsonObject.getString("organizationName"),
+                        jsonObject.getLong("projectId"),
+                        jsonObject.getString("comment"));
             } else {
                 return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
             }
@@ -122,62 +110,50 @@ public class OrganizationController {
         }
     }
 
-    @PostMapping(value = "/updateProjectSubmission")
-    public ResponseEntity<String> updateProjectSubmission(HttpEntity<String> httpEntity) {
-        User authUser = userService.getAuthenticatedUser();
-
-        if (authUser != null) {
-            String body = httpEntity.getBody();
-            if (body != null) {
-                JSONObject jsonObject = new JSONObject(body);
-                return this.organizationService.updateProjectSubmission(
-                        new OrganizationProject(
-                                this.organizationRepository.findByName(jsonObject.getString("organizationName")),
-                                this.memberRepository.findByUsernameIgnoreCaseAndIsEnabledIsTrue(authUser.getUsername()),
-                                jsonObject.getJSONArray("authors"),
-                                0L, // Dummy id, this won't get used
-                                jsonObject.getString("projectName"),
-                                jsonObject.getString("type"),
-                                jsonObject.getString("desc"),
-                                jsonObject.getJSONArray("links"),
-                                jsonObject.getJSONArray("tags")
-                        ), jsonObject.getString("comment"), jsonObject.getLong("projectId")
-                );
-            } else {
-                return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            return new ResponseEntity<>("User not authenticated", HttpStatus.UNAUTHORIZED);
-        }
-    }
+    // TODO - this should be handled in ProjectController?
+//    @PostMapping(value = "/updateProjectSubmission")
+//    public ResponseEntity<String> updateProjectSubmission(HttpEntity<String> httpEntity) {
+//        User authUser = userService.getAuthenticatedUser();
+//
+//        if (authUser != null) {
+//            String body = httpEntity.getBody();
+//            if (body != null) {
+//                JSONObject jsonObject = new JSONObject(body);
+//                return this.organizationService.updateProjectSubmission(
+//                        new OrganizationProject(
+//                                this.organizationRepository.findByName(jsonObject.getString("organizationName")),
+//                                this.memberRepository.findByUsernameIgnoreCaseAndIsEnabledIsTrue(authUser.getUsername()),
+//                                jsonObject.getJSONArray("authors"),
+//                                0L, // Dummy id, this won't get used
+//                                jsonObject.getString("projectName"),
+//                                jsonObject.getString("type"),
+//                                jsonObject.getString("desc"),
+//                                jsonObject.getJSONArray("links"),
+//                                jsonObject.getJSONArray("tags")
+//                        ), jsonObject.getString("comment"), jsonObject.getLong("projectId")
+//                );
+//            } else {
+//                return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
+//            }
+//        } else {
+//            return new ResponseEntity<>("User not authenticated", HttpStatus.UNAUTHORIZED);
+//        }
+//    }
 
     @PostMapping(value = "/acceptMemberRequest")
     public ResponseEntity<String> acceptMemberApplication(HttpEntity<String> httpEntity) {
-        String body = httpEntity.getBody();
-        if (body != null) {
-            JSONObject jsonObject = new JSONObject(body);
-            return this.organizationService.acceptMemberRequest(
-                    jsonObject.getString("organizationName"),
-                    jsonObject.getString("username")
-            );
-        } else {
-            return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
-        }
+        OrgAuthInfo authInfo = checkOrgAuthorization(httpEntity);
+        if (authInfo.hasError()) return authInfo.createHttpResponse();
+        return this.organizationService.acceptOrDeclineMemberRequest(authInfo.getOrganization(),
+                authInfo.getJson().getString("username"), true);
     }
 
     @PostMapping(value = "/declineMemberRequest")
     public ResponseEntity<String> declineMemberApplication(HttpEntity<String> httpEntity) {
-        String body = httpEntity.getBody();
-        if (body != null) {
-            JSONObject jsonObject = new JSONObject(body);
-            return this.organizationService.declineMemberRequest(
-                    jsonObject.getString("organizationName"),
-                    jsonObject.getString("username"),
-                    jsonObject.getString("comment")
-            );
-        } else {
-            return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
-        }
+        OrgAuthInfo authInfo = checkOrgAuthorization(httpEntity);
+        if (authInfo.hasError()) return authInfo.createHttpResponse();
+        return this.organizationService.acceptOrDeclineMemberRequest(authInfo.getOrganization(),
+                authInfo.getJson().getString("username"), false);
     }
 
     /*------------------------------
@@ -186,31 +162,66 @@ public class OrganizationController {
 
     @PostMapping(value = "/acceptProjectRequest")
     public ResponseEntity<String> acceptProjectRequest(HttpEntity<String> httpEntity) {
-        String body = httpEntity.getBody();
-        if (body != null) {
-            JSONObject jsonObject = new JSONObject(body);
-            return this.organizationService.acceptProjectRequest(
-                    jsonObject.getLong("projectRequestId"),
-                    jsonObject.getString("comment")
-            );
-        } else {
-            return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
-        }
+        OrgAuthInfo authInfo = checkOrgAuthorization(httpEntity);
+        if (authInfo.hasError()) return authInfo.createHttpResponse();
+        return organizationService.acceptOrDeclineProjectRequest(
+                authInfo.getJson().getLong("projectRequestId"), authInfo.getUser(),
+                authInfo.getOrganization(), authInfo.getJson().getString("comment"), true);
     }
 
     @PostMapping(value = "/declineProjectRequest")
     public ResponseEntity<String> declineProjectRequest(HttpEntity<String> httpEntity) {
+        OrgAuthInfo authInfo = checkOrgAuthorization(httpEntity);
+        if (authInfo.hasError()) return authInfo.createHttpResponse();
+        return organizationService.acceptOrDeclineProjectRequest(
+                authInfo.getJson().getLong("projectRequestId"), authInfo.getUser(),
+                authInfo.getOrganization(), authInfo.getJson().getString("comment"), false);
+    }
+
+    /**
+     * Checks whether the currently authenticated user has admin access to the specified organization.
+     * Returns a structure which will contain an error if something is wrong
+     * Used to avoid duplicate code.
+     *
+     * @param httpEntity HTTP entity containing the body
+     * @return An object which contains error message if something is wrong
+     */
+    public OrgAuthInfo checkOrgAuthorization(HttpEntity<String> httpEntity) {
+        OrgAuthInfo info = new OrgAuthInfo();
+        User authUser = userService.getAuthenticatedUser();
+        if (authUser == null) return info.setError("Not authorized", HttpStatus.UNAUTHORIZED);
+        info.setUser(authUser);
+
         String body = httpEntity.getBody();
-        if (body != null) {
+        String organizationName = null;
+        if (body == null) return info.setError("Body can't be null", HttpStatus.BAD_REQUEST);
+        try {
             JSONObject jsonObject = new JSONObject(body);
-            return this.organizationService.declineProjectRequest(
-                    jsonObject.getString("organizationName"),
-                    jsonObject.getLong("projectRequestId"),
-                    jsonObject.getString("comment")
-            );
-        } else {
-            return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
+            info.setJson(jsonObject);
+            organizationName = jsonObject.getString("organizationName");
+        } catch (JSONException e) {
+            info.setError("Wrong JSON data format", HttpStatus.BAD_REQUEST);
         }
+        Organization organization = organizationRepository.findByName(organizationName);
+        if (organization == null) return info.setError("Organization not found", HttpStatus.NOT_FOUND);
+        info.setOrganization(organization);
+        if (!isOrganizationAdmin(authUser, organization)) {
+            return info.setError("Not authorized", HttpStatus.UNAUTHORIZED);
+        }
+        return info;
+    }
+
+
+    /**
+     * Check if the specified user has admin access to the organization.
+     * Note: users who are system admins are also admins of all organizations!
+     *
+     * @param user         User to check
+     * @param organization Organization which will be accessed
+     * @return True when the user is organization's admin, false otherwise
+     */
+    private boolean isOrganizationAdmin(User user, Organization organization) {
+        return user.hasSystemRole(ROLE_ADMIN) || organization.hasAdminMember(user);
     }
 
     /*------------------------------
@@ -218,30 +229,17 @@ public class OrganizationController {
     ----------------------------*/
     @PostMapping(value = "/changeRole")
     public ResponseEntity<String> changeRole(HttpEntity<String> httpEntity) {
-        String body = httpEntity.getBody();
-        if (body != null) {
-            JSONObject jsonObject = new JSONObject(body);
-            return this.organizationService.changeRole(
-                    jsonObject.getString("orgName"),
-                    jsonObject.getString("user"),
-                    this.roleRepository.findByName(jsonObject.getString("role"))
-                    );
-        } else {
-            return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
-        }
+        OrgAuthInfo info = checkOrgAuthorization(httpEntity);
+        if (info.hasError()) return info.createHttpResponse();
+        return this.organizationService.changeRole(info.getOrganization(), info.getJson().getString("username"),
+                info.getJson().getString("role"));
     }
+
     @PostMapping(value = "/deleteMember")
     public ResponseEntity<String> deleteMember(HttpEntity<String> httpEntity) {
-        String body = httpEntity.getBody();
-        if (body != null) {
-            JSONObject jsonObject = new JSONObject(body);
-            return this.organizationService.deleteMember(
-                    jsonObject.getString("orgName"),
-                    jsonObject.getString("user")
-            );
-        } else {
-            return new ResponseEntity<>("Body can't be null", HttpStatus.BAD_REQUEST);
-        }
+        OrgAuthInfo info = checkOrgAuthorization(httpEntity);
+        if (info.hasError()) return info.createHttpResponse();
+        return this.organizationService.deleteMember(info.getOrganization(), info.getJson().getString("username"));
     }
 
 
@@ -250,8 +248,9 @@ public class OrganizationController {
     ----------------------------*/
 
     @GetMapping(value = "/{organization}/members")
-    public List<Member> findAllMembers(@PathVariable("organization") String organization) {
-        return this.memberRepository.findAllByOrganization_NameAndIsEnabledIsTrue(organization);
+    public List<Member> findAllMembers(@PathVariable("organization") String organizationName) {
+        Organization organization = organizationRepository.findByName(organizationName);
+        return organization != null ? organization.getMembers() : new LinkedList<>();
     }
 
     @GetMapping
@@ -260,82 +259,54 @@ public class OrganizationController {
     }
 
     @GetMapping(value = "/{organization}")
-    public ResponseEntity<String> findOrganization(@PathVariable("organization") String organization) {
-        if (organization.trim().equals("")) {
-            return new ResponseEntity<>("Organization name can't be empty?", HttpStatus.BAD_REQUEST);
-        } else {
-            try {
-                return new ResponseEntity<>(
-                        this.objectMapper.writeValueAsString(
-                                this.organizationRepository.findByName(organization)
-                        ), HttpStatus.OK
-                );
-            } catch (JsonProcessingException e) {
-                return new ResponseEntity<>("Something went wrong while parsing organization", HttpStatus.BAD_REQUEST);
-            }
+    public ResponseEntity<String> findOrganization(@PathVariable("organization") String organizationName) {
+        Organization organization = organizationRepository.findByName(organizationName);
+        if (organization == null) {
+            return new ResponseEntity<>("Organization not found", HttpStatus.BAD_REQUEST);
+        }
+        try {
+            return new ResponseEntity<>(this.objectMapper.writeValueAsString(organization), HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            return new ResponseEntity<>("Something went wrong while parsing organization", HttpStatus.BAD_REQUEST);
         }
     }
 
     /**
      * Checks if a user is part of a specific organization
      *
-     * @param organization the organization to check if the user is member of
-     * @param username the username of the user to check
+     * @param organizationName Name of the organization to check if the user is member of
+     * @param username         the username of the user to check
      * @return HTTP OK if the user is part of the organization and HTTP BAD REQUEST if not
      */
     @GetMapping(value = "/{organization}/{username}/isMember")
-    public boolean checkIfUserIsPartOfAnOrganization(@PathVariable("organization") String organization,
+    public ResponseEntity<String> checkIfUserIsPartOfAnOrganization(@PathVariable("organization") String organizationName,
                                                                     @PathVariable("username") String username) {
-        Member foundMember = this.memberRepository
-            .findByOrganization_NameAndUsername(organization, username);
-        if (foundMember != null) {
-            return true;
-        } else {
-            return false;
-        }
+        boolean isMember = organizationService.isOrgMemberOf(userRepository.findByUsername(username),
+                organizationRepository.findByName(organizationName));
+        return new ResponseEntity<>("", isMember ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping(value = "/{username}/isMember")
-    public ResponseEntity<String> findAllOrganizationsAUserIsMemberIn(@PathVariable("username") String username) {
-        List<Organization> list = this.organizationRepository.findOrganizationsByMembersUsernameAndMembersIsEnabled(username, true);
-        try {
-            return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("Something went wrong while parsing organization", HttpStatus.BAD_REQUEST);
-        }
+    public List<Organization> findAllOrganizationsAUserIsMemberIn(@PathVariable("username") String username) {
+        User user = userRepository.findByUsername(username);
+        return user != null ? user.getAllOrganizations() : new LinkedList<>();
     }
 
     @GetMapping(value = "/{username}/isMember/search")
-    public ResponseEntity<String> searchAllOrganizationsAUserIsMemberIn(@PathVariable("username") String username,
-                                                                        @RequestParam("q") String query) {
-        List<Organization> list = this.organizationRepository.findOrganizationsByMembersUsernameAndMembersIsEnabledAndNameContaining(username, true, query);
-        try {
-            return new ResponseEntity<>(this.objectMapper.writeValueAsString(list), HttpStatus.OK);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("Something went wrong while parsing organization", HttpStatus.BAD_REQUEST);
-        }
+    public List<Organization> searchAllOrganizationsAUserIsMemberIn(@PathVariable("username") String username,
+                                                                    @RequestParam("q") String query) {
+        return this.organizationRepository.searchOrganizationsForUser(username, query);
     }
 
     @GetMapping(value = "/{organization}/projects")
-    public List<OrganizationProject> findAllProjects(@PathVariable("organization") String organization) {
-        return this.projectRepository.findAllByOrganization_NameAndIsAcceptedIsTrue(organization);
+    public List<Project> findAllProjects(@PathVariable("organization") String organizationName) {
+        return projectRepository.findAllByOrganizationName(organizationName);
     }
 
     @GetMapping(value = "/{organization}/projects/search")
-    public ResponseEntity<String> searchOrganizationProjects(@PathVariable("organization") String organization,
+    public List<Project> searchOrganizationProjects(@PathVariable("organization") String organizationName,
                                                     @RequestParam("q") String query) {
-        try {
-            if (query.trim().equals("")) {
-                return new ResponseEntity<>(this.objectMapper.writeValueAsString(this.projectRepository.findAllByOrganization_NameAndIsAcceptedIsTrue(organization)), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(this.objectMapper.writeValueAsString(this.projectRepository.findAllByOrganization_NameAndAndNameContainingIgnoreCaseAndIsAcceptedIsTrue(organization, query)), HttpStatus.OK);
-            }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("Something went wrong while parsing projects", HttpStatus.BAD_REQUEST);
-        }
+        return projectRepository.searchAllForOrganization(organizationName, query);
     }
 
     @GetMapping(value = "/search")
@@ -351,27 +322,26 @@ public class OrganizationController {
 
     @GetMapping(value = "/{organization}/member-applications")
     public List<MemberApplication> findAllMemberApplications(@PathVariable("organization") String organization) {
-        return this.memberApplicationRepository.findAllByOrganization_NameAndIsAcceptedIsFalse(organization);
+        return memberApplicationRepository.findAllActive(organization);
     }
 
     @GetMapping(value = "/{organization}/project-applications")
-    public List<ProjectApplication> findAllprojectApplications(@PathVariable("organization") String organization) {
-        return this.projectApplicationRepository.findAllByOrganization_NameAndIsAcceptedIsFalse(organization);
+    public List<ProjectApplication> findAllProjectApplications(@PathVariable("organization") String organization) {
+        return this.projectApplicationRepository.findAllActive(organization);
     }
 
     @GetMapping(value = "/{organization}/project-applications/{username}")
-    public List<ProjectApplication> findAllprojectApplications(@PathVariable("organization") String organization,
-                                                               @PathVariable("username") String username) {
-        return this.projectApplicationRepository.findAllByOrganization_NameAndMember_UsernameAndIsAcceptedIsFalse(organization, username);
+    public List<ProjectApplication> findAllProjectApplicationsForUser(@PathVariable("organization") String organization,
+                                                                      @PathVariable("username") String username) {
+        return this.projectApplicationRepository.findAllActiveForUserOrg(organization, username);
     }
 
-    @GetMapping(value = "/{organization}/delete-project-application/{projectId}")
+    @DeleteMapping(value = "/{organization}/delete-project-application/{applicationId}")
     public ResponseEntity<String> deleteProjectRequest(@PathVariable("organization") String organization,
-                                                       @PathVariable("projectId") Long projectId) {
-        ProjectApplication projectApplication = this.projectApplicationRepository.findByOrganization_NameAndOrganizationProject_IdAndIsAcceptedIsFalse(organization, projectId);
-        if (projectApplication != null) {
-            this.projectApplicationRepository.deleteById(projectApplication.getId());
-            this.projectRepository.deleteById(projectId);
+                                                       @PathVariable("applicationId") Long applicationId) {
+        Optional<ProjectApplication> projectApplication = projectApplicationRepository.findById(applicationId);
+        if (projectApplication.isPresent()) {
+            this.projectApplicationRepository.delete(projectApplication.get());
             return new ResponseEntity<>("OK", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("foobar", HttpStatus.BAD_REQUEST);
@@ -379,17 +349,11 @@ public class OrganizationController {
     }
 
     @GetMapping(value = "/{organization}/overview/{projectId}")
-    public ResponseEntity getOrgProjectDetails(@PathVariable("organization") String organization,
-                                               @PathVariable("projectId") Long projectId) {
-        ResponseEntity response = null;
-        OrganizationProject organizationProject = this.projectRepository.findByOrganization_NameAndId(organization, projectId);
-
-        if (organizationProject != null) {
-            response = ResponseEntity.ok(organizationProject);
-        } else {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project does not exist.");
-        }
-        return response;
+    public Project getOrgProjectDetails(@PathVariable("organization") String organization,
+                                        @PathVariable("projectId") Long projectId) {
+        // TODO - should we check some permissions?
+        Optional<Project> project = projectRepository.findById(projectId);
+        return project.orElse(null);
     }
 
 }

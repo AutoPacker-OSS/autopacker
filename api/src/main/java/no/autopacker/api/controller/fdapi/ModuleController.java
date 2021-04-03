@@ -15,6 +15,7 @@ import java.util.zip.ZipInputStream;
 import no.autopacker.api.entity.User;
 import no.autopacker.api.entity.fdapi.Module;
 import no.autopacker.api.entity.fdapi.Project;
+import no.autopacker.api.repository.UserRepository;
 import no.autopacker.api.repository.fdapi.ModuleRepository;
 import no.autopacker.api.repository.fdapi.MongoDb;
 import no.autopacker.api.repository.fdapi.ProjectRepository;
@@ -40,15 +41,17 @@ public class ModuleController {
     private final DockerService dockerService;
     private final MongoDb mongo;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @Autowired
     public ModuleController(ProjectRepository projectRepo, ModuleRepository moduleRepo,
-        DockerService dockerService, MongoDb mongo, UserService userService) {
+        DockerService dockerService, MongoDb mongo, UserService userService, UserRepository userRepository) {
         this.projectRepo = projectRepo;
         this.moduleRepo = moduleRepo;
         this.dockerService = dockerService;
         this.mongo = mongo;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -71,7 +74,8 @@ public class ModuleController {
         @RequestParam("config-params") String configParamsJson,
         @RequestParam("module-file") List<MultipartFile> moduleFiles) {
         ResponseEntity response;
-        Project project = projectRepo.findByOwnerAndName(username, projectName);
+        User owner = userRepository.findByUsername(username);
+        Project project = projectRepo.findByOwnerAndName(owner, projectName);
         User authenticatedUser = userService.getAuthenticatedUser();
 
         // TODO - this method is too long and involves too many levels of detail, split it (extract a FileService?)
@@ -188,7 +192,7 @@ public class ModuleController {
                                 }
 
                                 // Build the module (may take some time)
-                                dockerService.buildDockerImage(module, project.getOwner());
+                                dockerService.buildDockerImage(module, project.getOwner().getUsername());
                                 response = ResponseEntity.ok("Module has been added to project!");
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -266,7 +270,8 @@ public class ModuleController {
                                                             @RequestParam("config-params") String configParamsJson) {
         User authenticatedUser = userService.getAuthenticatedUser();
         if (authenticatedUser != null && authenticatedUser.getUsername().equalsIgnoreCase(username)) {
-            Project project = this.projectRepo.findByOwnerAndName(username, projectName);
+            User owner = userRepository.findByUsername(username);
+            Project project = this.projectRepo.findByOwnerAndName(owner, projectName);
             if (project != null) {
                 // Check if module by given name already exists
                 if (moduleRepo.countByProjectIdAndName(project.getId(), moduleName) == 0) {
@@ -331,7 +336,8 @@ public class ModuleController {
     public ResponseEntity deleteProjectModule(@PathVariable("username") String username,
         @PathVariable("project") String projectName,
         @PathVariable("module") String moduleName) {
-        Project pm = projectRepo.findByOwnerAndName(username, projectName);
+        User owner = userRepository.findByUsername(username);
+        Project pm = projectRepo.findByOwnerAndName(owner, projectName);
         ResponseEntity response;
         User authenticatedUser = userService.getAuthenticatedUser();
         if (authenticatedUser != null) {

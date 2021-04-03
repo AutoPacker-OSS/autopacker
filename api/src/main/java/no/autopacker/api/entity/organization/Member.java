@@ -3,53 +3,51 @@ package no.autopacker.api.entity.organization;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.autopacker.api.entity.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
+@Table(name = "org_member")
 @NoArgsConstructor
 public class Member {
+    @EmbeddedId
+    private OrgMemberKey id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @PrePersist
+    private void prePersist() {
+        if (getId() == null) {
+            System.out.println("Here we go!");
+            OrgMemberKey key = new OrgMemberKey();
+            key.setUserId(user.getId());
+            key.setOrganizationId(organization.getId());
+        }
+    }
 
     @NotEmpty
-    private String username; // Used to identify AutoPacker user
+    @Column(name = "role")
+    private String role = ""; // Role for this user in this organization
 
-    @NotEmpty
-    private String name;
-
-    @NotEmpty
-    private String email;
-
-    private String image;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("user_id")
+    private User user;
 
     @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "organization_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("organization_id")
     private Organization organization;
 
-    @OneToMany(mappedBy = "member")
-    private List<OrganizationProject> organizationProjects;
-
-    @OneToOne(targetEntity = Role.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "role_id")
-    private Role role;
-
-    private boolean isEnabled;
-
-    public Member(Organization organization, Role role, String username, String name, String email) {
+    public Member(Organization organization, User user, String role) {
         this.organization = organization;
+        this.user = user;
         this.role = role;
-        this.username = username;
-        this.name = name;
-        this.email = email;
-        this.organizationProjects = new ArrayList<>();
-        this.isEnabled = false;
+        this.id = new OrgMemberKey(user.getId(), organization.getId());
+    }
+
+    @Override
+    public String toString() {
+        return "Org #" + organization.getId() + " member " + user.getUsername() + " [" + role + "]";
     }
 }

@@ -1,6 +1,10 @@
 package no.autopacker.api.service;
 
+import no.autopacker.api.entity.User;
+import no.autopacker.api.entity.fdapi.Project;
 import no.autopacker.api.entity.organization.*;
+import no.autopacker.api.repository.UserRepository;
+import no.autopacker.api.repository.fdapi.ProjectRepository;
 import no.autopacker.api.repository.organization.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +13,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class OrganizationService {
 
@@ -16,25 +22,25 @@ public class OrganizationService {
     private final ProjectApplicationRepository projectApplicationRepository;
     private final MemberApplicationRepository memberApplicationRepository;
     private final OrganizationRepository organizationRepository;
-    private final OrganizationProjectRepository projectRepository;
-    private final MemberRepository memberRepository;
-    private final RoleRepository roleRepository;
-    private JavaMailSender javaMailSender;
+    private final ProjectRepository projectRepository;
+//    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
+    private final JavaMailSender javaMailSender;
 
     @Autowired
     public OrganizationService(ProjectApplicationRepository projectApplicationRepository,
                                MemberApplicationRepository memberApplicationRepository,
                                OrganizationRepository organizationRepository,
-                               OrganizationProjectRepository projectRepository,
-                               MemberRepository memberRepository,
-                               RoleRepository roleRepository,
+                               ProjectRepository projectRepository,
+//                               MemberRepository memberRepository,
+                               UserRepository userRepository,
                                JavaMailSender javaMailSender) {
         this.projectApplicationRepository = projectApplicationRepository;
         this.memberApplicationRepository = memberApplicationRepository;
         this.organizationRepository = organizationRepository;
         this.projectRepository = projectRepository;
-        this.memberRepository = memberRepository;
-        this.roleRepository = roleRepository;
+//        this.memberRepository = memberRepository;
+        this.userRepository = userRepository;
         this.javaMailSender = javaMailSender;
     }
 
@@ -42,16 +48,20 @@ public class OrganizationService {
     Membership
     ----------------------------*/
 
-    public ResponseEntity requestMembership(Member member, String comment) {
-        MemberApplication memberApplication = new MemberApplication(member, comment);
-        String org = memberApplication.getOrganization().getName();
-        String name = memberApplication.getMember().getName();
-        if (this.memberApplicationRepository.findByOrganization_NameAndMember_Username( org, name) == null ){
-            this.memberRepository.save(member);
-            this.memberApplicationRepository.save(memberApplication);
-            return new ResponseEntity("OK", HttpStatus.OK);
+    public ResponseEntity<String> requestMembership(String username, String organizationName, String role, String comment) {
+        Organization organization = organizationRepository.findByName(organizationName);
+        if (organization == null) {
+            return new ResponseEntity<>("Wrong organization", HttpStatus.BAD_REQUEST);
+        }
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            return new ResponseEntity<>("Wrong user", HttpStatus.BAD_REQUEST);
+        }
+        if (this.memberApplicationRepository.findByOrganizationAndUser(organization, user) == null) {
+            memberApplicationRepository.save(new MemberApplication(user, organization, role, comment));
+            return new ResponseEntity<>("OK", HttpStatus.OK);
         } else {
-            return new ResponseEntity("Member application is already sent, please wait for email", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Member application is already sent, please wait for email", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -59,57 +69,27 @@ public class OrganizationService {
     Project submission related
     ----------------------------*/
 
-    public ResponseEntity<String> submitProjectToOrganization(
-            OrganizationProject organizationProject, String comment) {
-        OrganizationProject foundOrganizationProject = this.projectRepository.findByOrganization_NameAndName(
-            organizationProject.getOrganization().getName(), organizationProject.getName());
-        if (foundOrganizationProject == null) {
-            ProjectApplication foundProjectApplication = this.projectApplicationRepository.findByOrganization_NameAndOrganizationProject_IdAndIsAcceptedIsFalse(
-                organizationProject.getOrganization().getName(), organizationProject.getId());
-            if (foundProjectApplication == null) {
-                // Persist project
-                this.projectRepository.save(organizationProject);
-                // Persist project application
-                ProjectApplication projectApplication = new ProjectApplication(organizationProject.getMember(),
-                    organizationProject, comment);
-                this.projectApplicationRepository.save(projectApplication);
-                // TODO Maybe implement email notification? (discuss)
-                return new ResponseEntity<>("OK", HttpStatus.OK);
+    public ResponseEntity<String> submitProjectToOrganization(String organizationName, Long projectId, String comment) {
+        Optional<Project> proj = projectRepository.findById(projectId);
+        if (proj.isPresent()) {
+            Organization organization = organizationRepository.findByName(organizationName);
+            if (organization != null) {
+                Project project = proj.get();
+                ProjectApplication application = projectApplicationRepository.findForProjAndOrg(organizationName, projectId);
+                if (application == null) {
+                    // Persist project application
+                    ProjectApplication projectApplication = new ProjectApplication(project, organization, comment);
+                    this.projectApplicationRepository.save(projectApplication);
+                    // TODO Maybe implement email notification? (discuss)
+                    return new ResponseEntity<>("OK", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Project application for the given project exist", HttpStatus.CONFLICT);
+                }
             } else {
-                return new ResponseEntity<>("Project application for the given project exist", HttpStatus.CONFLICT);
+                return new ResponseEntity<>("Organization not found", HttpStatus.NOT_FOUND);
             }
         } else {
-            return new ResponseEntity<>("Project with choosen name already exists", HttpStatus.CONFLICT);
-        }
-    }
-
-    public ResponseEntity<String> updateProjectSubmission(
-        OrganizationProject updatedOrganizationProject, String comment, Long projectId) {
-        OrganizationProject foundOrganizationProject = this.projectRepository.findByOrganization_NameAndId(
-            updatedOrganizationProject.getOrganization().getName(), projectId);
-        if (foundOrganizationProject != null) {
-            ProjectApplication foundProjectApplication = this.projectApplicationRepository.findByOrganization_NameAndOrganizationProject_IdAndIsAcceptedIsFalse(
-                updatedOrganizationProject.getOrganization().getName(), foundOrganizationProject.getId());
-            if (foundProjectApplication != null) {
-                // Update project values
-                foundOrganizationProject.setName(updatedOrganizationProject.getName());
-                foundOrganizationProject.setDescription(updatedOrganizationProject.getDescription());
-                foundOrganizationProject.setType(updatedOrganizationProject.getType());
-                foundOrganizationProject.setTags(updatedOrganizationProject.getTags());
-                foundOrganizationProject.setAuthors(updatedOrganizationProject.getAuthors());
-                foundOrganizationProject.setLinks(updatedOrganizationProject.getLinks());
-                this.projectRepository.save(foundOrganizationProject);
-
-                // Update project application
-                foundProjectApplication.setComment(comment);
-                this.projectApplicationRepository.save(foundProjectApplication);
-
-                return new ResponseEntity<>("OK", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Couldn't find a project application for the given project", HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            return new ResponseEntity<>("Project doesn't exist?", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Project not found", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -117,227 +97,178 @@ public class OrganizationService {
     Member application related
     ----------------------------*/
 
-    public ResponseEntity<String> acceptMemberRequest(String organizationName, String username) {
-        MemberApplication memberApplication = this.memberApplicationRepository.findByMember_Username(username);
+    public ResponseEntity<String> acceptOrDeclineMemberRequest(Organization organization, String username, boolean accept) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            return new ResponseEntity<>("Member application doesn't exist?", HttpStatus.BAD_REQUEST);
+        }
+        MemberApplication memberApplication = memberApplicationRepository.findByOrganizationAndUser(organization, user);
         if (memberApplication != null) {
-            if (memberApplication.getOrganization().getName().equals(organizationName)) {
-                if (!memberApplication.isAccepted()) {
-                    // Build the email
-                    SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-                    simpleMailMessage.setFrom("AutoPacker");
-                    simpleMailMessage.setSubject("Organization membership accepted");
-                    simpleMailMessage.setTo(memberApplication.getMember().getEmail());
+            if (!memberApplication.isAccepted()) {
+                String emailText = getMemberApplicationResponseText(username, memberApplication.getRole(), organization.getName(), accept);
+                String decision = accept ? "accepted" : "declined";
+                sendEmail("Organization membership " + decision, user.getEmail(), emailText);
 
-                    // Build message
-                    String stringBuilder =
-                            "Hi "
-                                    + memberApplication.getMember().getUsername()
-                                    + ",\n\n"
-                                    + "The purpose of this email is to inform you that you have been accepted as a "
-                                    + memberApplication.getMember().getRole().getName()
-                                    + " in "
-                                    + memberApplication.getOrganization().getName() + "."
-                                    + "\n\nBest Regards,\n\nThe AutoPacker Team";
-                    simpleMailMessage.setText(stringBuilder);
-
-                    // Send the email
-                    this.javaMailSender.send(simpleMailMessage);
-
-                    Member member = memberApplication.getMember();
-                    // Update state
-                    member.setEnabled(true);
-                    this.memberRepository.save(member);
+                if (accept) {
+                    organization.addMemberWithRole(user, memberApplication.getRole());
+                    organizationRepository.save(organization);
                     memberApplication.setAccepted(true);
                     this.memberApplicationRepository.save(memberApplication);
-
-                    return new ResponseEntity<>("Membership accepted", HttpStatus.OK);
-
                 } else {
-                    return new ResponseEntity<>("Member application is already accepted", HttpStatus.BAD_REQUEST);
+                    this.memberApplicationRepository.deleteById(memberApplication.getId());
                 }
+
+                return new ResponseEntity<>("Membership " + decision, HttpStatus.OK);
+
             } else {
-                return new ResponseEntity<>("Organization application doesn't match?!", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Member application is already accepted", HttpStatus.BAD_REQUEST);
             }
         } else {
             return new ResponseEntity<>("Member application doesn't exist?", HttpStatus.BAD_REQUEST);
         }
     }
 
-    public ResponseEntity<String> declineMemberRequest(String organizationName, String username, String comment) {
-        MemberApplication memberApplication = this.memberApplicationRepository.findByMember_Username(username);
-        if (memberApplication != null) {
-            if (memberApplication.getOrganization().getName().equals(organizationName)) {
-                if (!memberApplication.isAccepted()) {
-                    // Build the email
-                    SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-                    simpleMailMessage.setFrom("AutoPacker");
-                    simpleMailMessage.setSubject("Organization membership declined");
-                    simpleMailMessage.setTo(memberApplication.getMember().getEmail());
+    private void sendEmail(String subject, String recipientEmail, String text) {
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setFrom("AutoPacker");
+        simpleMailMessage.setSubject(subject);
+        simpleMailMessage.setTo(recipientEmail);
+        simpleMailMessage.setText(text);
+        this.javaMailSender.send(simpleMailMessage);
+    }
 
-                    // Build message
-                    String stringBuilder =
-                            "Hi "
-                                    + memberApplication.getMember().getUsername()
-                                    + ",\n\n"
-                                    + "The purpose of this email is to inform you that your request to become a "
-                                    + memberApplication.getMember().getRole().getName()
-                                    + " in "
-                                    + memberApplication.getOrganization().getName()
-                                    + " has been declined."
-                                    + "\n\nComment: " + comment
-                                    + "\n\nBest Regards,\n\nThe AutoPacker Team";
-                    simpleMailMessage.setText(stringBuilder);
-
-                    this.memberApplicationRepository.deleteById(memberApplication.getId());
-
-                    // Send the email
-                    this.javaMailSender.send(simpleMailMessage);
-                    return new ResponseEntity<>("Membership declined", HttpStatus.OK);
-
-                } else {
-                    return new ResponseEntity<>("Member application is already accepted", HttpStatus.BAD_REQUEST);
-                }
-            } else {
-                return new ResponseEntity<>("Organization application doesn't match?!", HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            return new ResponseEntity<>("Member application doesn't exist?", HttpStatus.BAD_REQUEST);
-        }
+    /**
+     * Get a text to send in confirmation email to the user who applied for membership
+     *
+     * @param username         Username for the recipient user
+     * @param role             Role or which the user applied
+     * @param organizationName Name of the organization
+     * @param accept           When true, return "Congrats, accepted" text. Otherwise return "Sorry, declined" text
+     * @return The text that can be send in an email
+     */
+    private String getMemberApplicationResponseText(String username, String role, String organizationName, boolean accept) {
+        String decision = accept ? "accepted" : "declined";
+        String stringBuilder = "Hi " + username
+                + ",\n\n"
+                + "The purpose of this email is to inform you that your application to become "
+                + role
+                + " in "
+                + organizationName + "has been " + decision + "."
+                + "\n\nBest Regards,\n\nThe AutoPacker Team";
+        return stringBuilder.toString();
     }
 
     /*------------------------------
     Project Request related
     ----------------------------*/
 
-    public ResponseEntity<String> acceptProjectRequest(Long projectRequestId, String comment) {
-        ProjectApplication projectApplication = this.projectApplicationRepository.getOne(projectRequestId);
-        if (projectApplication != null) {
-                if (!projectApplication.isAccepted()) {
-                    // Build the email
-                    SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-                    simpleMailMessage.setFrom("AutoPacker");
-                    simpleMailMessage.setSubject("Organization project request accepted");
-                    simpleMailMessage.setTo(projectApplication.getMember().getEmail());
-
-                    // Build message
-                    String stringBuilder =
-                            "Hi "
-                                    + projectApplication.getMember().getUsername()
-                                    + ",\n\n"
-                                    + "The purpose of this email is to inform you that your project request for the project: "
-                                    + projectApplication.getOrganizationProject().getName()
-                                    + " has been accepted to the organization: "
-                                    + projectApplication.getOrganization().getName()
-                                    + "\n\nComment: " + comment
-                                    + "\n\nBest Regards,\n\nThe AutoPacker Team";
-                    simpleMailMessage.setText(stringBuilder);
-
-                    // Send the email
-                    this.javaMailSender.send(simpleMailMessage);
-
-                    // Update state
-                    projectApplication.getOrganizationProject().setAccepted(true);
-                    projectApplication.setAccepted(true);
-                    this.projectApplicationRepository.save(projectApplication);
-
-                    return new ResponseEntity<>("Project request accepted", HttpStatus.OK);
-
-                } else {
-                    return new ResponseEntity<>("Project request is already accepted", HttpStatus.BAD_REQUEST);
-                }
-        } else {
-            return new ResponseEntity<>("Project request doesn't exist?", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> acceptOrDeclineProjectRequest(Long projectRequestId, User user,
+                                                                Organization organization,
+                                                                String comment, boolean accept) {
+        Optional<ProjectApplication> pa = this.projectApplicationRepository.findById(projectRequestId);
+        if (pa.isEmpty()) {
+            return new ResponseEntity<>("Project request doesn't exist", HttpStatus.BAD_REQUEST);
         }
+        ProjectApplication projectApplication = pa.get();
+        if (projectApplication.isAccepted()) {
+            return new ResponseEntity<>("Project request is already accepted", HttpStatus.BAD_REQUEST);
+        }
+
+        Project project = projectApplication.getProject();
+
+        if (accept) {
+            // Update state
+            projectApplication.setAccepted(true);
+            projectApplicationRepository.save(projectApplication);
+            project.setOrganization(organization);
+            projectRepository.save(project);
+        } else {
+            projectApplicationRepository.delete(projectApplication);
+        }
+
+        String decision = accept ? "accepted" : "declined";
+        String emailText = getProjectApplicationResponseText(user.getUsername(), project.getName(),
+                organization.getName(), comment, accept);
+        sendEmail("Organization project request " + decision, user.getEmail(), emailText);
+
+        return new ResponseEntity<>("Project request " + decision, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> declineProjectRequest(String organizationName, Long projectRequestId, String comment) {
-        ProjectApplication projectApplication = this.projectApplicationRepository.getOne(projectRequestId);
-        if (projectApplication != null) {
-            if (projectApplication.getOrganization().getName().equals(organizationName)) {
-                if (!projectApplication.isAccepted()) {
-                    // Build the email
-                    SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-                    simpleMailMessage.setFrom("AutoPacker");
-                    simpleMailMessage.setSubject("Organization project request declined");
-                    simpleMailMessage.setTo(projectApplication.getMember().getEmail());
-
-                    // Build message
-                    String stringBuilder =
-                            "Hi "
-                                    + projectApplication.getMember().getUsername()
-                                    + ",\n\n"
-                                    + "The purpose of this email is to inform you that your project request for the project " + projectApplication.getOrganizationProject().getName()
-                                    + " To the organization " + projectApplication.getOrganization().getName()
-                                    + " has been declined."
-                                    + "\n\nComment: " + comment
-                                    + "\n\nBest Regards,\n\nThe AutoPacker Team";
-                    simpleMailMessage.setText(stringBuilder);
-
-                    this.projectApplicationRepository.deleteById(projectApplication.getId());
-                    this.projectRepository.deleteById(projectApplication.getOrganizationProject().getId());
-
-                    // Send the email
-                    this.javaMailSender.send(simpleMailMessage);
-                    return new ResponseEntity<>("Project request declined", HttpStatus.OK);
-
-                } else {
-                    return new ResponseEntity<>("Project request is already accepted", HttpStatus.BAD_REQUEST);
-                }
-            } else {
-                return new ResponseEntity<>("The given organization doesn't match the project request organization", HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            return new ResponseEntity<>("Project request doesn't exist?", HttpStatus.BAD_REQUEST);
-        }
+    /**
+     * Get a text to send in confirmation email when project application is accepted or declined.
+     *
+     * @param projectName      Name of the submitted project
+     * @param username         Username for the recipient user
+     * @param organizationName Name of the organization
+     * @param comment          Comment from the Organization admin
+     * @param accept           When true, return "Congrats, accepted" text. Otherwise return "Sorry, declined" text
+     * @return The text that can be send in an email
+     */
+    private String getProjectApplicationResponseText(String username, String projectName, String organizationName,
+                                                     String comment, boolean accept) {
+        // Build message
+        String stringBuilder = "Hi "
+                + username
+                + ",\n\n"
+                + "The purpose of this email is to inform you that your project request for the project: "
+                + projectName
+                + " has been accepted to the organization: "
+                + organizationName
+                + "\n\nComment: " + comment
+                + "\n\nBest Regards,\n\nThe AutoPacker Team";
+        return stringBuilder.toString();
     }
 
-
-    public ResponseEntity<String> createNewOrg(Organization organization, String username, String email, String name, Role role) {
-        Organization orgFound = this.organizationRepository.findByName(organization.getName());
-        if (orgFound == null){
-                this.organizationRepository.save(organization);
-
-
-                Member user = new Member(organization, role, username, name, email);
-                user.setEnabled(true);
-                System.out.println(user);
-                this.memberRepository.save(user);
-
-                return new ResponseEntity<>("Organization Created", HttpStatus.OK);
+    public ResponseEntity<String> createNewOrg(String name, String description, String ownerUsername, String url,
+                                               boolean isPublic) {
+        User owner = userRepository.findByUsername(ownerUsername);
+        if (owner == null) {
+            return new ResponseEntity<>("Incorrect owner username!", HttpStatus.BAD_REQUEST);
+        }
+        Organization organization = organizationRepository.findByName(name);
+        if (organization == null) {
+            organization = new Organization(name, description, url, isPublic, owner);
+            organizationRepository.save(organization);
+            return new ResponseEntity<>("Organization Created", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Organization already existing!", HttpStatus.BAD_REQUEST);
         }
     }
 
-    public ResponseEntity<String> changeRole(String orgName, String user, Role role) {
-        Organization orgFound = this.organizationRepository.findByName(orgName);
-        Member memberFound = this.memberRepository.findByUsernameIgnoreCaseAndIsEnabledIsTrue(user);
-        if (orgFound != null){
-            if (memberFound != null){
-                    memberFound.setRole(role);
-                    memberRepository.save(memberFound);
-                    return new ResponseEntity<>("Role Changed!", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Organization do not exist!", HttpStatus.BAD_REQUEST);
-            }
+    public ResponseEntity<String> changeRole(Organization organization, String username, String role) {
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            organization.addMemberWithRole(user, role);
+            organizationRepository.save(organization);
+            return new ResponseEntity<>("Role Changed!", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Organization do not exist!", HttpStatus.BAD_REQUEST);
         }
     }
 
-    public ResponseEntity<String> deleteMember(String orgName, String user) {
-        Organization orgFound = this.organizationRepository.findByName(orgName);
-        Member memberFound = this.memberRepository.findByOrganization_NameAndUsername(orgName, user);
-        if (orgFound != null){
-            if (memberFound != null){
-                Long id = memberFound.getId();
-                this.memberRepository.deleteById(id);
+    public ResponseEntity<String> deleteMember(Organization organization, String username) {
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            if (organization.removeMember(user)) {
+                organizationRepository.save(organization);
                 return new ResponseEntity<>("User Deleted", HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Organization do not exist!", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("User was not a member of the organization!", HttpStatus.BAD_REQUEST);
             }
         } else {
-            return new ResponseEntity<>("Organization do not exist!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("User does not exist!", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    /**
+     * Check if the specified user is a member of the specified organization
+     *
+     * @param user
+     * @param organization
+     * @return True if the user is a member of the organization, false otherwise
+     */
+    public boolean isOrgMemberOf(User user, Organization organization) {
+        if (user == null || organization == null) return false;
+        return user.isMemberOf(organization);
     }
 }

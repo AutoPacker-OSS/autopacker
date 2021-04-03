@@ -32,7 +32,7 @@ public interface UserService {
 
     /**
      * Return the current user or null if the user has not logged in
-     * @return
+     * @return The currently authenticated user
      */
     User getAuthenticatedUser();
 }

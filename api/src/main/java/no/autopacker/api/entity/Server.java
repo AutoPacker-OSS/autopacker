@@ -31,6 +31,7 @@ public class Server {
 
     private String ssh;
 
+    // TODO - set reference to User object
     @NotEmpty
     private String owner;
 
