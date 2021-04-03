@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.autopacker.api.entity.Server;
 import no.autopacker.api.entity.User;
 import no.autopacker.api.repository.ServerRepository;
-import no.autopacker.api.userinterface.UserService;
+import no.autopacker.api.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

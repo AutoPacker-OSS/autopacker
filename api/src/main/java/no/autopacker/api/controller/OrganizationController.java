@@ -14,7 +14,7 @@ import no.autopacker.api.repository.UserRepository;
 import no.autopacker.api.repository.fdapi.ProjectRepository;
 import no.autopacker.api.repository.organization.*;
 import no.autopacker.api.service.OrganizationService;
-import no.autopacker.api.userinterface.UserService;
+import no.autopacker.api.interfaces.UserService;
 import no.autopacker.api.utils.OrgAuthInfo;
 import org.json.JSONException;
 import org.json.JSONObject;

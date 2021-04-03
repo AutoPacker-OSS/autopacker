@@ -1,4 +1,4 @@
-package no.autopacker.api.userinterface;
+package no.autopacker.api.interfaces;
 
 import no.autopacker.api.entity.User;
 import org.springframework.http.ResponseEntity;

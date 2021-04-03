@@ -5,7 +5,7 @@ import no.autopacker.api.entity.User;
 import no.autopacker.api.repository.ServerRepository;
 import no.autopacker.api.service.RemoteScriptExec;
 import no.autopacker.api.service.ServerService;
-import no.autopacker.api.userinterface.UserService;
+import no.autopacker.api.interfaces.UserService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;

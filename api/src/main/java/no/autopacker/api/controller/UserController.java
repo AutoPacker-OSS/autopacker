@@ -4,8 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
+
+import no.autopacker.api.dto.UserDto;
 import no.autopacker.api.entity.User;
-import no.autopacker.api.userinterface.UserService;
+import no.autopacker.api.interfaces.UserService;
+import no.autopacker.api.mapper.UserMapper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -31,12 +34,14 @@ public class UserController {
 
     private final UserService userService;
     private final ObjectMapper objectMapper;
+    private final UserMapper userMapper;
 
     @Autowired
     public UserController(UserService userService,
                           ObjectMapper objectMapper) {
         this.userService = userService;
         this.objectMapper = objectMapper;
+        this.userMapper = new UserMapper();
     }
 
     /**
@@ -137,11 +142,16 @@ public class UserController {
     @GetMapping(value = "/search")
     public ResponseEntity<String> searchUsers(@RequestParam("q") String query) {
         try {
+            List<User> users;
             if (query.trim().equals("")) {
-                return new ResponseEntity<>(this.objectMapper.writeValueAsString(this.userService.findAllUsers()), HttpStatus.OK);
+                users = this.userService.findAllUsers();
             } else {
-                return new ResponseEntity<>(this.objectMapper.writeValueAsString(this.userService.searchAllUsers(query)), HttpStatus.OK);
+                users = this.userService.searchAllUsers(query);
             }
+            List<UserDto> userDtos = this.userMapper.toUserDtoList(users);
+            String responseString = this.objectMapper.writeValueAsString(userDtos);
+
+            return new ResponseEntity<>(responseString, HttpStatus.OK);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return new ResponseEntity<>("Something went wrong while parsing users", HttpStatus.BAD_REQUEST);
