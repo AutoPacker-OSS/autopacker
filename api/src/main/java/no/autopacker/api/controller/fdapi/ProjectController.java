@@ -271,7 +271,8 @@ public class ProjectController {
 
     @RequestMapping(value = "/projects/{username}/public", method = RequestMethod.GET)
     public ResponseEntity<String> getAllPublicProjectsForUser(@PathVariable("username") String username) {
-        List<Project> list = this.projectRepo.findAllPublicForUser(username);
+        User user = this.userRepository.findByUsername(username);
+        List<Project> list = this.projectRepo.findAllPublicForUser(user.getId());
         try {
             return ResponseEntity.ok(this.objectMapper.writeValueAsString(list));
         } catch (JsonProcessingException e) {
@@ -283,7 +284,8 @@ public class ProjectController {
     @RequestMapping(value = "/projects/{username}/public/search", method = RequestMethod.GET)
     public ResponseEntity<String> searchAllPublicProjectsForUser(@PathVariable("username") String username,
                                                                  @RequestParam("q") String query) {
-        List<Project> list = this.projectRepo.searchAllPublicForUser(username, query);
+        User user = this.userRepository.findByUsername(username);
+        List<Project> list = this.projectRepo.searchAllPublicForUser(user.getId(), query);
         try {
             return ResponseEntity.ok(this.objectMapper.writeValueAsString(list));
         } catch (JsonProcessingException e) {
@@ -316,23 +318,23 @@ public class ProjectController {
         return response;
     }
 
-    @GetMapping(value = "/project-overview/{username}/{projectId}")
-    public ResponseEntity<String> getServerOverview(@PathVariable("username") String username,
-                                                    @PathVariable("projectId") Long projectId) {
-        ResponseEntity<String> response;
-        Project project = this.projectRepo.findByOwnerAndId(userRepository.findByUsername(username), projectId);
+    @GetMapping(value = "/project-overview/{username}/{projectName}")
+    public ResponseEntity<String> getProjectOverview(@PathVariable("username") String username,
+                                                    @PathVariable("projectName") String projectName) {
+        User user = this.userRepository.findByUsername(username);
+        Project project = this.projectRepo.findByOwnerAndName(user, projectName);
         if (project != null) {
-            project.setModules(this.moduleRepo.findAllByProjectId(projectId));
+            project.setModules(this.moduleRepo.findAllByProjectId(project.getId()));
             try {
-                response = new ResponseEntity(this.objectMapper.writeValueAsString(project), HttpStatus.OK);
+                String responseString = this.objectMapper.writeValueAsString(project);
+                return new ResponseEntity<>(responseString, HttpStatus.OK);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
-                response = new ResponseEntity("Something went wrong while parsing project", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Something went wrong while parsing project", HttpStatus.BAD_REQUEST);
             }
         } else {
-            response = new ResponseEntity("Couldn't find project matching criteria", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Couldn't find project matching criteria", HttpStatus.NOT_FOUND);
         }
-        return response;
     }
 
     @RequestMapping(value = "/projects", method = RequestMethod.GET)

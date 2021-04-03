@@ -93,9 +93,11 @@ public class OrganizationDBInit implements CommandLineRunner {
         // Create project
         Project ntnuPrivateProj = new Project("NTNUPrivate", arro, "https://ntnu.no/projectOne", true);
         ntnuPrivateProj.setDescription("A private NTNU project");
-        Project ntnuPublicProj = new Project("NTNUPublic", adminUser, "https://ntnu.no/projectSecret", false);
-        ntnuPrivateProj.setDescription("A public NTNU project");
         ntnuPrivateProj.setOrganization(ntnu);
+        Project ntnuPublicProj = new Project("NTNUPublic", adminUser, "https://ntnu.no/projectSecret", false);
+        ntnuPublicProj.setDescription("A public NTNU projec");
+        ntnuPublicProj.setWebsite("http://localhost:3000");
+        ntnuPublicProj.setTags("test,tag,something");
         ntnuPublicProj.setOrganization(ntnu);
 
         Project testProjPublic = new Project("TestPublicProj", adminUser, "http://myproject.no", false);
