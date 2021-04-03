@@ -271,7 +271,8 @@ public class ProjectController {
 
     @RequestMapping(value = "/projects/{username}/public", method = RequestMethod.GET)
     public ResponseEntity<String> getAllPublicProjectsForUser(@PathVariable("username") String username) {
-        List<Project> list = this.projectRepo.findAllPublicForUser(username);
+        User user = this.userRepository.findByUsername(username);
+        List<Project> list = this.projectRepo.findAllPublicForUser(user.getId());
         try {
             return ResponseEntity.ok(this.objectMapper.writeValueAsString(list));
         } catch (JsonProcessingException e) {

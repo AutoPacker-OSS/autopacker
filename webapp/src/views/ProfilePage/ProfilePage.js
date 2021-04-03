@@ -2,7 +2,7 @@ import { Avatar, Col, Divider, Input, Pagination, Row, Tabs, Tag, Typography } f
 import axios from "axios";
 import { format } from "date-fns";
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import Identicon from "../../assets/image/download.png";
 // Import custom hooks
 import useDebounce from "./../../hooks/useDebounce";
@@ -11,7 +11,6 @@ function ProfilePage() {
 	// State
 	const [projects, setProjects] = React.useState([]);
 	const [search, setSearch] = React.useState("");
-	const [username, setUsername] = React.useState("");
 
 	// Pagination state for projects
 	const [minNumbProjects, setMinNumbProjects] = React.useState(0);
@@ -24,9 +23,7 @@ function ProfilePage() {
 
 	const debouncedSearchTerm = useDebounce(search, 500);
 
-	useEffect(() => {
-		setUsername(sessionStorage.getItem("selectedPublicUser"));
-	}, []);
+	const { username } = useParams();
 
 	const handleProjectsPaginationChange = (value) => {
 		if (value <= 1) {
@@ -59,7 +56,7 @@ function ProfilePage() {
 					process.env.REACT_APP_APPLICATION_URL +
 					process.env.REACT_APP_FILE_DELIVERY_API +
 					"/projects/" +
-					window.location.href.split("/account/")[1] +
+					username +
 					"/public";
 
 				axios.get(projectsUrl).then((response) => {
@@ -157,7 +154,7 @@ function ProfilePage() {
 																			float: "left",
 																		}}
 																	>
-																		{project.tags.length > 1 ? (
+																		{project.tags !== '' && project.tags !== null ? (
 																			project.tags.split(",", 2).map((tag) => (
 																				<span
 																					key={tag}
