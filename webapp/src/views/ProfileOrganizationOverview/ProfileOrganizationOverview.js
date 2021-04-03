@@ -13,7 +13,7 @@ import {
 } from "antd";
 import axios from "axios";
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import NTNU from "../../assets/image/ntnu.png";
 import { useKeycloak } from "@react-keycloak/web";
 // Import custom hooks
@@ -39,35 +39,32 @@ function ProfileOrganizationOverview() {
 
 	const debouncedSearchTerm = useDebounce(search, 500);
 
-	const organizationName = sessionStorage.getItem("selectedPublicOrganization");
+	const { organizationName } = useParams();
 
-	// TODO - refactor - code duplicate with ProfileOrganizationForm
 	useEffect(() => {
-		clearSessionStorage()
-		const projectsUrl =
-			process.env.REACT_APP_APPLICATION_URL +
-			process.env.REACT_APP_GENERAL_API +
-			"/organization/" +
-			organizationName;
+		if (organizationName) {
+			clearSessionStorage()
+			const projectsUrl =
+				process.env.REACT_APP_APPLICATION_URL +
+				process.env.REACT_APP_GENERAL_API +
+				"/organization/" +
+				organizationName;
 
-		axios.get(projectsUrl).then((response) => {
-			setOrganization(response.data);
-		});
+			axios.get(projectsUrl).then((response) => {
+				setOrganization(response.data);
+			});
 
-		if (keycloak.authenticated) {
-			// First checking if the value isMemberOfOrganization is available in session, if not do a request.
-			setIsMember(false);
-			const isMemberOfOrganization = sessionStorage.getItem("isMember");
-			if (isMemberOfOrganization === undefined || isMemberOfOrganization === null) {
+			if (keycloak.authenticated) {
+				// First checking if the value isMemberOfOrganization is available in session, if not do a request.
 				axios
 					.get(
 						process.env.REACT_APP_APPLICATION_URL +
-							process.env.REACT_APP_GENERAL_API +
-							"/organization/" +
-							organizationName +
-							"/" +
-							keycloak.idTokenParsed.preferred_username +
-							"/isMember"
+						process.env.REACT_APP_GENERAL_API +
+						"/organization/" +
+						organizationName +
+						"/" +
+						keycloak.idTokenParsed.preferred_username +
+						"/isMember"
 					)
 					.then((response) => {
 						sessionStorage.setItem("isMember", response.data);
@@ -77,13 +74,11 @@ function ProfileOrganizationOverview() {
 						// Set default to true to hide the request membership button
 						setIsMember(true);
 					});
-			} else {
-				setIsMember(isMemberOfOrganization);
 			}
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [organizationName]);
 
 	const handleProjectsPaginationChange = (value) => {
 		if (value <= 1) {
@@ -122,6 +117,7 @@ function ProfileOrganizationOverview() {
 					"/projects";
 
 				axios.get(projectsUrl).then((response) => {
+					console.log("RESPONSE DATA:", response.data);
 					setProjects(response.data);
 				});
 			}
@@ -245,8 +241,7 @@ function ProfileOrganizationOverview() {
 																			}}
 																		>
 																			{project.name} /{" "}
-																			{project.tags.length >
-																			1 ? (
+																			{project.tags !== '' && project.tags !== null? (
 																				project.tags
 																					.split(",", 2)
 																					.map((tag) => (
@@ -272,7 +267,7 @@ function ProfileOrganizationOverview() {
 																		</Text>
 																	</Link>
 																	<Paragraph ellipsis>
-																		{project.descriptionription}
+																		{project.description}
 																	</Paragraph>
 																</div>
 															</Col>

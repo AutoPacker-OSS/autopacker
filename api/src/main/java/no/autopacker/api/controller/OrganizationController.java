@@ -279,11 +279,13 @@ public class OrganizationController {
      * @return HTTP OK if the user is part of the organization and HTTP BAD REQUEST if not
      */
     @GetMapping(value = "/{organization}/{username}/isMember")
-    public ResponseEntity<String> checkIfUserIsPartOfAnOrganization(@PathVariable("organization") String organizationName,
+    public ResponseEntity<Boolean> checkIfUserIsPartOfAnOrganization(@PathVariable("organization") String organizationName,
                                                                     @PathVariable("username") String username) {
-        boolean isMember = organizationService.isOrgMemberOf(userRepository.findByUsername(username),
-                organizationRepository.findByName(organizationName));
-        return new ResponseEntity<>("", isMember ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+        User user = this.userRepository.findByUsername(username);
+        Organization organization = this.organizationRepository.findByName(organizationName);
+        boolean isMember = organizationService.isOrgMemberOf(user, organization);
+
+        return new ResponseEntity<>(isMember, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{username}/isMember")
