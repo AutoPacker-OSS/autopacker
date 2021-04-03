@@ -231,7 +231,7 @@ function NewOrganization() {
                     >
                         <Input onChange={(e) => validateEmail(e.target.value)} />
                     </Form.Item>
-                    // TODO - remove name and email, redundant -->
+                    {/*TODO - remove name and email, redundant*/}
                     <Form.Item
                         name="name"
                         label="Your Name"

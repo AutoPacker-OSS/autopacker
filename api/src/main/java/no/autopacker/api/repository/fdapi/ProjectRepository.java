@@ -26,7 +26,7 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
 
     @Query(value = "SELECT * FROM project WHERE owner_id = ?1 AND LOWER(name) LIKE CONCAT('%', LOWER(?2), '%')",
             nativeQuery = true)
-    List<Project> searchAllForUser(String ownerUsername, String search);
+    List<Project> searchAllForUser(String ownerId, String search);
 
     @Query(value = "SELECT * FROM project WHERE is_private = false AND owner_id = ?1", nativeQuery = true)
     List<Project> findAllPublicForUser(String ownerId);

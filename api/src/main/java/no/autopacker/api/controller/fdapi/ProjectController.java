@@ -96,19 +96,23 @@ public class ProjectController {
     @RequestMapping(value = "/projects/{username}/search")
     public ResponseEntity<String> searchUserProject(@PathVariable("username") String username,
                                                     @RequestParam("q") String query) {
-        try {
-            if (query.trim().equals("")) {
-                List<Project> userProjects = projectRepo.findAllByOwner(userRepository.findByUsername(username));
+        User user = this.userRepository.findByUsername(username);
+        if (user != null) {
+            try {
+                if (query.trim().equals("")) {
+                    List<Project> userProjects = projectRepo.findAllByOwner(user);
+                    return ResponseEntity.ok(this.objectMapper.writeValueAsString(userProjects));
 
-                return ResponseEntity.ok(this.objectMapper.writeValueAsString(userProjects));
-
-            } else {
-                List<Project> userProjects = projectRepo.searchAllForUser(username, query);
-                return ResponseEntity.ok(this.objectMapper.writeValueAsString(userProjects));
+                } else {
+                    List<Project> userProjects = projectRepo.searchAllForUser(user.getId(), query);
+                    return ResponseEntity.ok(this.objectMapper.writeValueAsString(userProjects));
+                }
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                return new ResponseEntity<>("Something went wrong while parsing projects", HttpStatus.BAD_REQUEST);
             }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("Something went wrong while parsing projects", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 
