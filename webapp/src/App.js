@@ -87,7 +87,7 @@ function App() {
 				{/*Public views, no sign-in required*/}
 				<PublicLazyRoute path="/organization/:organization/membership" component={ProfileOrganizationForm} />
 				<PublicLazyRoute exact path="/organization/:organization" component={ProfileOrganizationOverview} />
-				<PublicLazyRoute path="/account/:username/project/:project" component={ProfileProjectOverview} />
+				<PublicLazyRoute path="/account/:username/project/:projectName" component={ProfileProjectOverview} />
 				{/* <PublicLazyRoute path="/registrationConfirmation" component={Verification} /> */}
 				<PublicLazyRoute exact path="/account/:username" component={ProfilePage} />
 				<PublicLazyRoute path="/search" component={SearchResult} />
