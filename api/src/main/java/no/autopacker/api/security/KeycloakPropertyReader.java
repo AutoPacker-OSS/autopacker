@@ -5,7 +5,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
 @Configuration
-@PropertySource("classpath:bootstrap.yml")
 public class KeycloakPropertyReader {
 
     private final Environment env;
