@@ -24,11 +24,25 @@ function Projects() {
 
 	const dispatch = useDispatch();
 
+	//Button width/height size initial state
+	const [btnWidth, setBtnWidth] = React.useState(0);
+	const [btnHeight, setBtnHeight] = React.useState(0);
+	const ref = React.useRef(null);
+
 	// Get antd sub components
 	const { Paragraph } = Typography;
 	const { Content } = Layout;
 	const { Search } = Input;
 	const { Meta } = Card;
+
+	useEffect(() => {
+			if (ref.current && ref.current.getBoundingClientRect().width) {
+				setBtnWidth(ref.current.getBoundingClientRect().width);
+			}
+			if (ref.current && ref.current.getBoundingClientRect().height) {
+				setBtnHeight(ref.current.getBoundingClientRect().height);
+			}
+		});
 
 	useEffect(() => {
 		setSelectedCard(null);
@@ -112,16 +126,24 @@ function Projects() {
 					minHeight: 280,
 				}}
 			>
-				<Search
-					style={{ width: "80%", marginRight: "3%" }}
+				<div style={{ display: "flex" }}>
+					<Search
+						style={{ width: "90%", marginRight: "5%" }}
 					placeholder="Search projects..."
 					onChange={(e) => setSearch(e.target.value)}
 				/>
-				<Button style={{ width: "17%" }} type="primary">
+				<Button style={btnWidth && btnHeight
+					? {
+						width: `${btnWidth}px`,
+						height: `${btnHeight}px`,
+						marginLeft: "auto",
+					}
+					: {}} type="primary">
 					<Link id="new-project-link" to="/profile/projects/new">
 						New Project
 					</Link>
 				</Button>
+				</div>
 				<Row style={{ marginTop: 20 }} gutter={[24, 24]}>
 					{projects.map((project) => (
 						<Col xs={24} lg={8} xl={6} xxl={4} key={project.id}>
