@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-@Order(value = 3)
+@Order(value = 1)
 public class DBImportDefaultDockerFilesCompose implements CommandLineRunner {
     private final DockerfileRepository dockerfileRepo;
     private final ComposeBlockRepository composeRepo;

@@ -80,11 +80,11 @@ function NewOrganization() {
                     Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
                 },
                 data: {
-                    orgName: orgName,
+                    organizationName: orgName,
                     orgDesc: orgDesc,
                     url: url,
                     isPublic: isPublic,
-                    username: keycloak.idTokenParsed.preferred_username,
+                    owner: keycloak.idTokenParsed.preferred_username,
                     email: email,
                     name: name,
                     role: "ADMIN"
@@ -231,6 +231,7 @@ function NewOrganization() {
                     >
                         <Input onChange={(e) => validateEmail(e.target.value)} />
                     </Form.Item>
+                    {/*TODO - remove name and email, redundant*/}
                     <Form.Item
                         name="name"
                         label="Your Name"

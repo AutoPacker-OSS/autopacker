@@ -3,8 +3,10 @@ package no.autopacker.api.entity.organization;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.autopacker.api.entity.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data
@@ -18,9 +20,13 @@ public class MemberApplication {
 
     private String comment;
 
-    @OneToOne(targetEntity = Member.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "member_id")
-    private Member member;
+    // The requested role
+    @NotNull
+    private String role;
+
+    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "user_id")
+    private User user;
 
     @JsonIgnore
     @ManyToOne
@@ -32,10 +38,11 @@ public class MemberApplication {
 
     private boolean isAccepted;
 
-    public MemberApplication(Member member, String comment) {
-        this.organization = member.getOrganization();
-        this.member = member;
+    public MemberApplication(User user, Organization organization, String role, String comment) {
+        this.organization = organization;
+        this.user = user;
         this.comment = comment;
+        this.role = role;
         this.isAccepted = false;
     }
 

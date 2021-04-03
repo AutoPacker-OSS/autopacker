@@ -149,10 +149,10 @@ function SearchResult(props) {
 
 													<Link
 														onClick={() => {
-															sessionStorage.setItem("selectedPublicUser", project.owner);
+															sessionStorage.setItem("selectedPublicUser", project.owner.username);
 															sessionStorage.setItem("selectedPublicProject", project.id);
 														}}
-														to={"/account/" + project.owner + "/project/" + project.name}
+														to={"/account/" + project.owner.username + "/project/" + project.name}
 													>
 														<Text
 															strong
@@ -160,7 +160,7 @@ function SearchResult(props) {
 																cursor: "pointer",
 															}}
 														>
-															{project.owner} / {project.name}
+															{project.owner.username} / {project.name}
 														</Text>
 													</Link>
 													<Paragraph ellipsis>{project.description}</Paragraph>

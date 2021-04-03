@@ -1,4 +1,4 @@
-package no.autopacker.api.userinterface;
+package no.autopacker.api.interfaces;
 
 import no.autopacker.api.entity.User;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +32,7 @@ public interface UserService {
 
     /**
      * Return the current user or null if the user has not logged in
-     * @return
+     * @return The currently authenticated user
      */
     User getAuthenticatedUser();
 }

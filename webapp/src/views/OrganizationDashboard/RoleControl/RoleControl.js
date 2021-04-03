@@ -68,8 +68,8 @@ function RoleControl() {
                     Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
                 },
                 data: {
-                    orgName: organizationName,
-                    user: user,
+                    organizationName: organizationName,
+                    username: user,
                     role: newRole
 
                 },
@@ -120,8 +120,8 @@ function RoleControl() {
                     Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
                 },
                 data: {
-                    orgName: organizationName,
-                    user: user
+                    organizationName: organizationName,
+                    username: user
 
                 },
             })

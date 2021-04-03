@@ -2,7 +2,7 @@ package no.autopacker.api.service;
 
 import no.autopacker.api.entity.User;
 import no.autopacker.api.repository.UserRepository;
-import no.autopacker.api.userinterface.UserService;
+import no.autopacker.api.interfaces.UserService;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;

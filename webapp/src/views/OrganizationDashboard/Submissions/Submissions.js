@@ -74,17 +74,17 @@ function Submissions() {
 		},
 	];
 
-	const deleteRequest = (id) => {
+	const deleteRequest = (applicationId) => {
 		// TODO Change method to DELETE and equivalent on general-api backend service
 		axios({
-			method: "get",
+			method: "delete",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
 				process.env.REACT_APP_GENERAL_API +
 				"/organization/" +
 				organizationName +
 				"/delete-project-application/" +
-				id,
+				applicationId,
 			headers: {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
@@ -149,7 +149,7 @@ function Submissions() {
 								header={
 									request.member.username +
 									" - " +
-									request.organizationProject.name
+									request.project.name
 								}
 								key={request.id}
 								extra={request.created}
@@ -176,15 +176,15 @@ function Submissions() {
 												{request.member.username}
 											</Descriptions.Item>
 											<Descriptions.Item label="Project Name">
-												{request.organizationProject.name}
+												{request.project.name}
 											</Descriptions.Item>
 											<Descriptions.Item label="Type">
-												{request.organizationProject.type}
+												{request.project.type}
 											</Descriptions.Item>
 
 											<Descriptions.Item label="Tags">
-												{request.organizationProject.tags.length > 1 ? (
-													request.organizationProject.tags
+												{request.project.tags.length > 1 ? (
+													request.project.tags
 														.split(",")
 														.map((tag) => (
 															<span
@@ -202,19 +202,19 @@ function Submissions() {
 
 										<Descriptions layout="horizontal">
 											<Descriptions.Item label="Description">
-												{request.organizationProject.description}
+												{request.project.description}
 											</Descriptions.Item>
 										</Descriptions>
 
 										<Descriptions layout="horizontal">
 											<Descriptions.Item label="Authors">
-												<b>{request.organizationProject.authors}</b>
+												<b>{request.project.authors}</b>
 											</Descriptions.Item>
 										</Descriptions>
 
 										<Descriptions layout="horizontal">
 											<Descriptions.Item label="Links">
-												<b>{request.organizationProject.links}</b>
+												<b>{request.project.links}</b>
 											</Descriptions.Item>
 										</Descriptions>
 
@@ -252,11 +252,11 @@ function Submissions() {
 					{selectedRequest !== null ? (
 						<Modal
 							title={
-								'Delete "' + selectedRequest.organizationProject.name + '" request?'
+								'Delete "' + selectedRequest.project.name + '" request?'
 							}
 							centered
 							visible={openDeleteModal}
-							onOk={() => deleteRequest(selectedRequest.organizationProject.id)}
+							onOk={() => deleteRequest(selectedRequest.id)}
 							onCancel={() => setOpenDeleteModal(false)}
 						>
 							<p>Are you sure you want to delete this project request?</p>
@@ -267,7 +267,7 @@ function Submissions() {
 					{/* Edit Modal */}
 					{selectedRequest !== null ? (
 						<Modal
-							title={'Edit "' + selectedRequest.organizationProject.name + '"?'}
+							title={'Edit "' + selectedRequest.project.name + '"?'}
 							centered
 							visible={openEditModal}
 							onCancel={() => setOpenEditModal(false)}

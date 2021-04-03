@@ -14,10 +14,11 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import Identicon from "../../assets/image/download.png";
 import { GlobalOutlined, GitlabOutlined, FolderOutlined } from "@ant-design/icons";
+import {useParams} from "react-router-dom";
 
 function ProfileProjectOverview() {
 	// State
-	const [project, setProject] = React.useState([]);
+	const [project, setProject] = React.useState();
 	const [tags, setTags] = React.useState([]);
 	// Import sub components from antd
 	const { Title, Paragraph, Text } = Typography;
@@ -26,24 +27,28 @@ function ProfileProjectOverview() {
 	const [minNumbModules, setMinNumbModules] = React.useState(0);
 	const [maxNumbModules, setMaxNumbModules] = React.useState(10);
 
+	const { username, projectName } = useParams();
+
 	useEffect(() => {
-		const selectedUser = sessionStorage.getItem("selectedPublicUser");
-		const selectedProject = sessionStorage.getItem("selectedPublicProject");
+		if (username && projectName) {
+			const url =
+				process.env.REACT_APP_APPLICATION_URL +
+				process.env.REACT_APP_FILE_DELIVERY_API +
+				"/project-overview/" +
+				username +
+				"/" +
+				projectName;
 
-		const url =
-			process.env.REACT_APP_APPLICATION_URL +
-			process.env.REACT_APP_FILE_DELIVERY_API +
-			"/project-overview/" +
-			selectedUser +
-			"/" +
-			selectedProject;
-
-		axios.get(url).then((response) => {
-			setProject(response.data);
-			setTags(response.data.tags.split(","));
-		});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+			axios.get(url).then((response) => {
+				setProject(response.data);
+				if (response.data.tags) {
+					setTags(response.data.tags.split(","));
+				} else {
+					setTags([]);
+				}
+			});
+		}
+	}, [username, projectName]);
 
 	const handleProjectsPaginationChange = (value) => {
 		if (value <= 1) {
@@ -55,15 +60,7 @@ function ProfileProjectOverview() {
 		}
 	};
 
-	const title = (
-		<div>
-			{project.name}
-			<GlobalOutlined style={{ marginLeft: 20 }} />
-			{project.private ? " Private" : " Public"}
-		</div>
-	);
-
-	return (
+	return project ? (
 		<React.Fragment>
 			<Row style={{
 				borderTop: "1px solid rgb(235, 237, 240)",
@@ -85,7 +82,7 @@ function ProfileProjectOverview() {
 									src={Identicon}
 									alt="identicon"
 								/>
-								<Title level={4}>{project.owner}</Title>
+								{/*<Title level={4}>{project.owner.username}</Title>*/}
 							</div>
 						</Col>
 						{/* Profile Content */}
@@ -97,7 +94,13 @@ function ProfileProjectOverview() {
 									paddingBottom: 40,
 								}}
 								onBack={() => window.history.back()}
-								title={title}
+								title={
+									<div>
+										{project.name}
+										<GlobalOutlined style={{ marginLeft: 20 }} />
+										{project.private ? " Private" : " Public"}
+									</div>
+								}
 							>
 								<Paragraph>{project.description}</Paragraph>
 								<Paragraph style={{ color: "blue" }}>
@@ -197,7 +200,7 @@ function ProfileProjectOverview() {
 				</Col>
 			</Row>
 		</React.Fragment>
-	);
+	) : null;
 }
 
 export default ProfileProjectOverview;
