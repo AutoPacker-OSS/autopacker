@@ -53,15 +53,15 @@ function App() {
 				{/*Organization*/}
 
 				<OrganizationDashboardRoute path="/organization/submissions/:organization" component={Submissions} />
-				<OrganizationDashboardRoute path="/organization/project-requests/:organization" component={ProjectRequests} />
-				<OrganizationDashboardRoute path="/organization/create-project/:organization" component={NewOrgProject} />
-				<OrganizationDashboardRoute path="/organization/dashboard/:organization" component={OrganizationDashboard} />
-				<OrganizationDashboardRoute path="/organization/:organization/overview/:project" component={OrgProjectOverview} />
-				<OrganizationDashboardRoute path="/organization/applicants/:organization" component={Applicants} />
-				<OrganizationDashboardRoute path="/organization/members/:organization" component={Members} />
-				<OrganizationDashboardRoute path="/organization/pre-submission/:organization" component={OrgPersonalProject} />
-				<OrganizationDashboardRoute path="/organization/pre-submission-overview/:organization/:project" component={PreSubmissionOverview} />
-				<OrganizationDashboardRoute path="/organization/rolecontrol/:organization" component={RoleControl} />
+				<OrganizationDashboardRoute path="/organization/project-requests/:organizationName" component={ProjectRequests} />
+				<OrganizationDashboardRoute path="/organization/create-project/:organizationName" component={NewOrgProject} />
+				<OrganizationDashboardRoute path="/organization/dashboard/:organizationName" component={OrganizationDashboard} />
+				<OrganizationDashboardRoute path="/organization/:organization/overview/:projectName" component={OrgProjectOverview} />
+				<OrganizationDashboardRoute path="/organization/applicants/:organizationName" component={Applicants} />
+				<OrganizationDashboardRoute path="/organization/members/:organizationName" component={Members} />
+				<OrganizationDashboardRoute path="/organization/pre-submission/:organizationName" component={OrgPersonalProject} />
+				<OrganizationDashboardRoute path="/organization/pre-submission-overview/:organizationName/:projectName" component={PreSubmissionOverview} />
+				<OrganizationDashboardRoute path="/organization/rolecontrol/:organizationName" component={RoleControl} />
 
 
 				<ProfileDashboardRoute exact path="/profile/organization/add/" component={NewOrganization}/>
@@ -69,23 +69,23 @@ function App() {
 				{/*Servers*/}
 				<ProfileDashboardRoute exact path="/profile/servers" component={Servers} />
 				<ProfileDashboardRoute exact path="/profile/servers/add" component={NewServer} />
-				<ProfileDashboardRoute exact path="/profile/servers/overview/:server" component={ServerOverview} />
-				<ProfileDashboardRoute path="/profile/servers/overview/:server/settings" component={ServerSettings} />
+				<ProfileDashboardRoute exact path="/profile/servers/overview/:serverName" component={ServerOverview} />
+				<ProfileDashboardRoute path="/profile/servers/overview/:serverName/settings" component={ServerSettings} />
 
 
 				{/*Projects*/}
 				<ProfileDashboardRoute exact path="/profile/projects" component={Projects} />
 				<ProfileDashboardRoute exact path="/profile/projects/new" component={NewProject} />
 				<ProfileDashboardRoute exact path="/profile/projects/add-module" component={ModuleSelection} />
-				<ProfileDashboardRoute exact path="/profile/projects/overview/:project" component={ProjectOverview} />
-				<ProfileDashboardRoute path="/profile/projects/overview/:project/settings" component={ProjectSettings} />
+				<ProfileDashboardRoute exact path="/profile/projects/overview/:projectName" component={ProjectOverview} />
+				<ProfileDashboardRoute path="/profile/projects/overview/:projectName/settings" component={ProjectSettings} />
 
 				<ProfileDashboardRoute path="/profile/organizations" component={Organizations} />
 				<ProfileDashboardRoute path="/profile/settings" component={Settings} />
 				<ProfileDashboardRoute exact path="/profile" component={Dashboard} />
 
 				{/*Public views, no sign-in required*/}
-				<PublicLazyRoute path="/organization/:organization/membership" component={ProfileOrganizationForm} />
+				<PublicLazyRoute path="/organization/:organizationName/membership" component={ProfileOrganizationForm} />
 				<PublicLazyRoute exact path="/organization/:organizationName" component={ProfileOrganizationOverview} />
 				<PublicLazyRoute path="/account/:username/project/:projectName" component={ProfileProjectOverview} />
 				{/* <PublicLazyRoute path="/registrationConfirmation" component={Verification} /> */}

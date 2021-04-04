@@ -104,6 +104,7 @@ public class User {
      * Returns all organizations where the user is a member
      * @return A list of organizations, as Organization objects (not Member objects)!
      */
+    @JsonIgnore
     public List<Organization> getAllOrganizations() {
         List<Organization> o = new LinkedList<>();
         for (Member m : organizations) {

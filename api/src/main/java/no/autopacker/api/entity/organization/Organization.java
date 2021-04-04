@@ -41,6 +41,7 @@ public class Organization {
     @OneToMany(mappedBy = "organization")
     private List<Project> projects;
 
+    @JsonIgnore
     @ManyToOne
     private User owner;
 

@@ -1,7 +1,7 @@
 import { Card, Col, Input, Layout, PageHeader, Row, Tag, Typography } from "antd";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Redirect } from "react-router-dom";
+import {Redirect, useParams} from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 import Moment from 'moment';
@@ -23,7 +23,7 @@ function OrganizationDashboard() {
 
 	const [keycloak] = useKeycloak();
 
-	const organizationName = sessionStorage.getItem("selectedOrganizationName");
+	const { organizationName } = useParams();
 
 	// Get antd sub components
 	const { Paragraph } = Typography;
@@ -112,7 +112,7 @@ function OrganizationDashboard() {
 					border: "1px solid rgb(235, 237, 240)",
 					backgroundColor: "#FFFFFF",
 				}}
-				title={organization.name + " Projects"}
+				title={organizationName + " Projects"}
 				breadcrumb={{ routes }}
 			>
 				<Paragraph>{organization.description}</Paragraph>
@@ -194,7 +194,7 @@ function OrganizationDashboard() {
 											textAlign: "center",
 										}}
 									>
-										{project.tags.length > 1 ? (
+										{project.tags !== '' && project.tags !== null ? (
 											<Paragraph ellipsis={{ rows: 1 }}>
 												{project.tags.split(",", 3).map((tag) => (
 													<span key={tag} style={{ display: "inline-block" }}>
