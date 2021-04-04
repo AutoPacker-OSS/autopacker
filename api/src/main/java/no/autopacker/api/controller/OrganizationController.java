@@ -3,13 +3,16 @@ package no.autopacker.api.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import no.autopacker.api.dto.OrganizationListItemDto;
 import no.autopacker.api.entity.User;
 import no.autopacker.api.entity.fdapi.Project;
 import no.autopacker.api.entity.organization.*;
+import no.autopacker.api.mapper.OrganizationMapper;
 import no.autopacker.api.repository.UserRepository;
 import no.autopacker.api.repository.fdapi.ProjectRepository;
 import no.autopacker.api.repository.organization.*;
@@ -32,6 +35,7 @@ public class OrganizationController {
 
     private final OrganizationService organizationService;
     private final ObjectMapper objectMapper;
+    private final OrganizationMapper organizationMapper;
 
     // Repositories
     private final ProjectApplicationRepository projectApplicationRepository;
@@ -57,6 +61,7 @@ public class OrganizationController {
         this.objectMapper = new ObjectMapper();
         this.userService = userService;
         this.userRepository = userRepository;
+        this.organizationMapper = new OrganizationMapper();
     }
 
     @PostMapping(value = "/new-organization")
@@ -289,9 +294,19 @@ public class OrganizationController {
     }
 
     @GetMapping(value = "/{username}/isMember")
-    public List<Organization> findAllOrganizationsAUserIsMemberIn(@PathVariable("username") String username) {
+    public ResponseEntity<List<OrganizationListItemDto>> findAllOrganizationsAUserIsMemberIn(@PathVariable("username") String username) {
         User user = userRepository.findByUsername(username);
-        return user != null ? user.getAllOrganizations() : new LinkedList<>();
+        if (user != null) {
+            List<Organization> organizations = this.organizationRepository.findAllByUser(user.getId());
+            List<OrganizationListItemDto> organizationListItemDtoList = this.organizationMapper.toOrganizationListItemDtos(organizations);
+            if (!organizationListItemDtoList.isEmpty()) {
+                return new ResponseEntity<>(organizationListItemDtoList, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @GetMapping(value = "/{username}/isMember/search")

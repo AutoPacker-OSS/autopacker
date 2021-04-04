@@ -21,4 +21,10 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
             "WHERE u.username = ?1 AND LOWER(o.name) LIKE CONCAT('%', ?2, '%')",
             nativeQuery = true)
     List<Organization> searchOrganizationsForUser(String username, String query);
+
+    @Query(value = "SELECT o.* FROM organization o " +
+            "INNER JOIN org_member om on o.id = om.organization_id " +
+            "WHERE om.user_id = ?1",
+            nativeQuery = true)
+    List<Organization> findAllByUser(String userId);
 }

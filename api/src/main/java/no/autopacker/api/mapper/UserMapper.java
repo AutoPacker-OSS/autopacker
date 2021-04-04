@@ -7,9 +7,6 @@ import no.autopacker.api.dto.UserDto;
 import no.autopacker.api.entity.User;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * TODO Discuss if this is necessary and pros and cons of using a converter, etc etc..
- */
 @Configuration
 @NoArgsConstructor
 public class UserMapper {
