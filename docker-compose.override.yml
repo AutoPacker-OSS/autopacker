@@ -8,6 +8,8 @@ services:
 
   webapp:
     image: autopacker/local-webapp
+    ports:
+      - 80:80
 
   # web-app:
   #     container_name: web-app
