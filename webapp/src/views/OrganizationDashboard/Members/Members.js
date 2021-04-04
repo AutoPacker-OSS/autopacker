@@ -3,12 +3,13 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
+import {useParams} from "react-router-dom";
 
 function Members() {
 	// State
 	const [members, setMembers] = React.useState([]);
 
-	const organizationName = sessionStorage.getItem("selectedOrganizationName");
+	const { organizationName } = useParams();
 
 	const [keycloak] = useKeycloak();
 

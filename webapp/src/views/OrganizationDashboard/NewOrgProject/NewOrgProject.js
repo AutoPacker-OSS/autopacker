@@ -13,7 +13,7 @@ import {
 import { TweenOneGroup } from "rc-tween-one";
 import React from "react";
 import { useDispatch } from "react-redux";
-import {Redirect} from "react-router-dom";
+import {Redirect, useParams} from "react-router-dom";
 import {createAlert, selectMenuOption} from "../../../store/actions/generalActions";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
@@ -51,7 +51,7 @@ function NewOrgProject() {
 
 	const dispatch = useDispatch();
 
-	const organizationName = sessionStorage.getItem("selectedOrganizationName");
+	const { organizationName } = useParams();
 
 	const removeTag = (removedTag) => {
 		const tagsa = tags.filter((tag) => tag !== removedTag);

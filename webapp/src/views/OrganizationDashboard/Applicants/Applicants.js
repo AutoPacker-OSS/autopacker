@@ -6,6 +6,7 @@ import axios from "axios";
 // Identicon
 import Identicon from "../../../assets/image/download.png";
 import { createAlert } from "../../../store/actions/generalActions";
+import {useParams} from "react-router-dom";
 
 function Applicants() {
 	// State
@@ -22,7 +23,8 @@ function Applicants() {
 
 	const [keycloak] = useKeycloak();
 
-	const organizationName = sessionStorage.getItem("selectedOrganizationName");
+	const { organizationName } = useParams();
+
 	const dispatch = useDispatch();
 
 	// Import sub components from antd

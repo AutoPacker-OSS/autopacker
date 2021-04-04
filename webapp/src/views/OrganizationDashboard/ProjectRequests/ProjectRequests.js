@@ -6,6 +6,7 @@ import axios from "axios";
 // Identicon
 import { createAlert } from "../../../store/actions/generalActions";
 import RequestEditForm from "./components/RequestEditForm/RequestEditForm";
+import {useParams} from "react-router-dom";
 
 function ProjectRequests() {
 	// State
@@ -28,7 +29,7 @@ function ProjectRequests() {
 	const { Panel } = Collapse;
 	const { TextArea } = Input;
 
-	const organizationName = sessionStorage.getItem("selectedOrganizationName");
+	const { organizationName } = useParams();
 	const dispatch = useDispatch();
 
 	useEffect(() => {

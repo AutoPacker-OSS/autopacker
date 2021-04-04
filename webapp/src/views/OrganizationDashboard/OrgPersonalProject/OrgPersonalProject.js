@@ -1,6 +1,6 @@
 import {Card, Col, Layout, PageHeader, Row, Tag, Typography} from "antd";
 import React, { useEffect } from "react";
-import { Redirect } from "react-router-dom";
+import {Redirect, useParams} from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 import Moment from 'moment';
@@ -11,7 +11,7 @@ function OrgPersonalProject() {
     const [selectedCard, setSelectedCard] = React.useState(null);
 
     const [keycloak] = useKeycloak();
-    const organizationName = sessionStorage.getItem("selectedOrganizationName");
+    const { organizationName } = useParams();
 
     // Get antd sub components
     const { Paragraph } = Typography;
