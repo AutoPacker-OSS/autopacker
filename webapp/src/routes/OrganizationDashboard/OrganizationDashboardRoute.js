@@ -1,7 +1,7 @@
 import { Layout, Menu, Button } from "antd";
 import React, { Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Redirect, Route } from "react-router-dom";
+import {Link, NavLink, Redirect, Route} from "react-router-dom";
 import NTNU from "../../assets/image/ntnu.png";
 import ProfileAlert from "../../components/CustomAlerts/ProfileAlert";
 import Navbar from "../../components/Navbar/Navbar";
@@ -98,13 +98,8 @@ function OrganizationDashboardLayout({ children }) {
 						<Menu
 							theme="dark"
 							mode="inline"
-							selectedKeys={[selectedMenuItem]}
 							openKeys={openedSubMenus}
 							// Called when a menu item is clicked
-							onClick={(e) => dispatch(selectMenuOption(e.key))}
-							// Called when sub-menus are opened or closed
-							//onOpenChange={e => dispatch(toggleSubMenuOption(e[0]))}
-							// onTitleClick={e => dispatch(toggleSubMenuOption(e.key))}
 							style={{ height: "100%", borderRight: 0 }}
 						>
 							<div style={{ textAlign: "center" }}>
@@ -121,16 +116,14 @@ function OrganizationDashboardLayout({ children }) {
 									</span>
 								}
 							>
-								<Menu.Item key="4">
-									<Link to={"/organization/dashboard/" + organizationName}>Overview</Link>
-								</Menu.Item>
+								<NavLink activeClassName="ant-menu-item-selected" to={"/organization/dashboard/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
+									Overview
+								</NavLink>
 								{keycloak.tokenParsed.resource_access["general-api"].roles.includes("ADMIN") ? (
-									<Menu.Item key="5">
-										<Link to={"/organization/project-requests/" + organizationName}>Project Requests</Link>
-									</Menu.Item>
-								) : (
-									<div />
-								)}
+										<NavLink activeClassName="ant-menu-item-selected" to={"/organization/project-requests/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
+											Project Requests
+										</NavLink>
+								) : null}
 							</SubMenu>
 							<SubMenu
 								onTitleClick={(e) => dispatch(toggleSubMenuOption(e.key))}
@@ -142,23 +135,19 @@ function OrganizationDashboardLayout({ children }) {
 									</span>
 								}
 							>
-								<Menu.Item key="6">
-									<Link to={"/organization/members/" + organizationName}>Overview</Link>
-								</Menu.Item>
+								<NavLink activeClassName="ant-menu-item-selected" to={"/organization/members/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
+									Overview
+								</NavLink>
 								{keycloak.tokenParsed.resource_access["general-api"].roles.includes("ADMIN") ? (
-									<Menu.Item key="7">
-										<Link to={"/organization/applicants/" + organizationName}>Applicants</Link>
-									</Menu.Item>
-								) : (
-									<div />
-								)}
+										<NavLink activeClassName="ant-menu-item-selected" to={"/organization/applicants/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
+											Applicants
+										</NavLink>
+								) : null}
 								{keycloak.tokenParsed.resource_access["general-api"].roles.includes("ADMIN") ? (
-									<Menu.Item key="10">
-										<Link to={"/organization/rolecontrol/" + organizationName}>Role Control</Link>
-									</Menu.Item>
-								) : (
-									<div />
-								)}
+										<NavLink activeClassName="ant-menu-item-selected" to={"/organization/rolecontrol/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
+											Role Control
+										</NavLink>
+								) : null}
 							</SubMenu>
 							<SubMenu
 								onTitleClick={(e) => dispatch(toggleSubMenuOption(e.key))}
@@ -170,15 +159,15 @@ function OrganizationDashboardLayout({ children }) {
 									</span>
 								}
 							>
-								<Menu.Item key="8">
-									<Link to={"/organization/create-project/" + organizationName}>Create Project</Link>
-								</Menu.Item>
-								<Menu.Item key="11">
-									<Link to={"/organization/pre-submission/" + organizationName}>Projects</Link>
-								</Menu.Item>
-								<Menu.Item key="9">
-									<Link to={"/organization/submissions/" + organizationName}>Submissions</Link>
-								</Menu.Item>
+								<NavLink activeClassName="ant-menu-item-selected" to={"/organization/create-project/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
+									Create Project
+								</NavLink>
+								<NavLink activeClassName="ant-menu-item-selected" to={"/organization/pre-submission/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
+									Projects
+								</NavLink>
+								<NavLink activeClassName="ant-menu-item-selected" to={"/organization/submissions/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
+									Submissions
+								</NavLink>
 							</SubMenu>
 						</Menu>
 					</Sider>
