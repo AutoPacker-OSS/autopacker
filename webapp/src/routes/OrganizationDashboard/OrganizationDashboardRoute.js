@@ -7,6 +7,7 @@ import ProfileAlert from "../../components/CustomAlerts/ProfileAlert";
 import Navbar from "../../components/Navbar/Navbar";
 import { useKeycloak } from "@react-keycloak/web";
 import { createAlert } from "../../store/actions/generalActions";
+import { getMenu } from "./menu";
 import axios from "axios";
 // Import custom components
 import { selectMenuOption, toggleSubMenuOption } from "../../store/actions/generalActions";
@@ -106,69 +107,39 @@ function OrganizationDashboardLayout({ children }) {
 								{/* // TODO Need to change NTNU to use image of organization later on */}
 								<img style={{ backgroundColor: "white" }} className="identicon" src={NTNU} alt="identicon" />
 							</div>
-							<SubMenu
-								onTitleClick={(e) => dispatch(toggleSubMenuOption(e.key))}
-								key="sub1"
-								title={
-									<span>
-										<FolderOutlined />
-										{collapsed ? <div /> : "Projects"}
-									</span>
-								}
-							>
-								<NavLink activeClassName="ant-menu-item-selected" to={"/organization/dashboard/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
-									Overview
-								</NavLink>
-								{keycloak.tokenParsed.resource_access["general-api"].roles.includes("ADMIN") ? (
-										<NavLink activeClassName="ant-menu-item-selected" to={"/organization/project-requests/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
-											Project Requests
-										</NavLink>
-								) : null}
-							</SubMenu>
-							<SubMenu
-								onTitleClick={(e) => dispatch(toggleSubMenuOption(e.key))}
-								key="sub2"
-								title={
-									<span>
-										<TeamOutlined />
-										{collapsed ? <div /> : "Members"}
-									</span>
-								}
-							>
-								<NavLink activeClassName="ant-menu-item-selected" to={"/organization/members/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
-									Overview
-								</NavLink>
-								{keycloak.tokenParsed.resource_access["general-api"].roles.includes("ADMIN") ? (
-										<NavLink activeClassName="ant-menu-item-selected" to={"/organization/applicants/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
-											Applicants
-										</NavLink>
-								) : null}
-								{keycloak.tokenParsed.resource_access["general-api"].roles.includes("ADMIN") ? (
-										<NavLink activeClassName="ant-menu-item-selected" to={"/organization/rolecontrol/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
-											Role Control
-										</NavLink>
-								) : null}
-							</SubMenu>
-							<SubMenu
-								onTitleClick={(e) => dispatch(toggleSubMenuOption(e.key))}
-								key="sub3"
-								title={
-									<span>
-										<UserOutlined />
-										{collapsed ? <div /> : "Personal"}
-									</span>
-								}
-							>
-								<NavLink activeClassName="ant-menu-item-selected" to={"/organization/create-project/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
-									Create Project
-								</NavLink>
-								<NavLink activeClassName="ant-menu-item-selected" to={"/organization/pre-submission/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
-									Projects
-								</NavLink>
-								<NavLink activeClassName="ant-menu-item-selected" to={"/organization/submissions/" + organizationName} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
-									Submissions
-								</NavLink>
-							</SubMenu>
+
+							{/* Menu */}
+							{getMenu(organizationName).map(menuItem => (
+								<SubMenu
+									onTitleClick={() => dispatch(toggleSubMenuOption(menuItem.key))}
+									key={menuItem.key}
+									title={
+										<span>
+											{menuItem.icon}
+											{collapsed ? null : menuItem.text}
+										</span>
+									}
+								>
+									{/* Submenu items */}
+									{menuItem.items !== null ? (
+										menuItem.items.map(childItem => {
+											if (childItem.role !== null) {
+												return keycloak.tokenParsed.resource_access["general-api"].roles.includes(childItem.role) ? (
+													<NavLink key={childItem.key} activeClassName="ant-menu-item-selected" to={childItem.to} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
+														{childItem.text}
+													</NavLink>
+												) : null;
+											} else {
+												return (
+													<NavLink key={childItem.key} activeClassName="ant-menu-item-selected" to={childItem.to} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
+														{childItem.text}
+													</NavLink>
+												);
+											}
+										})
+									) : null}
+								</SubMenu>
+							))}
 						</Menu>
 					</Sider>
 					<Content>

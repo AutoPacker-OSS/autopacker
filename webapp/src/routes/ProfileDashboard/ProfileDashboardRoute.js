@@ -7,29 +7,12 @@ import Identicon from "../../assets/image/download.png";
 import ProfileAlert from "../../components/CustomAlerts/ProfileAlert";
 import Navbar from "../../components/Navbar/Navbar";
 import {useKeycloak} from "@react-keycloak/web";
+import { menus } from "./menu";
 // Import custom components
 import {createAlert} from "../../store/actions/generalActions";
 import axios from "axios";
 // Import styles
 import "./ProfileDashboardStyle.scss";
-
-const menus = [
-	{
-		to: "/profile/projects",
-		icon: <FolderOutlined style={{ marginRight: 10}}/>,
-		text: "Your Projects"
-	},
-	{
-		to: "/profile/servers",
-		icon: <HddOutlined style={{ marginRight: 10}}/>,
-		text: "Your Servers"
-	},
-	{
-		to: "/profile/organizations",
-		icon: <ApartmentOutlined style={{ marginRight: 10}}/>,
-		text: "Your Organizations"
-	}
-];
 
 /**
  * The default layout for a profile dashboard route
