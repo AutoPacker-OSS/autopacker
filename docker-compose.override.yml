@@ -8,6 +8,8 @@ services:
 
   webapp:
     image: autopacker/local-webapp
+    ports:
+      - 80:80
 
   # web-app:
   #     container_name: web-app
@@ -42,7 +44,7 @@ services:
 
   fdapi-mongo:
     environment:
-      MONGO_INITDB_ROOT_USERNAME: "autopacker"
+      MONGO_INITDB_ROOT_USERNAME: "root"
       MONGO_INITDB_ROOT_PASSWORD: "password"
 
   mysql-backend:

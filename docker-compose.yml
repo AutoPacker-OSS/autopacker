@@ -10,8 +10,6 @@ services:
     container_name: webapp
     depends_on:
       - keycloak
-    ports:
-      - 8444:80
 
   ####################
   # Backend Services #
@@ -30,40 +28,16 @@ services:
     networks:
       - backend-network
     volumes:
-      - user-mvn:/root/.m2/repository
-      - servers-mvn:/root/.m2/repository
-      - general-mvn:/root/.m2/repository
+      - api-mvn:/root/.m2/repository
       - ap-fs:/opt/fs/
-      - fdapi-mvn:/root/.m2/repository
       - /var/run/docker.sock:/var/run/docker.sock
-
-  # Gateway API
-  gateway:
-    container_name: gateway
-    ports:
-      - 8000:8000
-    depends_on:
-      - config-srv
-    networks:
-      - backend-network
-    volumes:
-      - gateway-mvn:/root/.m2/repository
-
-  config-srv:
-    container_name: config-srv
-    ports:
-      - 8888:8888
-    networks:
-      - backend-network
-    volumes:
-      - config-srv-mvn:/root/.m2/repository
 
   #############
   # Databases #
   #############
 
   fdapi-mongo:
-    container_name: fdapi-mongodb
+    container_name: fdapi-mongo
     image: mongo:4.2.8
     expose:
       - "27017"
@@ -81,7 +55,6 @@ services:
       - "3306"
     depends_on:
       - keycloak
-      - config-srv
     networks:
       - backend-network
     volumes:
@@ -116,16 +89,10 @@ services:
 ######################
 
 networks:
-  frontend-network:
   backend-network:
 
 volumes:
-  servers-mvn:
-  general-mvn:
-  user-mvn:
-  fdapi-mvn:
-  gateway-mvn:
-  config-srv-mvn:
+  api-mvn:
   ap-fs:
   mysql-backend:
   fdapi-mongo:

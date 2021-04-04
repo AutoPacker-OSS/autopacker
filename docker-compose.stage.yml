@@ -8,6 +8,8 @@ services:
 
   webapp:
     image: autopacker/webapp
+    ports:
+      - 8444:80
 
   ####################
   # Backend Services #
@@ -18,12 +20,6 @@ services:
     image: autopacker/api
     volumes:
       - fdapi_data:/usr/src/fdapi/data
-
-  # Gateway API
-  gateway:
-    image: autopacker/gateway-api
-    volumes:
-      - ${SSL_APP_LOCATION}:/home/dev/ssl/ap-stage.p12
 
   #############
   # Databases #
@@ -64,6 +60,3 @@ services:
 
 volumes:
   fdapi_data:
-  ${SSL_FULLCHAIN}:
-  ${SSL_PRIVKEY}:
-  ${SSL_APP_LOCATION}:

@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . ./
 # Install all dependencies and build app (for staging environment)
 RUN yarn install
-RUN yarn build:staging
+RUN yarn build
 
 # Stage: 2 - setting up nginx
 FROM nginx:alpine
