@@ -1,5 +1,6 @@
-FROM maven:3-jdk-11
+FROM docker:18
+
+RUN apk add maven openjdk11
 COPY . /usr/src/api
 
-RUN mkdir -p -m 777 /opt/fs/root/ /opt/fs/root/workspace/
 ENTRYPOINT ["mvn", "-f", "/usr/src/api", "spring-boot:run", "-DskipTests"]
