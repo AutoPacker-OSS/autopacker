@@ -811,8 +811,8 @@ function ServerOverview() {
 						title={"Deploy project?"}
 						centered
 						visible={deployProjectModalOpen}
-						onOk={() => {deployProject(projectToDeploy)}}
-						okButtonProps={{ disabled: serverPassword.length > 0 ? false : true }}
+						onOk={() => {deployProject()}}
+						okButtonProps={{ disabled: serverPassword.length <= 0 }}
 						okText="Yes"
 						onCancel={() => setDeployProjectModalOpen(false)}
 					>
