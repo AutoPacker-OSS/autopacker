@@ -5,11 +5,12 @@ import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 import {createAlert, selectMenuOption} from "../../../store/actions/generalActions";
 import {useDispatch} from "react-redux";
+import {useParams} from "react-router-dom";
 
 function RoleControl() {
     // State
     const [members, setMembers] = React.useState([]);
-    const organizationName = sessionStorage.getItem("selectedOrganizationName");
+    const { organizationName } = useParams();
 
     //Modal
     const [deleteModal, setDeleteModal] = React.useState(false);

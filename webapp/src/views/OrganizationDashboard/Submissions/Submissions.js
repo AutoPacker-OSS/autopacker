@@ -17,6 +17,7 @@ import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 
 import RequestEditForm from "./components/RequestEditForm/RequestEditForm";
+import {useParams} from "react-router-dom";
 
 function Submissions() {
 	// State
@@ -35,7 +36,7 @@ function Submissions() {
 
 	const [keycloak] = useKeycloak();
 
-	const organizationName = sessionStorage.getItem("selectedOrganizationName");
+	const { organizationName } = useParams();
 
 	const dispatch = useDispatch();
 

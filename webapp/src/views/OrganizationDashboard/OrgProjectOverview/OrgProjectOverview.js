@@ -1,6 +1,6 @@
 import { Button, Card, Col, Empty, Layout, Modal, PageHeader, Row, Tag, Typography } from "antd";
 import React, { useEffect } from "react";
-import { Link, Redirect } from "react-router-dom";
+import {Link, Redirect, useParams} from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
@@ -24,7 +24,7 @@ function OrgProjectOverview() {
 
 	const [keycloak] = useKeycloak();
 
-	const organizationName = sessionStorage.getItem("selectedOrganizationName");
+	const { organizationName } = useParams();
 	const projectId = sessionStorage.getItem("selectedProjectId");
 
 	useEffect(() => {

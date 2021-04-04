@@ -15,7 +15,7 @@ import {
 import { TweenOneGroup } from "rc-tween-one";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from "react-router-dom";
+import {Redirect, useParams} from "react-router-dom";
 import { createAlert, selectMenuOption } from "../../../store/actions/generalActions";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
@@ -60,7 +60,7 @@ function SubmitProject(props) {
 
 	const [keycloak] = useKeycloak();
 
-	const organizationName = sessionStorage.getItem("selectedOrganizationName");
+	const { organizationName } = useParams();
 	const dispatch = useDispatch();
 
 	useEffect(() => {
