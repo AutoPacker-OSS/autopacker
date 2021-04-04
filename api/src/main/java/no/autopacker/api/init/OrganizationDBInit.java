@@ -82,6 +82,7 @@ public class OrganizationDBInit implements CommandLineRunner {
         ntnu.addMember(userRepository.findByUsername("Jone1994"));
         ntnu.addMember(userRepository.findByUsername("Funt1959"));
         ntnu.addMember(userRepository.findByUsername("Sithered"));
+        ntnu.addAdminMember(adminUser);
         organizationRepository.save(ntnu);
         testOrg.addAdminMember(userRepository.findByUsername("user2"));
         User hatiou = userRepository.findByUsername("Hatiou1983");
