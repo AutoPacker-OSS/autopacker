@@ -224,9 +224,9 @@ function ServerOverview() {
 		return checked;
 	};
 
-	const deployProject = (projectId, projectName) => {
+	function deployProject() {
 		setDeployFinished(false);
-		toggleLoadingState(projectId);
+		toggleLoadingState(projectToDeploy.projectId);
 		setDeployProjectModalOpen(false);
 
 		axios({
@@ -237,7 +237,7 @@ function ServerOverview() {
 				"/server/deployProject/",
 			data: {
 				serverId: server.serverId,
-				projectName: projectName,
+				projectName: projectToDeploy.projectName,
 				password: serverPassword,
 			},
 			headers: {
@@ -254,7 +254,7 @@ function ServerOverview() {
 						true
 					)
 				);
-				toggleLoadingState(projectId);
+				toggleLoadingState(projectToDeploy.projectId);
 				setServerPassword("");
 			})
 			.catch(() => {
@@ -543,18 +543,13 @@ function ServerOverview() {
 												style={{ fontSize: 20 }}
 												key="upload"
 												onClick={() => {
-													setDeployProjectModalOpen(true);
 													setProjectToDeploy({
 														projectId: project.id,
 														projectName: project.name,
 													});
+													setDeployProjectModalOpen(true);
 												}}
 											/>,
-											/*<Icon
-												type="edit"
-												key="edit"
-												onClick={() => message.success("Edit button hit")}
-											/>,*/
 											<DeleteOutlined
 												key="delete"
 												onClick={() =>
@@ -816,9 +811,7 @@ function ServerOverview() {
 						title={"Deploy project?"}
 						centered
 						visible={deployProjectModalOpen}
-						onOk={() =>
-							deployProject(projectToDeploy.projectId, projectToDeploy.name)
-						}
+						onOk={() => {deployProject(projectToDeploy)}}
 						okButtonProps={{ disabled: serverPassword.length > 0 ? false : true }}
 						okText="Yes"
 						onCancel={() => setDeployProjectModalOpen(false)}
