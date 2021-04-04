@@ -24,6 +24,7 @@ jobs:
           repository: autopacker/local-webapp
           tags: latest
           path: ./webapp
+          file: Dockerfile.Local
 
       - name: Build and push the staging webapp docker image
         uses: docker/build-push-action@v1
