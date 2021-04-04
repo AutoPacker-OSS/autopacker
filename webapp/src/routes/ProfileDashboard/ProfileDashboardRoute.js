@@ -7,6 +7,7 @@ import Identicon from "../../assets/image/download.png";
 import ProfileAlert from "../../components/CustomAlerts/ProfileAlert";
 import Navbar from "../../components/Navbar/Navbar";
 import {useKeycloak} from "@react-keycloak/web";
+import { menus } from "./menu";
 // Import custom components
 import {createAlert} from "../../store/actions/generalActions";
 import axios from "axios";
@@ -95,20 +96,12 @@ function ProfileDashboardLayout({children}) {
 							<img className="identicon" src={Identicon} alt="identicon"/>
 						</div>
 
-						<NavLink activeClassName="ant-menu-item-selected" to="/profile/projects" className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 24}}>
-							<FolderOutlined style={{ marginRight: 10}}/>
-							{collapsed ? null: "Your Projects"}
-						</NavLink>
-
-						<NavLink activeClassName="ant-menu-item-selected" to="/profile/servers" className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 24}}>
-							<HddOutlined style={{ marginRight: 10}}/>
-							{collapsed ? null: "Your Servers"}
-						</NavLink>
-
-						<NavLink activeClassName="ant-menu-item-selected" to="/profile/organizations" className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 24}}>
-							<ApartmentOutlined style={{ marginRight: 10}}/>
-							{collapsed ? null: "Your Organizations"}
-						</NavLink>
+						{menus.map(menuItem => (
+							<NavLink activeClassName="ant-menu-item-selected" to={menuItem.to} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 24}}>
+								{menuItem.icon}
+								{collapsed ? null : menuItem.text}
+							</NavLink>
+						))}
 
 						{/* Monitor */}
 						{keycloak.realmAccess.roles.includes("ADMIN") ? (
