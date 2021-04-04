@@ -35,6 +35,7 @@ public class Project {
     private String website;
     private boolean isPrivate;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "project")
     private List<Module> modules;
 

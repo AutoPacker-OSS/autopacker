@@ -50,7 +50,11 @@ function ProjectOverview() {
 			},
 		}).then(function (response) {
 			setProject(response.data);
-			setTags(response.data.tags.split(","));
+			if (response.data.tags) {
+				setTags(response.data.tags.split(","));
+			} else {
+				setTags([]);
+			}
 			setProjectModules(response.data.modules);
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps

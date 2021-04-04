@@ -37,7 +37,6 @@ public class Organization {
 
     private Boolean isPublic;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "organization")
     private List<Project> projects;
 

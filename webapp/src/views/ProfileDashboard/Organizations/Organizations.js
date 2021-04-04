@@ -64,7 +64,11 @@ function Organizations() {
 						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 					},
 				}).then(function (response) {
-					setOrganizations(response.data);
+					if (response.data) {
+						setOrganizations(response.data);
+					} else {
+						setOrganizations([]);
+					}
 				});
 			} else {
 				axios({
@@ -79,7 +83,11 @@ function Organizations() {
 						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 					},
 				}).then(function (response) {
-					setOrganizations(response.data);
+					if (response.data) {
+						setOrganizations(response.data);
+					} else {
+						setOrganizations([]);
+					}
 				});
 			}
 		},
