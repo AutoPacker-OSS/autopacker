@@ -37,7 +37,7 @@ services:
   #############
 
   fdapi-mongo:
-    container_name: fdapi-mongodb
+    container_name: fdapi-mongo
     image: mongo:4.2.8
     expose:
       - "27017"

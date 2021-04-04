@@ -44,7 +44,7 @@ services:
 
   fdapi-mongo:
     environment:
-      MONGO_INITDB_ROOT_USERNAME: "autopacker"
+      MONGO_INITDB_ROOT_USERNAME: "root"
       MONGO_INITDB_ROOT_PASSWORD: "password"
 
   mysql-backend:
