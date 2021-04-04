@@ -1,29 +1,28 @@
-import { Layout, Menu, Button } from "antd";
-import { HddOutlined, FolderOutlined, ApartmentOutlined, DesktopOutlined } from "@ant-design/icons";
-import React, { Suspense } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, Route, Redirect } from "react-router-dom";
+import {Button, Layout, Menu} from "antd";
+import {ApartmentOutlined, DesktopOutlined, FolderOutlined, HddOutlined} from "@ant-design/icons";
+import React, {Suspense} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {NavLink, Redirect, Route} from "react-router-dom";
 import Identicon from "../../assets/image/download.png";
 import ProfileAlert from "../../components/CustomAlerts/ProfileAlert";
 import Navbar from "../../components/Navbar/Navbar";
-import { useKeycloak } from "@react-keycloak/web";
-import { createAlert } from "../../store/actions/generalActions";
-import axios from "axios";
+import {useKeycloak} from "@react-keycloak/web";
 // Import custom components
-import { selectMenuOption } from "../../store/actions/generalActions";
+import {createAlert} from "../../store/actions/generalActions";
+import axios from "axios";
 // Import styles
 import "./ProfileDashboardStyle.scss";
 
 /**
  * The default layout for a profile dashboard route
  */
-function ProfileDashboardLayout({ children }) {
+function ProfileDashboardLayout({children}) {
 	const [collapsed, setCollapsed] = React.useState(false);
 
 	const [keycloak] = useKeycloak();
 
 	// Get antd sub components
-	const { Sider, Content } = Layout;
+	const {Sider, Content} = Layout;
 
 	// TODO - refactor - code duplicate in OrganizationDashboardRoute
 	// Get state from redux store
@@ -34,7 +33,7 @@ function ProfileDashboardLayout({ children }) {
 		<div>
 			To be able to create, deploy and share projects, you need to verify your account. Didn't get the email?{" "}
 			<Button
-				style={{ padding: 0 }}
+				style={{padding: 0}}
 				type="link"
 				onClick={() => {
 					const url =
@@ -80,57 +79,51 @@ function ProfileDashboardLayout({ children }) {
 	return (
 		<Layout>
 			{/* Navbar */}
-			<Navbar />
+			<Navbar/>
 			{/* Content */}
 
-			<Layout style={{ minHeight: "95vh" }}>
+			<Layout style={{minHeight: "95vh"}}>
 				<Sider
 					width={200}
-					style={{ background: "#fff", padding: 0 }}
+					style={{background: "#fff", padding: 0}}
 					collapsible
 					collapsed={collapsed}
 					onCollapse={() => setCollapsed(!collapsed)}
 				>
-					<Menu
-						theme="dark"
-						mode="inline"
-						selectedKeys={[selectedMenuItem]}
-						onClick={(e) => dispatch(selectMenuOption(e.key))}
-						style={{ height: "100%", borderRight: 0 }}
-					>
-						<div style={{ textAlign: "center" }}>
-							<img className="identicon" src={Identicon} alt="identicon" />
+					<ul style={{height: "100%", borderRight: "0 none"}} className="ant-menu ant-menu-dark ant-menu-root ant-menu-inline">
+						<div style={{textAlign: "center"}}>
+							<img className="identicon" src={Identicon} alt="identicon"/>
 						</div>
-						<Menu.Item key="1">
-							<Link to="/profile/projects" id="sidebar-projects-link">
-								<FolderOutlined />
-								{collapsed ? <div /> : "Your Projects"}
-							</Link>
-						</Menu.Item>
-						<Menu.Item key="2">
-							<Link to="/profile/servers" id="sidebar-servers-link">
-								<HddOutlined />
-								{collapsed ? <div /> : "Your Servers"}
-							</Link>
-						</Menu.Item>
-						<Menu.Item key="3">
-							<Link to="/profile/organizations" id="sidebar-organization-link">
-								<ApartmentOutlined />
-								{collapsed ? <div /> : "Your Organizations"}
-							</Link>
-						</Menu.Item>
+
+						<NavLink activeClassName="ant-menu-item-selected" to="/profile/projects" className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 24}}>
+							<FolderOutlined style={{ marginRight: 10}}/>
+							{collapsed ? null: "Your Projects"}
+						</NavLink>
+
+						<NavLink activeClassName="ant-menu-item-selected" to="/profile/servers" className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 24}}>
+							<HddOutlined style={{ marginRight: 10}}/>
+							{collapsed ? null: "Your Servers"}
+						</NavLink>
+
+						<NavLink activeClassName="ant-menu-item-selected" to="/profile/organizations" className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 24}}>
+							<ApartmentOutlined style={{ marginRight: 10}}/>
+							{collapsed ? null: "Your Organizations"}
+						</NavLink>
+
+						{/* Monitor */}
 						{keycloak.realmAccess.roles.includes("ADMIN") ? (
-							<Menu.Item key="9">
-								<a href="https://stage.autopacker.no/monitor/" target="_blank" rel="noopener noreferrer" id="sidebar-monitor-link">
-									<DesktopOutlined />
-									{collapsed ? <div /> : "Monitor"}
+							<div className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 24}}>
+								<a href="https://stage.autopacker.no/monitor/" target="_blank" rel="noopener noreferrer"
+								   id="sidebar-monitor-link">
+									<DesktopOutlined/>
+									{collapsed ? <div/> : "Monitor"}
 								</a>
-							</Menu.Item>
+							</div>
 						) : null}
-					</Menu>
+					</ul>
 				</Sider>
 				<Content>
-					<ProfileAlert />
+					<ProfileAlert/>
 					{children}
 				</Content>
 			</Layout>
@@ -143,7 +136,7 @@ function ProfileDashboardLayout({ children }) {
 /**
  * The route itself that is used for the profile dashboard related routes
  */
-function ProfileDashboardRoute({ component: Component, ...rest }) {
+function ProfileDashboardRoute({component: Component, ...rest}) {
 	const [keycloak] = useKeycloak();
 	return (
 		<Route
@@ -151,12 +144,12 @@ function ProfileDashboardRoute({ component: Component, ...rest }) {
 			render={(props) =>
 				keycloak.authenticated === true ? (
 					<ProfileDashboardLayout>
-						<Suspense fallback={<div />}>
+						<Suspense fallback={<div/>}>
 							<Component {...props} />
 						</Suspense>
 					</ProfileDashboardLayout>
 				) : (
-					<Redirect to={"/"} />
+					<Redirect to={"/"}/>
 				)
 			}
 		/>
