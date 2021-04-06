@@ -77,7 +77,7 @@ function NewOrganization() {
                     orgDesc: orgDesc,
                     url: url,
                     isPublic: isPublic,
-                    owner: keycloak.idTokenParsed.preferred_username,
+                    username: keycloak.idTokenParsed.preferred_username,
 
                 },
 

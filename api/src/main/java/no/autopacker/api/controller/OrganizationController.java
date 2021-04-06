@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import static no.autopacker.api.security.AuthConstants.ROLE_ADMIN;
 
 @RestController
-@RequestMapping(value = "organization")
+@RequestMapping(value = "api/organization")
 public class OrganizationController {
 
     private final OrganizationService organizationService;
