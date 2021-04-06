@@ -26,14 +26,15 @@ const ProfilePage = React.lazy(() => import("./views/ProfilePage/ProfilePage"));
 const ProfileProjectOverview = React.lazy(() => import("./views/ProfileProjectOverview/ProfileProjectOverview"));
 const Settings = React.lazy(() => import("./views/ProfileDashboard/Settings/Settings"));
 const OrganizationDashboard = React.lazy(() => import("./views/OrganizationDashboard/Dashboard/OrganizationDashboard"));
-const OrgPersonalProject = React.lazy(() => import("./views/OrganizationDashboard/OrgPersonalProject/OrgPersonalProject"));
-const PreSubmissionOverview = React.lazy(() => import("./views/OrganizationDashboard/PreSubmissionOverview/PreSubmissionOverview"));
+//const OrgPersonalProject = React.lazy(() => import("./views/OrganizationDashboard/OrgPersonalProject/OrgPersonalProject"));
+//const PreSubmissionOverview = React.lazy(() => import("./views/OrganizationDashboard/PreSubmissionOverview/PreSubmissionOverview"));
 const Organizations = React.lazy(() => import("./views/ProfileDashboard/Organizations/Organizations"));
 const Members = React.lazy(() => import("./views/OrganizationDashboard/Members/Members"));
 const Applicants = React.lazy(() => import("./views/OrganizationDashboard/Applicants/Applicants"));
 const ProjectRequests = React.lazy(() => import("./views/OrganizationDashboard/ProjectRequests/ProjectRequests"));
 const ProjectSettings = React.lazy(() => import("./views/ProfileDashboard/ProjectSettings/ProjectSettings"));
-const NewOrgProject = React.lazy(() => import("./views/OrganizationDashboard/NewOrgProject/NewOrgProject"));
+//const NewOrgProject = React.lazy(() => import("./views/OrganizationDashboard/NewOrgProject/NewOrgProject"));
+const SubmitProject = React.lazy(() => import("./views/OrganizationDashboard/SubmitProject/SubmitProject"));
 const ProfileOrganizationOverview = React.lazy(() => import("./views/ProfileOrganizationOverview/ProfileOrganizationOverview"));
 const ProfileOrganizationForm = React.lazy(() => import("./views/ProfileOrganizationForm/ProfileOrganizationForm"));
 const Submissions = React.lazy(() => import("./views/OrganizationDashboard/Submissions/Submissions"));
@@ -54,16 +55,15 @@ function App() {
 
 				<OrganizationDashboardRoute path="/organization/submissions/:organization" component={Submissions} />
 				<OrganizationDashboardRoute path="/organization/project-requests/:organizationName" component={ProjectRequests} />
-				<OrganizationDashboardRoute path="/organization/create-project/:organizationName" component={NewOrgProject} />
-				<OrganizationDashboardRoute path="/organization/dashboard/:organizationName" component={OrganizationDashboard} />
+				{/*<OrganizationDashboardRoute path="/organization/create-project/:organizationName" component={NewOrgProject} />*/}
+				<OrganizationDashboardRoute path="/organization/submit-project/:organizationName" component={SubmitProject}/>
+				<OrganizationDashboardRoute path="/organization/dashboard/:organizationName" component={OrganizationDashboard}/>
 				<OrganizationDashboardRoute path="/organization/:organization/overview/:projectName" component={OrgProjectOverview} />
 				<OrganizationDashboardRoute path="/organization/applicants/:organizationName" component={Applicants} />
-				<OrganizationDashboardRoute path="/organization/members/:organizationName" component={Members} />
-				<OrganizationDashboardRoute path="/organization/pre-submission/:organizationName" component={OrgPersonalProject} />
-				<OrganizationDashboardRoute path="/organization/pre-submission-overview/:organizationName/:projectName" component={PreSubmissionOverview} />
+				<OrganizationDashboardRoute path="/organization/members/:organizationName" component={Members}/>
+				{/*<OrganizationDashboardRoute path="/organization/pre-submission/:organizationName" component={OrgPersonalProject*/}
+				{/*<OrganizationDashboardRoute path="/organization/pre-submission-overview/:organizationName/:projectName" component={PreSubmissionOverview} />*/}
 				<OrganizationDashboardRoute path="/organization/rolecontrol/:organizationName" component={RoleControl} />
-
-
 				<ProfileDashboardRoute exact path="/profile/organization/add/" component={NewOrganization}/>
 
 				{/*Servers*/}

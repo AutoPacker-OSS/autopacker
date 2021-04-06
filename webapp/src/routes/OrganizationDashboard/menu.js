@@ -52,16 +52,10 @@ export function getMenu(organizationName) {
 			text: "Personal",
 			items: [
 				{
-					key: "createProject",
+					key: "submitProject",
 					role: null,
-					to: "/organization/create-project/" + organizationName,
-					text: "Create Project"
-				},
-				{
-					key: "projects",
-					role: null,
-					to: "/organization/pre-submission/" + organizationName,
-					text: "Projects"
+					to: "/organization/submit-project/" + organizationName,
+					text: "Submit Project"
 				},
 				{
 					key: "submissions",
