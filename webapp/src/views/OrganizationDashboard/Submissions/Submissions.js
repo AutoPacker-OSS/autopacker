@@ -41,24 +41,26 @@ function Submissions() {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		axios({
-			method: "get",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_GENERAL_API +
-				"/organization/" +
-				organizationName +
-				"/project-applications/" +
-				keycloak.idTokenParsed.preferred_username,
-			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-			},
-		}).then(function (response) {
-			setRequests(response.data);
-		});
-
+		if (organizationName) {
+			axios({
+				method: "get",
+				url:
+					process.env.REACT_APP_APPLICATION_URL +
+					process.env.REACT_APP_GENERAL_API +
+					"/organization/" +
+					organizationName +
+					"/project-applications/" +
+					keycloak.idTokenParsed.preferred_username,
+				headers: {
+					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				},
+			}).then(function (response) {
+				console.log("DATA:", response.data);
+				setRequests(response.data);
+			});
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [refreshList]);
+	}, [organizationName, refreshList]);
 
 	const toggleRefresh = () => {
 		setRefreshList(!refreshList);
@@ -148,7 +150,7 @@ function Submissions() {
 						{requests.map((request) => (
 							<Panel
 								header={
-									request.member.username +
+									request.project.owner.username +
 									" - " +
 									request.project.name
 								}
@@ -174,17 +176,18 @@ function Submissions() {
 											layout="horizontal"
 										>
 											<Descriptions.Item label="Submitted By">
-												{request.member.username}
+												{request.project.owner.username}
 											</Descriptions.Item>
 											<Descriptions.Item label="Project Name">
 												{request.project.name}
 											</Descriptions.Item>
-											<Descriptions.Item label="Type">
-												{request.project.type}
-											</Descriptions.Item>
+											{/* TODO Removed? */}
+											{/*<Descriptions.Item label="Type">*/}
+											{/*	{request.project.type}*/}
+											{/*</Descriptions.Item>*/}
 
 											<Descriptions.Item label="Tags">
-												{request.project.tags.length > 1 ? (
+												{request.project.tags !== null && request.project.tags.length > 1 ? (
 													request.project.tags
 														.split(",")
 														.map((tag) => (
@@ -207,17 +210,18 @@ function Submissions() {
 											</Descriptions.Item>
 										</Descriptions>
 
-										<Descriptions layout="horizontal">
-											<Descriptions.Item label="Authors">
-												<b>{request.project.authors}</b>
-											</Descriptions.Item>
-										</Descriptions>
+										{/* TODO Not used anymore */}
+										{/*<Descriptions layout="horizontal">*/}
+										{/*	<Descriptions.Item label="Authors">*/}
+										{/*		<b>{request.project.authors}</b>*/}
+										{/*	</Descriptions.Item>*/}
+										{/*</Descriptions>*/}
 
-										<Descriptions layout="horizontal">
-											<Descriptions.Item label="Links">
-												<b>{request.project.links}</b>
-											</Descriptions.Item>
-										</Descriptions>
+										{/*<Descriptions layout="horizontal">*/}
+										{/*	<Descriptions.Item label="Links">*/}
+										{/*		<b>{request.project.links}</b>*/}
+										{/*	</Descriptions.Item>*/}
+										{/*</Descriptions>*/}
 
 										<Descriptions layout="horizontal">
 											<Descriptions.Item label="Comment">
