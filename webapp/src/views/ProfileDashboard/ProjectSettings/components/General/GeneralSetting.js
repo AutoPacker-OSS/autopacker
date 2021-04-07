@@ -37,14 +37,14 @@ function GeneralSetting(props) {
 					process.env.REACT_APP_APPLICATION_URL +
 					process.env.REACT_APP_FILE_DELIVERY_API +
 					"/projects/" +
-					owner +
+					owner.username +
 					"/" +
 					projectName,
 				headers: {
 					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 				},
 				data: {
-					username: owner,
+					username: owner.username,
 					projectName: projectName,
 				},
 			})
