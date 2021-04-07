@@ -303,6 +303,7 @@ public class TestRunner {
      */
     public boolean runNewOrgTests() {
         if (!createNewOrg("TestPublicOrg", false)) return false;
+        // TODO - deletion of organizations must be implemented before the test can be run
 //        if (!deleteOrg("My public org")) return false;
         return true;
     }
