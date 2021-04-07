@@ -25,6 +25,7 @@ public class TestRunnerApp {
             if (!runner.goToDashboard()) quitTests();
 
             if (!runProjectTests(runner)) quitTests();
+            if (!runOrganizationTests(runner)) quitTests();
 
             if (!runner.runBreadcrumbTest()) quitTests();
 
@@ -64,8 +65,7 @@ public class TestRunnerApp {
      */
     private static boolean runOrganizationTests(TestRunner runner) throws InterruptedException {
         if (!runner.goToYourOrganizations()) quitTests();
-//        if (!runner.createOrganization()) quitTests();
-//        if (!runner.deleteOrganization()) quitTests();
+        if (!runner.runNewOrgTests()) quitTests();
 
         return true;
     }

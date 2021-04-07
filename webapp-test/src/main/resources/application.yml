@@ -4,12 +4,12 @@
 # Save this file as application.yml in the resources folder, set the necessary values
 
 # Credentials for AutoPacker admin-user
-adminUsername: admin
-adminPassword: admin
+adminUsername: user
+adminPassword: user
 
 # Credentials for a regular-user without admin access
-regularUsername: user
-regularPassword: user
+regularUsername: test
+regularPassword: test
 
 
 # Base URL of the web-app

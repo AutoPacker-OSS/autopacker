@@ -133,6 +133,8 @@ public class TestRunner {
 
         boolean linksOK = true;
 
+        if (!goToYourProjects()) return false;
+
         // If no projects exist, create one
         if (!haveProjects()) {
             createNewProject("StaticProj", "This project is needed for testing", new String[]{});
@@ -290,6 +292,16 @@ public class TestRunner {
         logger.info("Go to Your Organizations");
         if (!clickOnElement(YOUR_ORGANIZATIONS_LINK_SELECTOR)) return false;
         Thread.sleep(1000);
+        return true;
+    }
+
+    /**
+     * Run tests of creating a new organization (and then deleting it)
+     * Starts and ends tests in "Your organizations" page
+     * @return
+     */
+    public boolean runNewOrgTests() {
+//        if (!createNewOrg("")) return false;
         return true;
     }
 
