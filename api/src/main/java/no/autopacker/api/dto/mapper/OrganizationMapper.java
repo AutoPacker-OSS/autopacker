@@ -1,4 +1,4 @@
-package no.autopacker.api.mapper;
+package no.autopacker.api.dto.mapper;
 
 import lombok.NoArgsConstructor;
 import no.autopacker.api.dto.OrganizationListItemDto;

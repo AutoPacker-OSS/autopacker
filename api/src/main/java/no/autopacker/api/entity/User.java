@@ -53,7 +53,6 @@ public class User {
     )
     private List<Member> organizations;
 
-
     /**
      * Constructor for objects of type User
      *
@@ -98,19 +97,6 @@ public class User {
             isMember = it.next().getOrganization().equals(organization);
         }
         return isMember;
-    }
-
-    /**
-     * Returns all organizations where the user is a member
-     * @return A list of organizations, as Organization objects (not Member objects)!
-     */
-    @JsonIgnore
-    public List<Organization> getAllOrganizations() {
-        List<Organization> o = new LinkedList<>();
-        for (Member m : organizations) {
-            o.add(m.getOrganization());
-        }
-        return o;
     }
 
     @Override

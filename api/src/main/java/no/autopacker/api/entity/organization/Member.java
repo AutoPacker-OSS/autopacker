@@ -30,12 +30,11 @@ public class Member {
     @Column(name = "role")
     private String role = ""; // Role for this user in this organization
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @MapsId("user_id")
     private User user;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @MapsId("organization_id")
     private Organization organization;
 

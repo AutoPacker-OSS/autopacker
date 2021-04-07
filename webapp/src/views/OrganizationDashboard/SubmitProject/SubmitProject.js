@@ -8,32 +8,23 @@ import {
 	Modal,
 	PageHeader,
 	Radio,
-	Tag,
 	Tooltip,
 	Typography,
 } from "antd";
-import { TweenOneGroup } from "rc-tween-one";
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 import {Redirect, useParams} from "react-router-dom";
 import { createAlert, selectMenuOption } from "../../../store/actions/generalActions";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 
-import AuthorInput from "./components/AuthorInput";
-import LinkInput from "./components/LinkInput";
+
 import { QuestionCircleOutlined, UploadOutlined } from "@ant-design/icons";
 
 // TODO - refactor. A lot of code duplicated from NewOrgProject.js?
 function SubmitProject(props) {
 	// Form state
-	const [projectName, setProjectName] = React.useState("");
-	const [desc, setDesc] = React.useState("");
 	const [actualProject, setActualProject] = React.useState("");
-	const [type, setType] = React.useState("");
-	const [authors, setAuthors] = React.useState([]);
-	const [links, setLinks] = React.useState([]);
-	const [tags, setTags] = React.useState([]);
 	const [comment, setComment] = React.useState("");
 
 	// Project selection states
@@ -42,16 +33,11 @@ function SubmitProject(props) {
 	const [selectedRadio, setSelectedRadio] = React.useState(null);
 
 	// Controller state
-	const [tagInput, setTagInput] = React.useState("");
 	const [modalOpen, setModalOpen] = React.useState(false);
 
 	// Conditional state
 	const [redirect, setRedirect] = React.useState(false);
-
-	// validation
-	const [validName, setValidName] = React.useState(false);
-	const [nameValidStatus, setNameValidStatus] = React.useState("");
-	const [nameHelpText, setNameHelpText] = React.useState("");
+	
 
 	// Import sub components from antd
 	const { TextArea } = Input;
@@ -76,21 +62,8 @@ function SubmitProject(props) {
 		}).then(function (response) {
 			setProjects(response.data);
 		});
-	}, []);
-
-	const removeTag = (removedTag) => {
-		const tagsa = tags.filter((tag) => tag !== removedTag);
-		setTags(tagsa);
-	};
-
-	const handleTagInputConfirm = () => {
-		let tagsa = tags;
-		if (tagInput && tagsa.indexOf(tagInput) === -1) {
-			tagsa = [...tags, tagInput];
-		}
-		setTags(tagsa);
-		setTagInput("");
-	};
+	}, [keycloak.token]);
+	
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
@@ -100,22 +73,14 @@ function SubmitProject(props) {
 				method: "post",
 				url:
 					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_GENERAL_API +
-					"/organization/submitProject",
+					process.env.REACT_APP_FILE_DELIVERY_API +
+					"api/organization/submitProject",
 				headers: {
 					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 				},
 				data: {
 					organizationName: organizationName,
-					// projectName: projectName,
-					// desc: desc,
-					// type: type,
-					// authors: authors,
-					// links: links,
-					// tags: tags,
-					// TODO - remove all unnecessary fields from the component (and UI)
 					projectId: actualProject.id,
-					// actualProject: actualProject.id,
 					comment: comment,
 				},
 			})
@@ -175,24 +140,7 @@ function SubmitProject(props) {
 		},
 	];
 
-	const validateName = (value) => {
-		if (value.trim().length <= 0) {
-			setValidName(false);
-			setNameValidStatus("error");
-			setNameHelpText("Please name your project");
-		} else if (/^[a-zA-Z0-9-]+$/.test(value)) {
-			setValidName(true);
-			setNameValidStatus("success");
-			setNameHelpText("");
-		} else {
-			setValidName(false);
-			setNameValidStatus("error");
-			setNameHelpText(
-				"Only letters, numbers and dashes are allowed. Spaces and special characters not allowed"
-			);
-		}
-		setProjectName(value);
-	};
+
 
 	return (
 		<div style={{ width: "100%" }}>
@@ -204,7 +152,7 @@ function SubmitProject(props) {
 				title="Submit Project"
 				breadcrumb={{ routes }}
 			>
-				<Paragraph>Form to submit a project to the organization</Paragraph>
+				<Paragraph>Form to submit a project to the organization, when you submit the organization takes over the ownership of the project</Paragraph>
 			</PageHeader>
 			{/* Can add the Content thingy to route to be common, but might want to do something about the breadcrumb thingy */}
 			<Content
@@ -223,131 +171,24 @@ function SubmitProject(props) {
 				{/* TODO Redirect to user organization submissions (list of all his/hers submission) */}
 				{/* {redirect ? <Redirect to="/profile/projects" /> : <div />} */}
 				<Form {...formItemLayout}>
-					{/* Project Name */}
-					<Form.Item
-						label="Project Name"
-						style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 450 }}
-						rules={[
-							{
-								required: true,
-							},
-						]}
-					>
-						<Input onChange={(event) => validateName(event.target.value)} />
-					</Form.Item>
-					{/* Project Description */}
-					<Form.Item
-						label="Project Description"
-						style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 450 }}
-					>
-						<TextArea onChange={(e) => setDesc(e.target.value)} />
-					</Form.Item>
-					{/* Project Type */}
-					<Form.Item
-						label="Project Type"
-						style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 450 }}
-						rules={[
-							{
-								required: true,
-							},
-						]}
-					>
-						<Radio.Group
-							onChange={(e) => {
-								setType(e.target.value);
-							}}
-						>
-							<Radio value="Personal">Personal</Radio>
-							<Radio value="Bachelor">Bachelor</Radio>
-							<Radio value="Lecture">Lecture</Radio>
-						</Radio.Group>
-					</Form.Item>
-					{/* Tags Section (handling & displaying) */}
+
+					{/* Comment Input */}
 					<Form.Item
 						label={
 							<span>
-								Tags&nbsp;
-								<Tooltip title="Tags can be used to identify and search for projects">
+								Comment&nbsp;
+								<Tooltip title="Comment about the project, this will be shown when the project get reviewed before it get added to the organization.">
 									<QuestionCircleOutlined />
 								</Tooltip>
 							</span>
 						}
-						style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 450 }}
-					>
-						<Input
-							value={tagInput}
-							onChange={(e) => setTagInput(e.target.value)}
-							onPressEnter={handleTagInputConfirm}
-						/>
-					</Form.Item>
-					<div
 						style={{
 							marginLeft: "auto",
 							marginRight: "auto",
 							maxWidth: 400,
-							width: "100%",
-							textAlign: "center",
-							marginBottom: 16,
 						}}
 					>
-						<TweenOneGroup
-							enter={{
-								scale: 0.8,
-								opacity: 0,
-								type: "from",
-								duration: 100,
-								onComplete: (e) => {
-									e.target.style = "";
-								},
-							}}
-							leave={{ opacity: 0, width: 0, scale: 0, duration: 200 }}
-							appear={false}
-						>
-							{tags.map((tag) => (
-								<span key={tag} style={{ display: "inline-block" }}>
-									<Tag
-										color="blue"
-										closable
-										onClose={(e) => {
-											e.preventDefault();
-											removeTag(tag);
-										}}
-									>
-										{tag}
-									</Tag>
-								</span>
-							))}
-						</TweenOneGroup>
-					</div>
-					{/* Author(s) Section */}
-					{/* <AuthorInput updateAuthors={setAuthors} /> */}
-					<Form.Item
-						label={
-							<span>
-								Author(s)&nbsp;
-								<Tooltip title="Authors are shown with the projects they are assigned to. So here you can add your username(s), real name(s) or email(s). If you wish to stay anonymous, but still want to show yourself, you can use a pseudo-name">
-									<QuestionCircleOutlined />
-								</Tooltip>
-							</span>
-						}
-						style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 450 }}
-					>
-						<Input disabled placeholder="Currently not working..." />
-					</Form.Item>
-					{/* Link(s) Section */}
-					{/* <LinkInput updateLinks={setLinks} /> */}
-					<Form.Item
-						label={
-							<span>
-								Link(s)&nbsp;
-								<Tooltip title="Here you can provide links to either project repo, related resources and/or the website that hosts the project if it is hosted">
-									<QuestionCircleOutlined />
-								</Tooltip>
-							</span>
-						}
-						style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 450 }}
-					>
-						<Input disabled placeholder="Currently not working..." />
+						<TextArea onChange={(event) => setComment(event.target.value)} />
 					</Form.Item>
 					{/* Project Link option */}
 					<Form.Item
@@ -359,7 +200,7 @@ function SubmitProject(props) {
 								</Tooltip>
 							</span>
 						}
-						style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 450 }}
+						style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 400 }}
 						rules={[
 							{
 								required: true,
@@ -409,6 +250,7 @@ function SubmitProject(props) {
 									onClick={() => {
 										setSelectedProject(project);
 										setSelectedRadio(project.id);
+										console.log(project.id);
 									}}
 								>
 									<div>
@@ -431,29 +273,11 @@ function SubmitProject(props) {
 							))}
 						</Radio.Group>
 					</Modal>
-					{/* Comment Input */}
-					<Form.Item
-						label={
-							<span>
-								Comment&nbsp;
-								<Tooltip title="Can be anything, why you want the selected role, why you want to join etc.">
-									<QuestionCircleOutlined />
-								</Tooltip>
-							</span>
-						}
-						style={{
-							marginLeft: "auto",
-							marginRight: "auto",
-							maxWidth: 400,
-						}}
-					>
-						<TextArea onChange={(event) => setComment(event.target.value)} />
-					</Form.Item>
 					{/* Button Section */}
 					<div style={{ width: "100%", textAlign: "center" }}>
 						<Button
 							disabled={
-								!validName || type.trim().length <= 0 || selectedProject === null
+								 selectedProject === null
 							}
 							type="primary"
 							onClick={(e) => handleSubmit(e)}
