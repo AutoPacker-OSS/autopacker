@@ -45,6 +45,7 @@ function ProjectRequests() {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
 		}).then(function (response) {
+			console.log("DATA:", response.data);
 			setProjects(response.data);
 		});
 
@@ -71,9 +72,9 @@ function ProjectRequests() {
 				dispatch(
 					createAlert(
 						"Project request accepted",
-						selectedProjectRequest.member.username +
+						selectedProjectRequest.project.owner.username +
 							"'s project request for the project: " +
-							selectedProjectRequest.organizationProject.name +
+							selectedProjectRequest.project.name +
 							" has been accepted",
 						"success",
 						true
@@ -87,7 +88,7 @@ function ProjectRequests() {
 					createAlert(
 						"Project request accepting failed",
 						"Couldn't accept the project application for the given project, " +
-							selectedProjectRequest.organizationProject.name,
+							selectedProjectRequest.project.name,
 						"error",
 						true
 					)
@@ -114,7 +115,7 @@ function ProjectRequests() {
 				dispatch(
 					createAlert(
 						"Project request declined",
-						'The request for the project "' + selectedProjectRequest.organizationProject.name + '" has been declined',
+						'The request for the project "' + selectedProjectRequest.project.name + '" has been declined',
 						"success",
 						true
 					)
@@ -126,7 +127,7 @@ function ProjectRequests() {
 				dispatch(
 					createAlert(
 						"Project rejection failed",
-						"Couldn't decline the project request for the project " + selectedProjectRequest.organizationProject.name,
+						"Couldn't decline the project request for the project " + selectedProjectRequest.project.name,
 						"error",
 						true
 					)
@@ -174,11 +175,11 @@ function ProjectRequests() {
 					}}
 				>
 					<Collapse>
-						{projects.map((project) => (
+						{projects.map((projectRequest) => (
 							<Panel
-								header={project.member.username + " - " + project.organizationProject.name}
-								key={project.id}
-								extra={project.created}
+								header={projectRequest.project.owner.username + " - " + projectRequest.project.name}
+								key={projectRequest.id}
+								extra={projectRequest.created}
 							>
 								<Row gutter={[24, 0]}>
 									<Col xs={24} md={5}>
@@ -195,52 +196,53 @@ function ProjectRequests() {
 									</Col>
 									<Col xs={24} md={19}>
 										<Descriptions title="Project Application Details" layout="horizontal">
-											<Descriptions.Item label="Submitted By">{project.member.username}</Descriptions.Item>
+											<Descriptions.Item label="Submitted By">{projectRequest.project.owner.username}</Descriptions.Item>
 											<Descriptions.Item label="Project Name">
-												{project.organizationProject.name}
+												{projectRequest.project.name}
 											</Descriptions.Item>
-											<Descriptions.Item label="Type">{project.organizationProject.type}</Descriptions.Item>
+											{/* TODO This is not in use anymore */}
+											{/*<Descriptions.Item label="Type">{projectRequest.project.type}</Descriptions.Item>*/}
 
 											<Descriptions.Item label="Tags">
-												{project.organizationProject.tags.length > 1 ? (
-													project.organizationProject.tags.split(",").map((tag) => (
+												{projectRequest.project.tags !== null && projectRequest.project.tags.length > 1 ? (
+													projectRequest.project.tags.split(",").map((tag) => (
 														<span key={tag} style={{ display: "inline-block" }}>
 															<Tag color="blue">{tag}</Tag>
 														</span>
 													))
-												) : (
-													<div />
-												)}
+												) : null}
 											</Descriptions.Item>
 										</Descriptions>
 
 										<Descriptions layout="horizontal">
 											<Descriptions.Item label="Description">
-												{project.organizationProject.description}
+												{projectRequest.project.description}
 											</Descriptions.Item>
 										</Descriptions>
 
-										<Descriptions layout="horizontal">
-											<Descriptions.Item label="Authors">
-												<b>{project.organizationProject.authors}</b>
-											</Descriptions.Item>
-										</Descriptions>
+										{/* TODO Not in use at the moment */}
+										{/*<Descriptions layout="horizontal">*/}
+										{/*	<Descriptions.Item label="Authors">*/}
+										{/*		<b>{projectRequest.project.authors}</b>*/}
+										{/*	</Descriptions.Item>*/}
+										{/*</Descriptions>*/}
+
+										{/* TODO Not in use at the moment */}
+										{/*<Descriptions layout="horizontal">*/}
+										{/*	<Descriptions.Item label="Links">*/}
+										{/*		<b>{projectRequest.project.links}</b>*/}
+										{/*	</Descriptions.Item>*/}
+										{/*</Descriptions>*/}
 
 										<Descriptions layout="horizontal">
-											<Descriptions.Item label="Links">
-												<b>{project.organizationProject.links}</b>
-											</Descriptions.Item>
-										</Descriptions>
-
-										<Descriptions layout="horizontal">
-											<Descriptions.Item label="Comment">{project.comment}</Descriptions.Item>
+											<Descriptions.Item label="Comment">{projectRequest.comment}</Descriptions.Item>
 										</Descriptions>
 										<div style={{ float: "right", padding: 10 }}>
 											<Button
 												style={{ marginRight: 10 }}
 												type="danger"
 												onClick={() => {
-													setSelectedProjectRequest(project);
+													setSelectedProjectRequest(projectRequest);
 													setDeclineModalOpen(true);
 												}}
 											>
@@ -249,7 +251,7 @@ function ProjectRequests() {
 											<Button
 												style={{ marginRight: 10 }}
 												onClick={() => {
-													setSelectedProjectRequest(project);
+													setSelectedProjectRequest(projectRequest);
 													setEditModalOpen(true);
 												}}
 											>
@@ -259,7 +261,7 @@ function ProjectRequests() {
 												style={{ marginRight: 10 }}
 												type="primary"
 												onClick={() => {
-													setSelectedProjectRequest(project);
+													setSelectedProjectRequest(projectRequest);
 													setAcceptModalOpen(true);
 												}}
 											>
@@ -277,15 +279,15 @@ function ProjectRequests() {
 					{/* Accept Modal */}
 					{selectedProjectRequest !== null ? (
 						<Modal
-							title={"Accept request from " + selectedProjectRequest.member.username + "?"}
+							title={"Accept request from " + selectedProjectRequest.project.owner.username + "?"}
 							centered
 							visible={acceptModalOpen}
 							onOk={() => acceptRequest(selectedProjectRequest)}
 							onCancel={() => setAcceptModalOpen(false)}
 						>
 							<p>
-								By accepting this project. <b>{selectedProjectRequest.member.username}</b> will be notified on
-								email that the project: {selectedProjectRequest.organizationProject.name} has been accepted
+								By accepting this project. <b>{selectedProjectRequest.project.owner.username}</b> will be notified on
+								email that the project: {selectedProjectRequest.project.name} has been accepted
 							</p>
 							<TextArea
 								placeholder="Comment..."
@@ -300,7 +302,7 @@ function ProjectRequests() {
 					{/* Edit Modal */}
 					{selectedProjectRequest !== null ? (
 						<Modal
-							title={'Edit "' + selectedProjectRequest.organizationProject.name + '"?'}
+							title={'Edit "' + selectedProjectRequest.project.name + '"?'}
 							centered
 							visible={editModalOpen}
 							onCancel={() => setEditModalOpen(false)}
@@ -320,9 +322,9 @@ function ProjectRequests() {
 						<Modal
 							title={
 								'Decline project request for "' +
-								selectedProjectRequest.organizationProject.name +
+								selectedProjectRequest.project.name +
 								'" from ' +
-								selectedProjectRequest.member.username +
+								selectedProjectRequest.project.owner.username +
 								"?"
 							}
 							centered
@@ -331,7 +333,7 @@ function ProjectRequests() {
 							onCancel={() => setDeclineModalOpen(false)}
 						>
 							<p>
-								By declining the request, {selectedProjectRequest.member.username} will be notified. You can add a
+								By declining the request, {selectedProjectRequest.project.owner.username} will be notified. You can add a
 								comment which will be sent with the email. Can include a reason why the project request was
 								declined.
 							</p>
