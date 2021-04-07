@@ -3,16 +3,17 @@ package no.autopacker.api.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import no.autopacker.api.dto.MemberListItemDto;
 import no.autopacker.api.dto.OrganizationListItemDto;
+import no.autopacker.api.dto.mapper.MemberMapper;
 import no.autopacker.api.entity.User;
 import no.autopacker.api.entity.fdapi.Project;
 import no.autopacker.api.entity.organization.*;
-import no.autopacker.api.mapper.OrganizationMapper;
+import no.autopacker.api.dto.mapper.OrganizationMapper;
 import no.autopacker.api.repository.UserRepository;
 import no.autopacker.api.repository.fdapi.ProjectRepository;
 import no.autopacker.api.repository.organization.*;
@@ -36,6 +37,7 @@ public class OrganizationController {
     private final OrganizationService organizationService;
     private final ObjectMapper objectMapper;
     private final OrganizationMapper organizationMapper;
+    private final MemberMapper memberMapper;
 
     // Repositories
     private final ProjectApplicationRepository projectApplicationRepository;
@@ -44,6 +46,7 @@ public class OrganizationController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
+    private final MemberRepository memberRepository;
 
     @Autowired
     public OrganizationController(ProjectApplicationRepository projectApplicationRepository,
@@ -52,16 +55,19 @@ public class OrganizationController {
                                   OrganizationService organizationService,
                                   UserService userService,
                                   UserRepository userRepository,
-                                  ProjectRepository projectRepository) {
+                                  ProjectRepository projectRepository,
+                                  MemberRepository memberRepository) {
         this.projectApplicationRepository = projectApplicationRepository;
         this.memberApplicationRepository = memberApplicationRepository;
         this.organizationRepository = organizationRepository;
         this.organizationService = organizationService;
         this.projectRepository = projectRepository;
+        this.memberRepository = memberRepository;
         this.objectMapper = new ObjectMapper();
         this.userService = userService;
         this.userRepository = userRepository;
         this.organizationMapper = new OrganizationMapper();
+        this.memberMapper = new MemberMapper();
     }
 
     @PostMapping(value = "/new-organization")
@@ -253,9 +259,19 @@ public class OrganizationController {
     ----------------------------*/
 
     @GetMapping(value = "/{organization}/members")
-    public List<Member> findAllMembers(@PathVariable("organization") String organizationName) {
+    public ResponseEntity<List<MemberListItemDto>> findAllMembers(@PathVariable("organization") String organizationName) {
         Organization organization = organizationRepository.findByName(organizationName);
-        return organization != null ? organization.getMembers() : new LinkedList<>();
+        if (organization != null) {
+            List<Member> members = this.memberRepository.findAllByOrganization_Id(organization.getId());
+            List<MemberListItemDto> memberListItemDtos = this.memberMapper.toMemberListItemsDtos(members);
+            if (!members.isEmpty()) {
+                return new ResponseEntity<>(memberListItemDtos, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new LinkedList<>(), HttpStatus.NO_CONTENT);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping

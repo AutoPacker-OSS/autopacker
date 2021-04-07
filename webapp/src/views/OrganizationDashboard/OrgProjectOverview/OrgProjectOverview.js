@@ -42,9 +42,18 @@ function OrgProjectOverview() {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
 		}).then(function (response) {
+			console.log("DATA:", response.data);
 			setProject(response.data);
-			setTags(response.data.tags.split(","));
-			setLinks(response.data.links.split(","));
+			if (response.data.tags) {
+				setTags(response.data.tags.split(","));
+			} else {
+				setTags([]);
+			}
+			if (response.data.links) {
+				setLinks(response.data.links.split(","));
+			} else {
+				setLinks([]);
+			}
 		});
 	}, []);
 
@@ -93,14 +102,14 @@ function OrgProjectOverview() {
 					/*<Link key={1} style={{ marginLeft: 10, marginRight: 10 }} to="#">
 						<Icon type="download" /> Download
 					</Link>,*/
-					<Link
-						id="project-settings-link"
-						key={2}
-						style={{ marginLeft: 10, marginRight: 10 }}
-						to={"/organization/dashboard/" + organizationName + "/overview/"+ project.id + "/settings"}
-					>
-						<SettingOutlined /> Settings
-					</Link>,
+					// <Link
+					// 	id="project-settings-link"
+					// 	key={2}
+					// 	style={{ marginLeft: 10, marginRight: 10 }}
+					// 	to={"/organization/dashboard/" + organizationName + "/overview/"+ project.id + "/settings"}
+					// >
+					// 	<SettingOutlined /> Settings
+					// </Link>,
 				]}
 			>
 				<Paragraph>{project.description}</Paragraph>
@@ -123,7 +132,7 @@ function OrgProjectOverview() {
 								</span>
 							))
 						) : (
-							<div />
+							null
 						)}
 					</div>
 					<Paragraph style={{ float: "right" }}>Last updated {Moment(project.lastUpdated).format('DD/MM/yyyy')}</Paragraph>

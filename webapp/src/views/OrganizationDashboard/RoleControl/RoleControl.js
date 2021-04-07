@@ -11,6 +11,7 @@ function RoleControl() {
     // State
     const [members, setMembers] = React.useState([]);
     const { organizationName } = useParams();
+    const [reload, setReload] = React.useState(false);
 
     //Modal
     const [deleteModal, setDeleteModal] = React.useState(false);
@@ -48,12 +49,12 @@ function RoleControl() {
                 arr.push({
                     key: member.id,
                     username: member.username,
-                    role: member.role.name,
+                    role: member.role,
                 });
             });
             setMembers(arr);
         });
-    }, [keycloak.token, organizationName]);
+    }, [keycloak.token, organizationName, reload]);
 
     const handleChangeRole = (event) => {
         event.preventDefault();
@@ -72,7 +73,6 @@ function RoleControl() {
                     organizationName: organizationName,
                     username: user,
                     role: newRole
-
                 },
             })
                 .then(function () {
@@ -84,6 +84,7 @@ function RoleControl() {
                             true
                         )
                     );
+                    setReload(!reload);
                 })
                 .catch(() => {
                     dispatch(

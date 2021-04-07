@@ -36,7 +36,7 @@ function Members() {
 				arr.push({
 					key: ++memberNr,
 					username: member.username,
-					role: member.role.name,
+					role: member.role,
 				});
 			});
 			setMembers(arr);

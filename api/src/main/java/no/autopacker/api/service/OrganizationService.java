@@ -23,7 +23,7 @@ public class OrganizationService {
     private final MemberApplicationRepository memberApplicationRepository;
     private final OrganizationRepository organizationRepository;
     private final ProjectRepository projectRepository;
-//    private final MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
     private final UserRepository userRepository;
     private final JavaMailSender javaMailSender;
 
@@ -32,14 +32,14 @@ public class OrganizationService {
                                MemberApplicationRepository memberApplicationRepository,
                                OrganizationRepository organizationRepository,
                                ProjectRepository projectRepository,
-//                               MemberRepository memberRepository,
+                               MemberRepository memberRepository,
                                UserRepository userRepository,
                                JavaMailSender javaMailSender) {
         this.projectApplicationRepository = projectApplicationRepository;
         this.memberApplicationRepository = memberApplicationRepository;
         this.organizationRepository = organizationRepository;
         this.projectRepository = projectRepository;
-//        this.memberRepository = memberRepository;
+        this.memberRepository = memberRepository;
         this.userRepository = userRepository;
         this.javaMailSender = javaMailSender;
     }
@@ -238,8 +238,9 @@ public class OrganizationService {
     public ResponseEntity<String> changeRole(Organization organization, String username, String role) {
         User user = userRepository.findByUsername(username);
         if (user != null) {
-            organization.addMemberWithRole(user, role);
-            organizationRepository.save(organization);
+            Member member = this.memberRepository.findByOrganization_IdAndUser_Username(organization.getId(), username);
+            member.setRole(role);
+            this.memberRepository.save(member);
             return new ResponseEntity<>("Role Changed!", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Organization do not exist!", HttpStatus.BAD_REQUEST);

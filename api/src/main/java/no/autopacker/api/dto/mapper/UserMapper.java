@@ -1,4 +1,4 @@
-package no.autopacker.api.mapper;
+package no.autopacker.api.dto.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
