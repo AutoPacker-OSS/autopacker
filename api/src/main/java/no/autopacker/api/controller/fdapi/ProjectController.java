@@ -147,9 +147,8 @@ public class ProjectController {
                     Utils.instance().validateUserWorkspace(username);
                     String projectPath = Utils.instance().getUserProjectDir(username, pm.getName());
                     File projectFolder = new File(projectPath);
-                    User owner = userRepository.findByUsername(username);
                     if (projectFolder.exists() ||
-                            projectRepo.findByOwnerAndName(owner, pm.getName()) != null) {
+                            projectRepo.findByOwnerAndName(authUser, pm.getName()) != null) {
                         response = ResponseEntity.status(HttpStatus.CONFLICT).body("Project already exists.");
                     } else {
                         if (projectFolder.mkdir()) {
