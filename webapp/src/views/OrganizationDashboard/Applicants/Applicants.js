@@ -38,7 +38,7 @@ function Applicants() {
 			method: "get",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_GENERAL_API +
+				process.env.REACT_APP_API +
 				"/organization/" +
 				organizationName +
 				"/member-applications",
@@ -67,7 +67,7 @@ function Applicants() {
 	const acceptRequest = (username) => {
 		axios({
 			method: "post",
-			url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_GENERAL_API + "/organization/acceptMemberRequest",
+			url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/acceptMemberRequest",
 			headers: {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
@@ -97,7 +97,7 @@ function Applicants() {
 	const declineRequest = (username) => {
 		axios({
 			method: "post",
-			url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_GENERAL_API + "/organization/declineMemberRequest",
+			url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/declineMemberRequest",
 			headers: {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},

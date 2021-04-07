@@ -53,7 +53,7 @@ function App() {
 			<React.Fragment>
 				{/*Organization*/}
 
-				<OrganizationDashboardRoute path="/organization/submissions/:organization" component={Submissions} />
+				<OrganizationDashboardRoute path="/organization/submissions/:organizationName" component={Submissions} />
 				<OrganizationDashboardRoute path="/organization/project-requests/:organizationName" component={ProjectRequests} />
 				{/*<OrganizationDashboardRoute path="/organization/create-project/:organizationName" component={NewOrgProject} />*/}
 				<OrganizationDashboardRoute path="/organization/submit-project/:organizationName" component={SubmitProject}/>

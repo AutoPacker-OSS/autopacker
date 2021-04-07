@@ -49,7 +49,7 @@ function Servers() {
 					method: "get",
 					url:
 					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_SERVER_MANAGER +
+					process.env.REACT_APP_API +
 					"/server/" +
 					search,
 					headers: {
@@ -63,7 +63,7 @@ function Servers() {
 					method: "get",
 					url:
 					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_SERVER_MANAGER +
+					process.env.REACT_APP_API +
 					"/server",
 					headers: {
 						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,

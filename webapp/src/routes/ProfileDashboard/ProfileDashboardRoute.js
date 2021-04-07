@@ -39,7 +39,7 @@ function ProfileDashboardLayout({children}) {
 				onClick={() => {
 					const url =
 						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_AUTHENTICATION_SERVER +
+						process.env.REACT_APP_API +
 						"/auth/resendVerificationToken";
 
 					axios

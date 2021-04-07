@@ -109,7 +109,7 @@ function NewOrgProject() {
 		if (keycloak.idTokenParsed.email_verified) {
 			axios({
 				method: "post",
-				url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_GENERAL_API + "/organization/createProject",
+				url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/createProject",
 				headers: {
 					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 				},
@@ -182,7 +182,7 @@ function NewOrgProject() {
 		/* Fetch Users */
 		const usersUrl =
 			process.env.REACT_APP_APPLICATION_URL +
-			process.env.REACT_APP_AUTHENTICATION_SERVER +
+			process.env.REACT_APP_API +
 			"/auth/search?q=" + search;
 		axios.get(usersUrl).then((response) => {
 			setUsersList(response.data);

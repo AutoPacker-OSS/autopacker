@@ -31,7 +31,7 @@ function ProfileOrganizationForm() {
 		const organizationName = sessionStorage.getItem("selectedPublicOrganization");
 
 		const projectsUrl =
-			process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_GENERAL_API + "/organization/" + organizationName;
+			process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/" + organizationName;
 
 		axios.get(projectsUrl).then((response) => {
 			setOrganization(response.data);
@@ -53,7 +53,7 @@ function ProfileOrganizationForm() {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 
-		const url = process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_GENERAL_API + "/organization/requestMembership";
+		const url = process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/requestMembership";
 
 		axios.post(url,
 			{

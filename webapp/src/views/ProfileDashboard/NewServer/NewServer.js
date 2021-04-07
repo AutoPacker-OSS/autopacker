@@ -72,7 +72,7 @@ function NewServer() {
 				method: "post",
 				url:
 					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_SERVER_MANAGER +
+					process.env.REACT_APP_API +
 					"/server/new-server",
 				headers: {
 					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
