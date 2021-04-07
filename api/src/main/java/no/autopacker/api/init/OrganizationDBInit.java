@@ -108,11 +108,11 @@ public class OrganizationDBInit implements CommandLineRunner {
         this.projectRepository.saveAll(Arrays.asList(ntnuPublicProj, ntnuPrivateProj, testProjPrivate, testProjPublic));
 
         // Create project application
-        this.projectApplicationRepository.save(new ProjectApplication(testProjPublic, testOrg, "Bachelor project"));
-        this.projectApplicationRepository.save(new ProjectApplication(testProjPrivate, testOrg, "Test project"));
+        this.projectApplicationRepository.save(new ProjectApplication(testProjPublic, ntnu, "Bachelor project"));
+        this.projectApplicationRepository.save(new ProjectApplication(testProjPrivate, ntnu, "Test project"));
 
         // Create member application
-        this.memberApplicationRepository.save(new MemberApplication(hatiou, testOrg, ROLE_MEMBER, "Please accept me :D"));
-        this.memberApplicationRepository.save(new MemberApplication(chu, testOrg, ROLE_MEMBER, "Nice feature there"));
+        this.memberApplicationRepository.save(new MemberApplication(hatiou, ntnu, ROLE_MEMBER, "Please accept me :D"));
+        this.memberApplicationRepository.save(new MemberApplication(chu, ntnu, ROLE_MEMBER, "Nice feature there"));
     }
 }

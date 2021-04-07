@@ -8,7 +8,7 @@ import java.util.List;
 import no.autopacker.api.dto.UserDto;
 import no.autopacker.api.entity.User;
 import no.autopacker.api.interfaces.UserService;
-import no.autopacker.api.mapper.UserMapper;
+import no.autopacker.api.dto.mapper.UserMapper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
