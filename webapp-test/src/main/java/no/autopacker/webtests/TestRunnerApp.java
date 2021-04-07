@@ -25,9 +25,10 @@ public class TestRunnerApp {
             if (!runner.goToDashboard()) quitTests();
 
             if (!runProjectTests(runner)) quitTests();
-            if (!runOrganizationTests(runner)) quitTests();
 
             if (!runner.runBreadcrumbTest()) quitTests();
+
+            if (!runOrganizationTests(runner)) quitTests();
 
             // Last test is to perform a logout()
             if (!runner.tryLogout()) quitTests();
