@@ -71,7 +71,7 @@ function RequestEditForm(props) {
 			method: "post",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_GENERAL_API +
+				process.env.REACT_APP_API +
 				"/organization/updateProjectSubmission",
 			headers: {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,

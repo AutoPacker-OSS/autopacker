@@ -45,7 +45,7 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 				if (username.length >= 4) {
 					const url =
 						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_AUTHENTICATION_SERVER +
+						process.env.REACT_APP_API +
 						"/auth/usernameAvailability/" +
 						username;
 
@@ -87,7 +87,7 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 				) {
 					const url =
 						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_AUTHENTICATION_SERVER +
+						process.env.REACT_APP_API +
 						"/auth/emailAvailability/" +
 						email;
 
@@ -127,7 +127,7 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 				onClick={() => {
 					const url =
 						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_AUTHENTICATION_SERVER +
+						process.env.REACT_APP_API +
 						"/auth/resendVerificationToken";
 
 					axios
@@ -172,7 +172,7 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 
 		if (validUsername === "success" && validEmail === "success" && validPassword === "success") {
 			setLoading(true);
-			const url = process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_AUTHENTICATION_SERVER + "/auth/register";
+			const url = process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/auth/register";
 
 			fetch(url, {
 				method: "POST",

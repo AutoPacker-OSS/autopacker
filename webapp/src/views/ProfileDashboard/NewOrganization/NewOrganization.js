@@ -68,7 +68,7 @@ function NewOrganization() {
         if (keycloak.idTokenParsed.email_verified) {
             axios({
                 method: "post",
-                url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_FILE_DELIVERY_API  + "/organization/new-organization",
+                url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API_FDAPI  + "/organization/new-organization",
                 headers: {
                     Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
                 },

@@ -37,7 +37,7 @@ function ProjectRequests() {
 			method: "get",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_GENERAL_API +
+				process.env.REACT_APP_API +
 				"/organization/" +
 				organizationName +
 				"/project-applications",
@@ -59,7 +59,7 @@ function ProjectRequests() {
 	const acceptRequest = (selectedProjectRequest) => {
 		axios({
 			method: "post",
-			url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_GENERAL_API + "/organization/acceptProjectRequest",
+			url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/acceptProjectRequest",
 			headers: {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
@@ -101,7 +101,7 @@ function ProjectRequests() {
 		axios({
 			method: "post",
 			url:
-				process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_GENERAL_API + "/organization/declineProjectRequest",
+				process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/declineProjectRequest",
 			headers: {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},

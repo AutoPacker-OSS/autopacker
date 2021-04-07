@@ -54,7 +54,7 @@ function SubmitProject(props) {
 			method: "get",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_FILE_DELIVERY_API +
+				process.env.REACT_APP_API_FDAPI +
 				"/projects",
 			headers: {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
@@ -73,7 +73,7 @@ function SubmitProject(props) {
 				method: "post",
 				url:
 					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_FILE_DELIVERY_API +
+					process.env.REACT_APP_API_FDAPI +
 					"api/organization/submitProject",
 				headers: {
 					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,

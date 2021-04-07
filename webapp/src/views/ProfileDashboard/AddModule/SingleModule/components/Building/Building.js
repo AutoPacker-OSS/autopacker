@@ -18,7 +18,7 @@ function Building(props) {
 	useEffect(() => {
 		const url =
 			process.env.REACT_APP_APPLICATION_URL +
-			process.env.REACT_APP_FILE_DELIVERY_API +
+			process.env.REACT_APP_API_FDAPI +
 			"/projects/" +
 			keycloak.idTokenParsed.preferred_username +
 			"/" +

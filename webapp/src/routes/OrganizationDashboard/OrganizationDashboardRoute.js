@@ -42,7 +42,7 @@ function OrganizationDashboardLayout({ children }) {
 				onClick={() => {
 					const url =
 						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_AUTHENTICATION_SERVER +
+						process.env.REACT_APP_API +
 						"/auth/resendVerificationToken";
 
 					axios
@@ -124,7 +124,7 @@ function OrganizationDashboardLayout({ children }) {
 									{menuItem.items !== null ? (
 										menuItem.items.map(childItem => {
 											if (childItem.role !== null) {
-												return keycloak.tokenParsed.resource_access["general-api"].roles.includes(childItem.role) ? (
+												return keycloak.realmAccess.roles.includes("ADMIN") ? (
 													<NavLink key={childItem.key} activeClassName="ant-menu-item-selected" to={childItem.to} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
 														{childItem.text}
 													</NavLink>

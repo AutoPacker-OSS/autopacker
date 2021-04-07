@@ -35,7 +35,7 @@ function GeneralSetting(props) {
 				method: "delete",
 				url:
 					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_FILE_DELIVERY_API +
+					process.env.REACT_APP_API_FDAPI +
 					"/projects/" +
 					owner +
 					"/" +

@@ -21,7 +21,7 @@ function ProjectSettings() {
 			method: "get",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_FILE_DELIVERY_API +
+				process.env.REACT_APP_API_FDAPI +
 				"/project-overview/" +
 				projectId,
 			headers: {
