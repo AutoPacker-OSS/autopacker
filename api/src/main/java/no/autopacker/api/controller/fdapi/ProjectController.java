@@ -233,7 +233,9 @@ public class ProjectController {
                         try {
                             FileUtils.cleanDirectory(projectDir);
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            System.out.println("Directory " + pm.getLocation() + " not found, can't be cleaned");
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Directory " + pm.getLocation() + " not found, can't be cleaned");
                         }
                         if (!projectDir.exists() || projectDir.delete()) {
                             projectRepo.delete(pm);
