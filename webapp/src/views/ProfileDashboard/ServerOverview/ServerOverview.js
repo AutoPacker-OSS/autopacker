@@ -79,7 +79,7 @@ function ServerOverview() {
 			method: "get",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_SERVER_MANAGER +
+				process.env.REACT_APP_API +
 				"/server/server-overview/" +
 				serverId,
 			headers: {
@@ -94,7 +94,7 @@ function ServerOverview() {
 					method: "get",
 					url:
 						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_FILE_DELIVERY_API +
+						process.env.REACT_APP_API_FDAPI +
 						"/projects",
 					headers: {
 						Authorization:
@@ -133,7 +133,7 @@ function ServerOverview() {
 			method: "get",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_FILE_DELIVERY_API +
+				process.env.REACT_APP_API_FDAPI +
 				"/projects",
 			headers: {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
@@ -154,7 +154,7 @@ function ServerOverview() {
 			method: "post",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_SERVER_MANAGER +
+				process.env.REACT_APP_API +
 				"/server/add-project",
 			headers: {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
@@ -233,7 +233,7 @@ function ServerOverview() {
 			method: "post",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_SERVER_MANAGER +
+				process.env.REACT_APP_API +
 				"/server/deployProject/",
 			data: {
 				serverId: server.serverId,
@@ -278,7 +278,7 @@ function ServerOverview() {
 			method: "post",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_SERVER_MANAGER +
+				process.env.REACT_APP_API +
 				"/server/init/",
 			data: {
 				serverId: server.serverId,
@@ -406,7 +406,7 @@ function ServerOverview() {
 			method: "post",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_SERVER_MANAGER +
+				process.env.REACT_APP_API +
 				"/server/remove-project",
 			headers: {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,

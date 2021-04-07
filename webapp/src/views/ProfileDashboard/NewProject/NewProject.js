@@ -112,7 +112,7 @@ function NewProject() {
 		if (keycloak.idTokenParsed.email_verified) {
 			axios({
 				method: "post",
-				url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_FILE_DELIVERY_API + "/projects",
+				url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API_FDAPI + "/projects",
 				headers: {
 					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 				},

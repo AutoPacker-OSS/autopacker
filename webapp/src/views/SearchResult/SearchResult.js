@@ -40,7 +40,7 @@ function SearchResult(props) {
 		/* Fetch projects */
 
 		const projectsUrl =
-			process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_FILE_DELIVERY_API + "/projects/search?q=" + query;
+			process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API_FDAPI + "/projects/search?q=" + query;
 
 		axios.get(projectsUrl).then((response) => {
 			setProjectsList(response.data);
@@ -49,7 +49,7 @@ function SearchResult(props) {
 		/* Fetch Users */
 
 		const usersUrl =
-			process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_AUTHENTICATION_SERVER + "/auth/search?q=" + query;
+			process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/auth/search?q=" + query;
 
 		axios.get(usersUrl).then((response) => {
 			setUsersList(response.data);
@@ -58,7 +58,7 @@ function SearchResult(props) {
 		/* Fetch Organizations */
 
 		const organizationUrl =
-			process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_GENERAL_API + "/organization/search?q=" + query;
+			process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/search?q=" + query;
 
 		axios.get(organizationUrl).then((response) => {
 			setOrganizationsList(response.data);

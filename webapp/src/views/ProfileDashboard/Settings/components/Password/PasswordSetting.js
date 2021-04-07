@@ -60,7 +60,7 @@ function PasswordSetting() {
 		if (oldPassword.length >= 8 || validNewPassword === "success" || validConfirmPassword === "success") {
 			axios({
 				method: "post",
-				url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_AUTHENTICATION_SERVER + "/auth/changePassword",
+				url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/auth/changePassword",
 				headers: {
 					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 				},

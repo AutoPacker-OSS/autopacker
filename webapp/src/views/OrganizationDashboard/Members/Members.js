@@ -22,7 +22,7 @@ function Members() {
 			method: "get",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_GENERAL_API +
+				process.env.REACT_APP_API +
 				"/organization/" +
 				organizationName +
 				"/members",

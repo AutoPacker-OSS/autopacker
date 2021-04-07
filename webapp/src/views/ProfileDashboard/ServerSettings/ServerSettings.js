@@ -22,7 +22,7 @@ function ServerSettings() {
 			method: "get",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_SERVER_MANAGER +
+				process.env.REACT_APP_API +
 				"/server/server-overview/" +
 				serverId,
 			headers: {

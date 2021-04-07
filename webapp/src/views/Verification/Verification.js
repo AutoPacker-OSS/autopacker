@@ -25,7 +25,7 @@ function Verification() {
 
 		const url =
 			process.env.REACT_APP_APPLICATION_URL +
-			process.env.REACT_APP_AUTHENTICATION_SERVER +
+			process.env.REACT_APP_API +
 			"/auth/registrationConfirmation?" +
 			token;
 
@@ -73,7 +73,7 @@ function Verification() {
 
 		const url =
 			process.env.REACT_APP_APPLICATION_URL +
-			process.env.REACT_APP_AUTHENTICATION_SERVER +
+			process.env.REACT_APP_API +
 			"/auth/requestNewVerificationToken?" +
 			token;
 

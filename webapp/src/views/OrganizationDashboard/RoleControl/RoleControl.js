@@ -36,7 +36,7 @@ function RoleControl() {
             method: "get",
             url:
                 process.env.REACT_APP_APPLICATION_URL +
-                process.env.REACT_APP_GENERAL_API +
+                process.env.REACT_APP_API +
                 "/organization/" +
                 organizationName +
                 "/members",
@@ -64,7 +64,7 @@ function RoleControl() {
                 method: "post",
                 url:
                     process.env.REACT_APP_APPLICATION_URL +
-                    process.env.REACT_APP_GENERAL_API +
+                    process.env.REACT_APP_API +
                     "/organization/changeRole",
                 headers: {
                     Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
@@ -116,7 +116,7 @@ function RoleControl() {
                 method: "post",
                 url:
                     process.env.REACT_APP_APPLICATION_URL +
-                    process.env.REACT_APP_GENERAL_API +
+                    process.env.REACT_APP_API +
                     "/organization/deleteMember",
                 headers: {
                     Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,

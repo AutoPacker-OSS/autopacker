@@ -46,7 +46,7 @@ function ProfileOrganizationOverview() {
 			clearSessionStorage()
 			const projectsUrl =
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_GENERAL_API +
+				process.env.REACT_APP_API +
 				"/organization/" +
 				organizationName;
 
@@ -59,7 +59,7 @@ function ProfileOrganizationOverview() {
 				axios
 					.get(
 						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_GENERAL_API +
+						process.env.REACT_APP_API +
 						"/organization/" +
 						organizationName +
 						"/" +
@@ -97,7 +97,7 @@ function ProfileOrganizationOverview() {
 			if (debouncedSearchTerm) {
 				const projectsUrl =
 					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_GENERAL_API +
+					process.env.REACT_APP_API +
 					"/organization/" +
 					organization.name +
 					"/projects/search?q=" +
@@ -111,7 +111,7 @@ function ProfileOrganizationOverview() {
 
 				const projectsUrl =
 					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_GENERAL_API +
+					process.env.REACT_APP_API +
 					"/organization/" +
 					organizationName +
 					"/projects";
