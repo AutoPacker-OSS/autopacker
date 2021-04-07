@@ -55,6 +55,21 @@ public class TestRunnerApp {
         return true;
     }
 
+    /**
+     * Run organization-related tests. It is assumed that the testing starts on dashboard page.
+     * Tests are also finished on the Dashboard page.
+     * @param runner Test runner to use
+     * @return true on success. Does not return anything (exits) on error
+     * @throws InterruptedException Thread.sleep may be used internally, interrupting it throws an exception
+     */
+    private static boolean runOrganizationTests(TestRunner runner) throws InterruptedException {
+        if (!runner.goToYourOrganizations()) quitTests();
+//        if (!runner.createOrganization()) quitTests();
+//        if (!runner.deleteOrganization()) quitTests();
+
+        return true;
+    }
+
     private static void quitTests() {
         logger.error("Some of tests failed!");
         runner.quit();

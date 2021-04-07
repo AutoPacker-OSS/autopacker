@@ -18,6 +18,7 @@ public class TestRunner {
     private static final String DASHBOARD_LINK_SELECTOR = "#main-dashboard-link b";
     private static final String YOUR_PROJECTS_LINK_SELECTOR = "#sidebar-link-projects";
     private static final String YOUR_SERVERS_LINK_SELECTOR = "#sidebar-link-servers";
+    private static final String YOUR_ORGANIZATIONS_LINK_SELECTOR = "#sidebar-link-organizations";
     private static final String TAG_CLASS = ".ant-tag";
     private static final String USER_DROPDOWN_MENU_SELECTOR = "#user-menu-link";
     private static final String LOGOUT_SELECTOR = "#logout-link";
@@ -275,6 +276,19 @@ public class TestRunner {
     public boolean goToYourProjects() throws InterruptedException {
         logger.info("Go to Your Projects");
         if (!clickOnElement(YOUR_PROJECTS_LINK_SELECTOR)) return false;
+        Thread.sleep(1000);
+        return true;
+    }
+
+    /**
+     * Go to "Your Organizations" page. Assume that we were signed in and on the page somewhere.
+     *
+     * @return True on success, false on failure.
+     * @throws InterruptedException When thread-sleep interrupted
+     */
+    public boolean goToYourOrganizations() throws InterruptedException{
+        logger.info("Go to Your Organizations");
+        if (!clickOnElement(YOUR_ORGANIZATIONS_LINK_SELECTOR)) return false;
         Thread.sleep(1000);
         return true;
     }
@@ -568,4 +582,5 @@ public class TestRunner {
     private int checkXPathElementCount(String xpath) {
         return driver.findElements(By.xpath(xpath)).size();
     }
+
 }
