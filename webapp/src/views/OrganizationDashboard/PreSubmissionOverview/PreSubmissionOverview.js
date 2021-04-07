@@ -44,7 +44,7 @@ function PreSubmissionOverview() {
 			method: "get",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_FILE_DELIVERY_API  +
+				process.env.REACT_APP_GENERAL_API  +
 				"/organization/" +
 				organizationName +
 				"/projectId/" +
@@ -130,7 +130,7 @@ function PreSubmissionOverview() {
 					axios({
 						method: "post",
 						url: process.env.REACT_APP_APPLICATION_URL +
-							process.env.REACT_APP_FILE_DELIVERY_API + "/organization/submitted",
+							process.env.REACT_APP_GENERAL_API + "/organization/submitted",
 						headers: {
 							Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 						},

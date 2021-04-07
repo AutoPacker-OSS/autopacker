@@ -219,15 +219,15 @@ public class OrganizationService {
         return stringBuilder.toString();
     }
 
-    public ResponseEntity<String> createNewOrg(String name, String description, String ownerUsername, String url,
+    public ResponseEntity<String> createNewOrg(String name, String description, User owner, String url,
                                                boolean isPublic) {
-        User owner = userRepository.findByUsername(ownerUsername);
-        if (owner == null) {
-            return new ResponseEntity<>("Incorrect owner username!", HttpStatus.BAD_REQUEST);
-        }
         Organization organization = organizationRepository.findByName(name);
         if (organization == null) {
             organization = new Organization(name, description, url, isPublic, owner);
+            // Owner must also have membership. But first we need to save the organization entity so that it gets an ID
+            organizationRepository.save(organization);
+            organization.addAdminMember(owner);
+            // Now save the membership
             organizationRepository.save(organization);
             return new ResponseEntity<>("Organization Created", HttpStatus.OK);
         } else {

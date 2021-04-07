@@ -288,7 +288,7 @@ public class TestRunner {
      * @return True on success, false on failure.
      * @throws InterruptedException When thread-sleep interrupted
      */
-    public boolean goToYourOrganizations() throws InterruptedException{
+    public boolean goToYourOrganizations() throws InterruptedException {
         logger.info("Go to Your Organizations");
         if (!clickOnElement(YOUR_ORGANIZATIONS_LINK_SELECTOR)) return false;
         Thread.sleep(1000);
@@ -298,11 +298,29 @@ public class TestRunner {
     /**
      * Run tests of creating a new organization (and then deleting it)
      * Starts and ends tests in "Your organizations" page
+     *
      * @return
      */
     public boolean runNewOrgTests() {
-//        if (!createNewOrg("")) return false;
+        if (!createNewOrg("TestPublicOrg", false)) return false;
+//        if (!deleteOrg("My public org")) return false;
         return true;
+    }
+
+    /**
+     * Create new organization. Assume that we are in "Your organizations" page. Finish the test on the same page
+     *
+     * @param name
+     * @param isPrivate
+     * @return
+     */
+    private boolean createNewOrg(String name, boolean isPrivate) {
+        if (!clickOnElement("#new-organization-link")) return false;
+        if (!clickAndEnterText("#organizationName", name)) return false;
+        String radioButtonId = "#org-privacy-" + (isPrivate ? "private" : "public");
+        if (!clickOnElement(radioButtonId)) return false;
+        if (!clickOnElement("#create-org-btn")) return false;
+        return successAlertExists("Organization Added");
     }
 
     /**
@@ -493,6 +511,18 @@ public class TestRunner {
 
         Thread.sleep(1000);
         return true;
+    }
+
+    /**
+     * Check if an alert with a specific success-message is shown
+     *
+     * @param message The expected content (text) of the alert message
+     * @return
+     */
+    private boolean successAlertExists(String message) {
+        String alertMsgXpath = "//*[contains(@class,'ant-alert-success')]//div[contains(@class, 'ant-alert-message') and text() = '"
+                + message + "']";
+        return checkXPathElementCount(alertMsgXpath) == 1;
     }
 
     /**

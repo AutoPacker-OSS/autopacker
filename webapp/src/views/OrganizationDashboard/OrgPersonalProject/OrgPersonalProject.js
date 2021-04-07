@@ -25,7 +25,7 @@ function OrgPersonalProject() {
                     method: "get",
                     url:
                         process.env.REACT_APP_APPLICATION_URL +
-                        process.env.REACT_APP_FILE_DELIVERY_API +
+                        process.env.REACT_APP_GENERAL_API +
                         "/organization/" +
                         organizationName +
                         "/projects/"+

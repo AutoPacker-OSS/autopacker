@@ -72,13 +72,17 @@ public class OrganizationController {
 
     @PostMapping(value = "/new-organization")
     public ResponseEntity<String> createNewOrg(HttpEntity<String> httpEntity) {
+        User authUser = userService.getAuthenticatedUser();
+        if (authUser == null) {
+            return new ResponseEntity<>("Must log in to create organizations", HttpStatus.UNAUTHORIZED);
+        }
         String body = httpEntity.getBody();
         if (body != null) {
             JSONObject jsonObject = new JSONObject(body);
             return this.organizationService.createNewOrg(
                     jsonObject.getString("organizationName"),
                     jsonObject.getString("orgDesc"),
-                    jsonObject.getString("username"),
+                    authUser,
                     jsonObject.getString("url"),
                     jsonObject.getBoolean("isPublic"));
         } else {
@@ -325,7 +329,7 @@ public class OrganizationController {
         }
     }
 
-    @GetMapping(value = "/{username}/isMember/search")
+    @GetMapping(value = "/organization/{username}/isMember/search")
     public List<Organization> searchAllOrganizationsAUserIsMemberIn(@PathVariable("username") String username,
                                                                     @RequestParam("q") String query) {
         return this.organizationRepository.searchOrganizationsForUser(username, query);

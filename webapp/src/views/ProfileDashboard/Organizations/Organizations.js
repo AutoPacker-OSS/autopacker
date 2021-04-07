@@ -48,48 +48,25 @@ function Organizations() {
 	useEffect(
 		() => {
 			// Make sure we have a value (user has entered something in input)
-			// TODO - refactor - copy-paste code in both if-else blocks
-			if (debouncedSearchTerm) {
-				// Fire off our API call
-				axios({
-					method: "get",
-					url:
-						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_GENERAL_API +
-						"/organization/" +
-						keycloak.idTokenParsed.preferred_username +
-						"/isMember/search?q=" +
-						search,
-					headers: {
-						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-					},
-				}).then(function (response) {
-					if (response.data) {
-						setOrganizations(response.data);
-					} else {
-						setOrganizations([]);
-					}
-				});
-			} else {
-				axios({
-					method: "get",
-					url:
-						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_GENERAL_API +
-						"/organization/" +
-						keycloak.idTokenParsed.preferred_username +
-						"/isMember",
-					headers: {
-						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-					},
-				}).then(function (response) {
-					if (response.data) {
-						setOrganizations(response.data);
-					} else {
-						setOrganizations([]);
-					}
-				});
-			}
+			// Fire off our API call
+			axios({
+				method: "get",
+				url:
+					process.env.REACT_APP_APPLICATION_URL +
+					process.env.REACT_APP_GENERAL_API +
+					"/organization/" +
+					keycloak.idTokenParsed.preferred_username +
+					"/isMember" + (search ? ("/search?q=" + search) : ""),
+				headers: {
+					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				},
+			}).then(function (response) {
+				if (response.data) {
+					setOrganizations(response.data);
+				} else {
+					setOrganizations([]);
+				}
+			});
 		},
 		// This is the useEffect input array
 		// Our useEffect function will only execute if this value changes ...
