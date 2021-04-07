@@ -61,6 +61,7 @@ function Navbar() {
 					style={{lineHeight: "64px", float: "right"}}
 				>
 					<SubMenu
+						id="user-menu-link"
 						title={
 							<div>
 								<Avatar
@@ -99,7 +100,7 @@ function Navbar() {
 								Settings
 							</Link>
 						</Menu.Item>
-						<Menu.Item onClick={logout}>
+						<Menu.Item onClick={logout} id="logout-link">
 							<LogoutOutlined/>
 							Logout
 						</Menu.Item>

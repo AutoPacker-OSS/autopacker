@@ -16,10 +16,12 @@ import java.util.concurrent.TimeUnit;
 public class TestRunner {
     private static final Logger logger = LoggerFactory.getLogger(TestRunner.class);
     private static final String DASHBOARD_LINK_SELECTOR = "#main-dashboard-link b";
-    private static final String YOUR_PROJECTS_LINK_SELECTOR = "#sidebar-projects-link";
-    private static final String YOUR_SERVERS_LINK_SELECTOR = "#sidebar-servers-link";
+    private static final String YOUR_PROJECTS_LINK_SELECTOR = "#sidebar-link-projects";
+    private static final String YOUR_SERVERS_LINK_SELECTOR = "#sidebar-link-servers";
     private static final String TAG_CLASS = ".ant-tag";
-    private static final String USER_DROPDOWN_MENU_XPATH = "//*[@id=\"root\"]/div/section/header/ul[2]/li[2]";
+    private static final String USER_DROPDOWN_MENU_SELECTOR = "#user-menu-link";
+    private static final String LOGOUT_SELECTOR = "#logout-link";
+    private static final String SIGN_IN_SELECTOR = "#sign-in-link";
     private WebDriver driver;
     private final Actions actions;
     private final String mainPageUrl;
@@ -298,17 +300,17 @@ public class TestRunner {
      */
     public boolean tryLogout() throws InterruptedException {
         logger.info("Attempting logout...");
-        WebElement userDropdownMenu = driver.findElement(By.xpath(USER_DROPDOWN_MENU_XPATH));
+        WebElement userDropdownMenu = driver.findElement(By.cssSelector(USER_DROPDOWN_MENU_SELECTOR));
         if (userDropdownMenu != null) {
 
             moveMouseOver(userDropdownMenu);
             Thread.sleep(500);
-            driver.findElement(By.xpath("//*[@id=\"logout\"]")).click();
+            driver.findElement(By.cssSelector(LOGOUT_SELECTOR)).click();
 
             logger.info("Clicking logout button");
             Thread.sleep(1000);
 
-            if (driver.findElement(By.xpath(USER_DROPDOWN_MENU_XPATH)).getText().equals("Sign in")) {
+            if (this.checkElementCount(SIGN_IN_SELECTOR) == 1) {
                 logger.info("Logout success...");
                 return true;
             } else {

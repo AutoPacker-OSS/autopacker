@@ -14,27 +14,45 @@ public class TestRunnerApp {
     private static TestRunner runner;
     private final static Logger logger = LoggerFactory.getLogger(TestRunnerApp.class);
 
-    public static void main(String[] args) throws InterruptedException {
-        TestConfig config = readConfigFile();
-        runner = new TestRunner(config);
-        if (!runner.openMainPage()) quitTests();
-        if (runner.signIn("wronguser", "wrongpassword")) quitTests();
-        if (!runner.openMainPage()) quitTests();
-        if (!runner.signIn(config.getUsername(), config.getPassword())) quitTests();
-        if (!runner.goToDashboard()) quitTests();
+    public static void main(String[] args) {
+        try {
+            TestConfig config = readConfigFile();
+            runner = new TestRunner(config);
+            if (!runner.openMainPage()) quitTests();
+            if (runner.signIn("wronguser", "wrongpassword")) quitTests();
+            if (!runner.openMainPage()) quitTests();
+            if (!runner.signIn(config.getRegularUsername(), config.getRegularPassword())) quitTests();
+            if (!runner.goToDashboard()) quitTests();
+
+            if (!runProjectTests(runner)) quitTests();
+
+            if (!runner.runBreadcrumbTest()) quitTests();
+
+            // Last test is to perform a logout()
+            if (!runner.tryLogout()) quitTests();
+        } catch (InterruptedException e) {
+            logger.info("Tests interrupted");
+        }
+
+        runner.quit();
+        logger.info("All tests succeeded");
+    }
+
+    /**
+     * Run project-related tests. It is assumed that the testing starts on dashboard page.
+     * Tests are also finished on the Dashboard page.
+     * @param runner Test runner to use
+     * @return true on success. Does not return anything (exits) on error
+     * @throws InterruptedException Thread.sleep may be used internally, interrupting it throws an exception
+     */
+    private static boolean runProjectTests(TestRunner runner) throws InterruptedException {
         if (!runner.goToYourProjects()) quitTests();
 
         if (!runner.runTwoTagProjectTest()) quitTests();
         if (!runner.runSingleTagProjectTest()) quitTests();
         if (!runner.runOneCharTagProjectTest()) quitTests();
-
-        if (!runner.runBreadcrumbTest()) quitTests();
-
-        // Last test is to perform a logout()
-        if (!runner.tryLogout()) quitTests();
-
-        runner.quit();
-        logger.info("All tests succeeded");
+        if (!runner.goToDashboard()) quitTests();
+        return true;
     }
 
     private static void quitTests() {

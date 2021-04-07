@@ -9,7 +9,7 @@ const LoginBtn = withRouter(
 			keycloak.login();
 		}, [keycloak]);
 
-		return <div onClick={login}>Sign in</div>;
+		return <div id="sign-in-link" onClick={login}>Sign in</div>;
 	})
 );
 
