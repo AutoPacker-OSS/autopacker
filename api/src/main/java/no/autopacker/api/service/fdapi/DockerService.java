@@ -1,6 +1,7 @@
 package no.autopacker.api.service.fdapi;
 
 import no.autopacker.api.config.DockerConfig;
+import no.autopacker.api.entity.fdapi.Dockerfile;
 import no.autopacker.api.entity.fdapi.Module;
 import no.autopacker.api.repository.fdapi.DockerfileRepository;
 import no.autopacker.api.utils.fdapi.Utils;
@@ -95,22 +96,26 @@ public class DockerService {
 	public void buildDockerImage(Module module, String ownerUsername) throws Exception {
 		String location = module.getLocation();
 
-		String dockerFileLocation = dockerfileRepo.findByNameIgnoreCase(module.getConfigType()).getLocation();
+		Dockerfile dockerfile = this.dockerfileRepo.findByNameIgnoreCase(module.getConfigType());
 
-		String moduleImageName = Utils.instance().getModuleImageName(ownerUsername, module.getName());
-		Runtime cmd = Runtime.getRuntime();
+		if (dockerfile != null) {
+			String dockerFileLocation = dockerfile.getLocation();
 
-		File dockerFileSource = new File(dockerFileLocation);
-		File dockerFileDestination = new File(location.concat("Dockerfile"));
+			String moduleImageName = Utils.instance().getModuleImageName(ownerUsername, module.getName());
+			Runtime cmd = Runtime.getRuntime();
 
-		// Copy dockerfile from repository and save it inside project dir with the standard name "Dockerfile"
-		FileUtils.copyFile(dockerFileSource, dockerFileDestination);
+			File dockerFileSource = new File(dockerFileLocation);
+			File dockerFileDestination = new File(location.concat("Dockerfile"));
 
-		// Build docker image (the repo part format: autopacker/username-module)
-		cmd.exec(new String[]{"docker", "build", "-t", dockerConfig.getUsername().concat("/").concat(moduleImageName),
-				location}).waitFor();
+			// Copy dockerfile from repository and save it inside project dir with the standard name "Dockerfile"
+			FileUtils.copyFile(dockerFileSource, dockerFileDestination);
 
-		// Push docker image to repo
-		cmd.exec(new String[]{"docker", "push", dockerConfig.getUsername() + "/" + moduleImageName}).waitFor();
+			// Build docker image (the repo part format: autopacker/username-module)
+			cmd.exec(new String[]{"docker", "build", "-t", dockerConfig.getUsername().concat("/").concat(moduleImageName),
+					location}).waitFor();
+
+			// Push docker image to repo
+			cmd.exec(new String[]{"docker", "push", dockerConfig.getUsername() + "/" + moduleImageName}).waitFor();
+		}
 	}
 }

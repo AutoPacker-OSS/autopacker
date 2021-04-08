@@ -39,7 +39,7 @@ function Setup(props) {
 			let form = {
 				name: name,
 				desc: desc,
-				gameServer: selectedGameServer.name,
+				language: selectedGameServer.name,
 				version: selectedServerVersion.version,
 				"config-type": selectedServerVersion["config-type"],
 				port: port,
@@ -66,7 +66,7 @@ function Setup(props) {
 							{
 								id: 1,
 								version: "latest",
-								"config-type": "vanilla-minecraft",
+								"config-type": "vanilla_minecraft-latest",
 							},
 						],
 					},
@@ -77,7 +77,7 @@ function Setup(props) {
 							{
 								id: 2,
 								version: "latest (1.7)",
-								"config-type": "ftb-infinity-evolved",
+								"config-type": "ftb_infinity_evolved-latest",
 							},
 						],
 					},
@@ -95,7 +95,7 @@ function Setup(props) {
 							{
 								id: 1,
 								version: "Stable 1.1",
-								"config-type": "factorio-stable",
+								"config-type": "factorio_stable",
 							},
 						],
 					},
