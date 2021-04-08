@@ -33,3 +33,5 @@ build/
 application.yml
 
 *.log
+
+data/workspace/*

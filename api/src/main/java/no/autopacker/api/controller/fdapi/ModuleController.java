@@ -129,66 +129,69 @@ public class ModuleController {
                                 // Create the module directory
                                 new File(modulePath).mkdirs();
 
-                                // Check if only one file is uploaded, then check if its a zip
-                                if (moduleFiles.size() == 1) {
-                                    MultipartFile singleUploadedFile = moduleFiles.get(0);
-                                    String fileMimeType = singleUploadedFile.getContentType();
+                                if (moduleFiles.size() > 0) {
 
-                                    // Check if the file is a zip
-                                    if (fileMimeType.equals("application/zip") || fileMimeType
-                                        .equals("application/x-zip-compressed")) {
+                                    // Check if only one file is uploaded, then check if its a zip
+                                    if (moduleFiles.size() == 1) {
+                                        MultipartFile singleUploadedFile = moduleFiles.get(0);
+                                        String fileMimeType = singleUploadedFile.getContentType();
 
-                                        // Convert the uploaded multipart file into a zip and place it inside module folder
-                                        File tempFile = new File(modulePath,
-                                            System.currentTimeMillis() + ".zip");
-                                        FileOutputStream tempFileFos = new FileOutputStream(
-                                            tempFile);
-                                        IOUtils
-                                            .copy(singleUploadedFile.getInputStream(), tempFileFos);
-                                        tempFileFos.close();
-                                        singleUploadedFile.getInputStream().close();
+                                        // Check if the file is a zip
+                                        if (fileMimeType.equals("application/zip") || fileMimeType
+                                                .equals("application/x-zip-compressed")) {
 
-                                        // Fetch all the files inside the zip
-                                        ZipFile zip = new ZipFile(tempFile);
-                                        ZipInputStream zipInputStream = new ZipInputStream(
-                                            singleUploadedFile.getInputStream());
-                                        ZipEntry zipEntry = zipInputStream.getNextEntry();
+                                            // Convert the uploaded multipart file into a zip and place it inside module folder
+                                            File tempFile = new File(modulePath,
+                                                    System.currentTimeMillis() + ".zip");
+                                            FileOutputStream tempFileFos = new FileOutputStream(
+                                                    tempFile);
+                                            IOUtils
+                                                    .copy(singleUploadedFile.getInputStream(), tempFileFos);
+                                            tempFileFos.close();
+                                            singleUploadedFile.getInputStream().close();
 
-                                        // Iterate through the files inside zip
-                                        while (zipEntry != null) {
-                                            File zipFile = new File(
-                                                modulePath.concat(zipEntry.getName()));
-                                            // Check if the current file is a dir, if so, create it
-                                            if (zipEntry.isDirectory()) {
-                                                zipFile.mkdirs();
-                                            } else {
-                                                if (!zipFile.getParentFile().exists()) {
-                                                    zipFile.getParentFile().mkdirs();
+                                            // Fetch all the files inside the zip
+                                            ZipFile zip = new ZipFile(tempFile);
+                                            ZipInputStream zipInputStream = new ZipInputStream(
+                                                    singleUploadedFile.getInputStream());
+                                            ZipEntry zipEntry = zipInputStream.getNextEntry();
+
+                                            // Iterate through the files inside zip
+                                            while (zipEntry != null) {
+                                                File zipFile = new File(
+                                                        modulePath.concat(zipEntry.getName()));
+                                                // Check if the current file is a dir, if so, create it
+                                                if (zipEntry.isDirectory()) {
+                                                    zipFile.mkdirs();
+                                                } else {
+                                                    if (!zipFile.getParentFile().exists()) {
+                                                        zipFile.getParentFile().mkdirs();
+                                                    }
+                                                    zipFile.createNewFile();
+                                                    FileOutputStream fos = new FileOutputStream(
+                                                            zipFile);        // output stream from the empty file
+                                                    IOUtils.copy(zip.getInputStream(zipEntry),
+                                                            fos);            // input stream from the file inside the zip
+                                                    fos.close();
+                                                    zip.getInputStream(zipEntry).close();
                                                 }
-                                                zipFile.createNewFile();
-                                                FileOutputStream fos = new FileOutputStream(
-                                                    zipFile);        // output stream from the empty file
-                                                IOUtils.copy(zip.getInputStream(zipEntry),
-                                                    fos);            // input stream from the file inside the zip
-                                                fos.close();
-                                                zip.getInputStream(zipEntry).close();
+
+                                                // Goto next zip entry in zip
+                                                zipEntry = zipInputStream.getNextEntry();
                                             }
 
-                                            // Goto next zip entry in zip
-                                            zipEntry = zipInputStream.getNextEntry();
+                                            // Remove the file locks
+                                            zipInputStream.close();
+                                            singleUploadedFile.getInputStream().close();
+                                            zip.close();
+                                            tempFile.delete();
+
+                                        } else {
+                                            uploadFilesFromMultipart(moduleFiles, modulePath);
                                         }
-
-                                        // Remove the file locks
-                                        zipInputStream.close();
-                                        singleUploadedFile.getInputStream().close();
-                                        zip.close();
-                                        tempFile.delete();
-
                                     } else {
                                         uploadFilesFromMultipart(moduleFiles, modulePath);
                                     }
-                                } else {
-                                    uploadFilesFromMultipart(moduleFiles, modulePath);
                                 }
 
                                 // Build the module (may take some time)
@@ -250,79 +253,6 @@ public class ModuleController {
     }
 
     /**
-     * Upload a pre-created game server to a specific project as a module
-     *
-     * @param username the username of the user uploading the module
-     * @param projectName the name of the project to upload the module to
-     * @param moduleName the name of the new module
-     * @param configType the game server configuration tyoe
-     * @param configParamsJson different configuration parameters like port
-     * @return status ok if module was added, status unauthorized if user is not logged in, status
-     *         not found if project was not found or status bad request if something failed
-     */
-    // TODO - refactor this - almost the same as uploadModuleToProject()
-    @PostMapping(value = "/projects/{username}/{project}/{module}/game-module/add")
-    public ResponseEntity<String> uploadGameServerToProject(@PathVariable("username") String username,
-                                                            @PathVariable("project") String projectName,
-                                                            @PathVariable("module") String moduleName,
-                                                            @RequestParam("config-type") String configType,
-                                                            @RequestParam("server-version") String serverVersion,
-                                                            @RequestParam("config-params") String configParamsJson) {
-        User authenticatedUser = userService.getAuthenticatedUser();
-        if (authenticatedUser != null && authenticatedUser.getUsername().equalsIgnoreCase(username)) {
-            User owner = userRepository.findByUsername(username);
-            Project project = this.projectRepo.findByOwnerAndName(owner, projectName);
-            if (project != null) {
-                // Check if module by given name already exists
-                if (moduleRepo.countByProjectIdAndName(project.getId(), moduleName) == 0) {
-                    // Checks if the project has a valid name
-                    Pattern pattern = Pattern.compile("[\\w-]*");
-                    Matcher matcher = pattern.matcher(moduleName);
-
-                    if (matcher.matches()) {
-                        String modulePath = project.getLocation().concat(moduleName + File.separator);
-
-                        // Get config parameters (port)
-                        int port = 0;
-                        try {
-                            JSONObject json = new JSONObject(configParamsJson);
-
-                            if (json.has("port")) {
-                                port = json.getInt("port");
-                            } else if (json.has("PORT")) {
-                                port = json.getInt("PORT");
-                            }
-                        } catch (JSONException je) {
-                            je.printStackTrace();
-                            return ResponseEntity.badRequest()
-                                    .body("Something wrong happened parsing port(s)");
-                        }
-
-                        // Create the module meta entity
-                        Module module = new Module(moduleName, port, configType, serverVersion,
-                                configType, modulePath, project);
-                        module.setProject(project);
-                        moduleRepo.save(module);
-                        // The ID will be set by the .save() operation
-                        mongo.save(module.getId(), configParamsJson);
-
-                        return ResponseEntity.ok("Module successfully added to the project");
-                    } else {
-                        return ResponseEntity.badRequest().body("The project name can only contain alphanumeric values combined with dash and underscore");
-                    }
-                } else {
-                    return ResponseEntity.badRequest().body("Module with that name already exists");
-                }
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
-        } else {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-        }
-    }
-
-
-    /**
      * Delete a module inside a project if you're the owner or admin.
      *
      * @param username    project owner
@@ -333,12 +263,12 @@ public class ModuleController {
      * in
      */
     @RequestMapping(value = "/projects/{username}/{project}/{module}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteProjectModule(@PathVariable("username") String username,
+    public ResponseEntity<String> deleteProjectModule(@PathVariable("username") String username,
         @PathVariable("project") String projectName,
         @PathVariable("module") String moduleName) {
         User owner = userRepository.findByUsername(username);
         Project pm = projectRepo.findByOwnerAndName(owner, projectName);
-        ResponseEntity response;
+        ResponseEntity<String> response;
         User authenticatedUser = userService.getAuthenticatedUser();
         if (authenticatedUser != null) {
             if (authenticatedUser.getUsername().equalsIgnoreCase(username) || authenticatedUser.hasSystemRole(ROLE_ADMIN)) {
