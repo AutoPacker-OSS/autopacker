@@ -14,7 +14,6 @@ function Applicants() {
 	const [acceptModalOpen, setAcceptModalOpen] = React.useState(false);
 	const [declineModalOpen, setDeclineModalOpen] = React.useState(false);
 	const [declineComment, setDeclineComment] = React.useState("");
-	const [acceptComment, setAcceptComment] = React.useState("");
 	const [refreshList, setRefreshList] = React.useState(false);
 	const [reload, setReload] = React.useState(false);
 
