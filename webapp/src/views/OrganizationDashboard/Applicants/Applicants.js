@@ -1,6 +1,6 @@
 import { Button, Col, Collapse, Descriptions, Input, Layout, Modal, PageHeader, Row, Typography } from "antd";
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 // Identicon
@@ -14,7 +14,9 @@ function Applicants() {
 	const [acceptModalOpen, setAcceptModalOpen] = React.useState(false);
 	const [declineModalOpen, setDeclineModalOpen] = React.useState(false);
 	const [declineComment, setDeclineComment] = React.useState("");
+	const [acceptComment, setAcceptComment] = React.useState("");
 	const [refreshList, setRefreshList] = React.useState(false);
+	const [reload, setReload] = React.useState(false);
 
 	// Modal info state
 	const [selectedApplicantUsername, setSelectedApplicantUsername] = React.useState("");
@@ -51,7 +53,7 @@ function Applicants() {
 		});
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [reload]);
 
 	const routes = [
 		{
@@ -80,6 +82,7 @@ function Applicants() {
 				dispatch(createAlert("Member accepted", username + "'s member application have been accepted", "success", true));
 				setRefreshList(true);
 				setAcceptModalOpen(false);
+				setReload(!reload);
 			})
 			.catch(() => {
 				dispatch(
@@ -118,6 +121,7 @@ function Applicants() {
 				);
 				setRefreshList(true);
 				setDeclineModalOpen(false);
+				setReload(!reload);
 			})
 			.catch(() => {
 				dispatch(
@@ -204,7 +208,7 @@ function Applicants() {
 															openAcceptModal(
 																applicant.user.username,
 																applicant.user.name,
-																applicant.role
+																applicant.role,
 															)
 														}
 													>

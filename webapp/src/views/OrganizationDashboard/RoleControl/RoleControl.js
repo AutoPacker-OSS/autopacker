@@ -1,9 +1,9 @@
-import {Layout, PageHeader, Table, Typography, Space, Select, Modal, Button} from "antd";
+import {Layout, PageHeader, Table, Typography, Select, Modal, Button} from "antd";
 
 import React, { useEffect } from "react";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
-import {createAlert, selectMenuOption} from "../../../store/actions/generalActions";
+import {createAlert} from "../../../store/actions/generalActions";
 import {useDispatch} from "react-redux";
 import {useParams} from "react-router-dom";
 
@@ -19,7 +19,6 @@ function RoleControl() {
 
 
     const [user, setUser] = React.useState("");
-    const [role, setRole] = React.useState("");
     const [newRole, setNewRole] = React.useState("");
 
     const [keycloak] = useKeycloak();
@@ -136,6 +135,7 @@ function RoleControl() {
                             true
                         )
                     );
+                    setReload(!reload);
                 })
                 .catch(() => {
                     dispatch(
@@ -211,8 +211,8 @@ function RoleControl() {
             width: 300,
             render: (text, record) => (
                          <Select defaultValue={record.role} style={{ width: 120 }} onChange={(value) => changeRoleModal(true, record.username, value)}>
-                            <Option value="ADMIN">ADMIN</Option>
-                            <Option value="OWNER">OWNER</Option>
+                             <Option value="ADMIN">ADMIN</Option>
+                             <Option value="OWNER">OWNER</Option>
                             <Option value="MEMBER">MEMBER</Option>
                         </Select>
             )
