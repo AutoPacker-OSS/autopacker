@@ -64,6 +64,7 @@ function ProjectRequests() {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
 			data: {
+				organizationName: organizationName,
 				projectRequestId: selectedProjectRequest.id,
 				comment: acceptComment,
 			},
