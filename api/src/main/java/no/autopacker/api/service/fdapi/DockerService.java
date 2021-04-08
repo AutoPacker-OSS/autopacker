@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 @Service
 public class DockerService {
@@ -101,7 +102,7 @@ public class DockerService {
 		if (dockerfile != null) {
 			String dockerFileLocation = dockerfile.getLocation();
 
-			String moduleImageName = Utils.instance().getModuleImageName(ownerUsername, module.getName());
+			String moduleImageName = Utils.instance().getModuleImageName(ownerUsername, module.getProject().getName().toLowerCase(), module.getName());
 			Runtime cmd = Runtime.getRuntime();
 
 			File dockerFileSource = new File(dockerFileLocation);
