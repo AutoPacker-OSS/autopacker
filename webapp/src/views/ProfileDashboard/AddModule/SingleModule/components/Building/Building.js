@@ -40,9 +40,13 @@ function Building(props) {
 			},
 			body: formData,
 		})
-			.then(() => {
+			.then((response) => {
+				if (response.status === 200 || response.status === 201) {
+					setUploadSuccess(true);
+				} else {
+					setUploadSuccess(false);
+				}
 				nextStep();
-				setUploadSuccess(true);
 			})
 			.catch(() => {
 				nextStep();
