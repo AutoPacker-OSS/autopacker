@@ -73,8 +73,8 @@ function SubmitProject(props) {
 				method: "post",
 				url:
 					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API_FDAPI +
-					"api/organization/submitProject",
+					process.env.REACT_APP_API +
+					"/organization/submitProject",
 				headers: {
 					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 				},
@@ -171,7 +171,6 @@ function SubmitProject(props) {
 				{/* TODO Redirect to user organization submissions (list of all his/hers submission) */}
 				{/* {redirect ? <Redirect to="/profile/projects" /> : <div />} */}
 				<Form {...formItemLayout}>
-
 					{/* Comment Input */}
 					<Form.Item
 						label={

@@ -14,7 +14,7 @@ public interface ProjectApplicationRepository extends JpaRepository<ProjectAppli
             nativeQuery = true)
     List<ProjectApplication> findAllActive(String organizationName);
 
-    @Query(value = "SELECT pa.* FROM project_application pa " +
+    @Query(value = "SELECT DISTINCT pa.* FROM project_application pa " +
             "INNER JOIN organization o ON pa.organization_id = o.id " +
             "INNER JOIN project p on o.id = p.organization_id " +
             "INNER JOIN user u ON p.owner_id = u.id " +
