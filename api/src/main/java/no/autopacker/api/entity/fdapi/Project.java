@@ -107,4 +107,8 @@ public class Project {
     public boolean hasModules() {
         return (modules != null && modules.size() > 0);
     }
+
+    public boolean hasOrganization() {
+        return (organization != null);
+    }
 }

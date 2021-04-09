@@ -181,6 +181,7 @@ public class OrganizationService {
             projectApplication.setAccepted(true);
             projectApplicationRepository.save(projectApplication);
             project.setOrganization(organization);
+            project.setOwner(organization.getOwner());
             projectRepository.save(project);
         } else {
             projectApplicationRepository.delete(projectApplication);
