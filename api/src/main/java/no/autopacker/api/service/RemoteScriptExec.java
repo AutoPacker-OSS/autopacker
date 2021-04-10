@@ -147,7 +147,7 @@ public class RemoteScriptExec {
             if (session.isConnected()) {
                 ChannelExec channel = (ChannelExec) session.openChannel("exec");
                 String dockerComposePath =
-                    this.appConfig.getApiRootUrl() + "/projects/" + username + "/" + project
+                    this.appConfig.getApiRootUrl() + "/api/projects/" + username + "/" + project
                         + "/docker-compose.yml";
                 System.out.println(dockerComposePath);
                 channel.setCommand(
