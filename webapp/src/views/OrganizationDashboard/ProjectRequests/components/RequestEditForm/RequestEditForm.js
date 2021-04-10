@@ -34,8 +34,16 @@ function RequestEditForm(props) {
 		console.log(request.project)
 		setProjectName(request.project.name);
 		setDesc(request.project.description);
-		setTags(request.project.tags.split(","));
-		setLinks(request.project.website.split(","));
+		if (request.project.tags) {
+			setTags(request.project.tags.split(","));
+		} else {
+			setTags([]);
+		}
+		if (request.project.website) {
+			setLinks(request.project.website.split(","));
+		} else {
+			setLinks([]);
+		}
 		setComment(request.comment);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
