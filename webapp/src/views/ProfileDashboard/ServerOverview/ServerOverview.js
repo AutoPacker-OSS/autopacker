@@ -95,14 +95,15 @@ function ServerOverview() {
 					url:
 						process.env.REACT_APP_APPLICATION_URL +
 						process.env.REACT_APP_API +
-						"/projects",
+						"/projectsForServer"+
+						serverId,
 					headers: {
 						Authorization:
 							keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 					},
 				}).then((resp) => {
 					setUserProjects(resp.data);
-
+					console.log(resp.data)
 					let listContainingServerProjectsAndLoadingState = [];
 
 					resp.data.forEach((project) => {
@@ -134,12 +135,14 @@ function ServerOverview() {
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
 				process.env.REACT_APP_API +
-				"/projects",
+				"/projectsForServer/"+
+				serverId,
 			headers: {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
 		}).then(function (response) {
 			setUserProjects(response.data);
+			console.log(response.data);
 			let list = [];
 			response.data.forEach((project) => {
 				list.push({ id: project.id, checked: false });

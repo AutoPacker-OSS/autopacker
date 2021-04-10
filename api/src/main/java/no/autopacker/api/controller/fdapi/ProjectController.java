@@ -2,13 +2,17 @@ package no.autopacker.api.controller.fdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.autopacker.api.entity.Server;
 import no.autopacker.api.entity.User;
 import no.autopacker.api.entity.fdapi.Module;
 import no.autopacker.api.entity.fdapi.Project;
+import no.autopacker.api.entity.organization.Organization;
+import no.autopacker.api.repository.ServerRepository;
 import no.autopacker.api.repository.UserRepository;
 import no.autopacker.api.repository.fdapi.ModuleRepository;
 import no.autopacker.api.repository.fdapi.MongoDb;
 import no.autopacker.api.repository.fdapi.ProjectRepository;
+import no.autopacker.api.repository.organization.OrganizationRepository;
 import no.autopacker.api.service.fdapi.BuilderService;
 import no.autopacker.api.interfaces.UserService;
 import no.autopacker.api.utils.fdapi.Utils;
@@ -27,6 +31,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static no.autopacker.api.security.AuthConstants.ROLE_ADMIN;
 
@@ -41,16 +47,20 @@ public class ProjectController {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final UserService userService;
     private final UserRepository userRepository;
+    private final ServerRepository serverRepository;
+
 
     @Autowired
     public ProjectController(ProjectRepository projectRepo, ModuleRepository moduleRepo, BuilderService builderService,
-                             MongoDb mongoDb, UserService userService, UserRepository userRepository) {
+                             MongoDb mongoDb, UserService userService, UserRepository userRepository, ServerRepository serverRepository) {
         this.projectRepo = projectRepo;
         this.moduleRepo = moduleRepo;
         this.builderService = builderService;
         this.mongoDb = mongoDb;
         this.userService = userService;
         this.userRepository = userRepository;
+        this.serverRepository = serverRepository;
+
     }
 
     /**
@@ -354,6 +364,27 @@ public class ProjectController {
             projects.removeIf(Project::hasOrganization);
             try {
                 return ResponseEntity.ok(this.objectMapper.writeValueAsString(projects));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong while parsing projects");
+            }
+        } else {
+            response = ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("You must be logged in to perform this action");
+        }
+        return response;
+    }
+
+    @RequestMapping(value = "/projectsForServer/{serverId}", method = RequestMethod.GET)
+    public ResponseEntity<String> getAllProjectForServer(@PathVariable("serverId") Long serverId) {
+        ResponseEntity<String> response;
+        User authUser = userService.getAuthenticatedUser();
+        if (authUser != null) {
+            Server server = serverRepository.findByServerId(serverId);
+            String projectIds = server.getProjectIds();
+            projectIds.forEach()
+            try {
+                return ResponseEntity.ok(this.objectMapper.writeValueAsString(authUser));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong while parsing projects");

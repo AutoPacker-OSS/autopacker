@@ -6,6 +6,8 @@ import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
 import {GlobalOutlined, PlayCircleOutlined, SettingOutlined} from "@ant-design/icons";
 import Moment from "moment";
+import {createAlert} from "../../../store/actions/generalActions";
+import {useDispatch} from "react-redux";
 
 function OrgProjectOverview() {
 	// State
@@ -17,7 +19,6 @@ function OrgProjectOverview() {
 	const [selectedModule, setSelectedModule] = React.useState(null);
 	const [servers, setServers] = React.useState([]);
 	const [selectedServer, setSelectedServer] = React.useState([]);
-	const [serverToSubmit, setServerToSubmit] = React.useState([]);
 	const [selectedRadio, setSelectedRadio] = React.useState(null);
 
 	const [modalOpen, setModalOpen] = React.useState(false);
@@ -28,6 +29,7 @@ function OrgProjectOverview() {
 	const { Paragraph, Text } = Typography;
 	const { Content } = Layout;
 	const { Meta } = Card;
+	const dispatch = useDispatch();
 
 	const [keycloak] = useKeycloak();
 
@@ -95,6 +97,39 @@ function OrgProjectOverview() {
 		</div>
 	);
 
+	const updateServerProjects = (server) => {
+		let projectIds = "";
+		projectIds += project.id;
+		console.log(projectIds)
+		axios({
+			method: "post",
+			url:
+				process.env.REACT_APP_APPLICATION_URL +
+				process.env.REACT_APP_API +
+				"/server/add-project",
+			headers: {
+				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+			},
+			data: {
+				server_id: server.serverId,
+				project_ids: projectIds,
+			},
+		})
+			.then(() => {
+				window.location.reload();
+			})
+			.catch(() => {
+				dispatch(
+					createAlert(
+						"Project not added",
+						"Couldn't add the project(s) to the server",
+						"error",
+						true
+					)
+				);
+			});
+	};
+
 	const getServers = () => {
 				axios({
 					method: "get",
@@ -116,6 +151,7 @@ function OrgProjectOverview() {
 		getServers();
 		setServerModal(true);
 	};
+
 
 	const menuAddToServer = () => {
 		 if(projectModules.length > 0 ){
@@ -311,11 +347,12 @@ function OrgProjectOverview() {
 						centered
 						visible={serverModal}
 						onOk={() => {
-							setServerToSubmit(selectedServer);
+							updateServerProjects(selectedServer);
 							setServerModal(false);
+
+
 						}}
 						onCancel={() => {
-							setServerToSubmit(null);
 							setSelectedServer(null);
 							setSelectedRadio(null);
 							setServerModal(false);
