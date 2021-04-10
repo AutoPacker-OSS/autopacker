@@ -3,7 +3,7 @@ name: Deploy Web Application
 on:
   workflow_run:
     workflows:
-      - Web Application Build
+      - Build Web Application
     types:
       - completed
 
