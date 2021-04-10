@@ -119,7 +119,6 @@ function OrgProjectOverview() {
 
 	const menuAddToServer = () => {
 		 if(projectModules.length > 0 ){
-		 	console.log("This")
 		 	return(
 			<Link key={"add-to-server"} style={{ marginLeft: 10, marginRight: 10 }} onClick={(e) => openServerModal(e)}>
 				<Button>
@@ -325,13 +324,13 @@ function OrgProjectOverview() {
 						<Radio.Group style={{width: "100%"}} value={selectedRadio}>
 							{servers.map((servers) => (
 								<Card
-									key={servers.id}
+									key={servers.serverId}
 									hoverable
 									style={{height: "auto", marginBottom: 10, width: "100%"}}
 									size="small"
 									onClick={() => {
 										setSelectedServer(servers);
-										setSelectedRadio(servers.id);
+										setSelectedRadio(servers.serverId);
 									}}
 								>
 									<div>
@@ -347,7 +346,7 @@ function OrgProjectOverview() {
 											<Text style={{marginLeft: 16}}>
 												{servers.title}
 											</Text>
-											<Radio value={servers.id} style={{float: "right"}}/>
+											<Radio value={servers.serverId} style={{float: "right"}}/>
 										</div>
 									</div>
 								</Card>
