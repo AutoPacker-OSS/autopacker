@@ -82,8 +82,8 @@ public class Utils {
 		return isSuccessful;
 	}
 
-	public String getModuleImageName(String projectOwner, String moduleName) {
-		return projectOwner + "-" + moduleName;
+	public String getModuleImageName(String projectOwner, String projectName, String moduleName) {
+		return projectOwner + "-" + projectName + "-" + moduleName;
 	}
 
 	public String getRootDirectory() {

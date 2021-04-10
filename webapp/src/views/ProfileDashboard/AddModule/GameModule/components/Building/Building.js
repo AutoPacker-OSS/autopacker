@@ -25,13 +25,12 @@ function Building(props) {
 			projectName +
 			"/" +
 			setupInfo.name +
-			"/game-module/add";
+			"/add";
 
 		let formData = new FormData();
 		formData.append("desc", setupInfo.desc);
 		formData.append("config-type", setupInfo["config-type"]);
 		formData.append("config-params", '{ "port": ' + setupInfo.port + " }");
-		formData.append("server-version", setupInfo.version);
 
 		fetch(url, {
 			method: "POST",
@@ -40,9 +39,13 @@ function Building(props) {
 			},
 			body: formData,
 		})
-			.then(() => {
+			.then((response) => {
+				if (response.status === 200 || response.status === 201) {
+					setUploadSuccess(true);
+				} else {
+					setUploadSuccess(false);
+				}
 				nextStep();
-				setUploadSuccess(true);
 			})
 			.catch(() => {
 				nextStep();

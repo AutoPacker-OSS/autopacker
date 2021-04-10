@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -141,7 +142,7 @@ public class BuilderService {
 		String componentTemplate = FileUtils.readFileToString(new File(componentTemplateLocation), "utf-8");
 
 		// Get the docker image name
-		String moduleImageName = Utils.instance().getModuleImageName(projectOwner, module.getName());
+		String moduleImageName = Utils.instance().getModuleImageName(projectOwner, module.getProject().getName().toLowerCase(), module.getName());
 
 		JSONObject params = new JSONObject(composeParams);
 		params.put("IMAGE_NAME", dockerConfig.getUsername().concat("/") + moduleImageName + ":latest");

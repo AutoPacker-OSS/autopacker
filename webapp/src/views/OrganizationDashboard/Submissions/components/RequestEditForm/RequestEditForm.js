@@ -1,7 +1,7 @@
-import { Button, Form, Input, Layout, Radio, Tag, Tooltip } from "antd";
+import { Button, Form, Input, Layout, Tag, Tooltip } from "antd";
 import { TweenOneGroup } from "rc-tween-one";
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { createAlert } from "../../../../../store/actions/generalActions";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
@@ -14,8 +14,6 @@ function RequestEditForm(props) {
 	// Form state
 	const [projectName, setProjectName] = React.useState("");
 	const [desc, setDesc] = React.useState("");
-	const [type, setType] = React.useState("");
-	const [authors, setAuthors] = React.useState([]);
 	const [links, setLinks] = React.useState([]);
 	const [tags, setTags] = React.useState([]);
 	const [comment, setComment] = React.useState("");
@@ -40,12 +38,10 @@ function RequestEditForm(props) {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		setProjectName(request.organizationProject.name);
-		setDesc(request.organizationProject.description);
-		setType(request.organizationProject.type);
-		setAuthors(request.organizationProject.authors.split(", "));
-		setLinks(request.organizationProject.links.split(", "));
-		setTags(request.organizationProject.tags.split(","));
+		setProjectName(request.project.name);
+		setDesc(request.project.description);
+		setLinks(request.project.website.split(", "));
+		setTags(request.project.tags.split(","));
 		setComment(request.comment);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -80,12 +76,10 @@ function RequestEditForm(props) {
 				organizationName: organizationName,
 				projectName: projectName,
 				desc: desc,
-				type: type,
-				authors: authors,
 				links: links,
 				tags: tags,
 				comment: comment,
-				projectId: request.organizationProject.id,
+				projectId: request.project.id,
 			},
 		})
 			.then(() => {
@@ -172,7 +166,7 @@ function RequestEditForm(props) {
 						]}
 					>
 						<Input
-							defaultValue={request.organizationProject.name}
+							defaultValue={request.project.name}
 							onChange={(event) => validateName(event.target.value)}
 						/>
 					</Form.Item>
@@ -182,30 +176,9 @@ function RequestEditForm(props) {
 						style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 450 }}
 					>
 						<TextArea
-							defaultValue={request.organizationProject.description}
+							defaultValue={request.project.description}
 							onChange={(e) => setDesc(e.target.value)}
 						/>
-					</Form.Item>
-					{/* Project Type */}
-					<Form.Item
-						label="Project Type"
-						style={{ marginLeft: "auto", marginRight: "auto", maxWidth: 450 }}
-						rules={[
-							{
-								required: true,
-							},
-						]}
-					>
-						<Radio.Group
-							defaultValue={request.organizationProject.type}
-							onChange={(e) => {
-								setType(e.target.value);
-							}}
-						>
-							<Radio value="Personal">Personal</Radio>
-							<Radio value="Bachelor">Bachelor</Radio>
-							<Radio value="Lecture">Lecture</Radio>
-						</Radio.Group>
 					</Form.Item>
 					{/* Tags Section (handling & displaying) */}
 					<Form.Item
