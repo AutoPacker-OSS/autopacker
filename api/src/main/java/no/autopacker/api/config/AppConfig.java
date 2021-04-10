@@ -42,8 +42,4 @@ public class AppConfig {
         return serviceUrl;
     }
 
-    public String getFileDeliveryAPIApplicationUrl() {
-        return fdapiUrl;
-    }
-
 }

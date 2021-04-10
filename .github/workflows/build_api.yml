@@ -1,32 +1,32 @@
-name: API Build
+# name: API Build
 
-on:
-  push:
-    branches:
-      - develop
-    paths:
-      - api/**
+# on:
+#   push:
+#     branches:
+#       - develop
+#     paths:
+#       - api/**
 
-jobs:
-  # Build and publish a local docker image for development
-  build_local-api:
-    runs-on: ubuntu-latest
+# jobs:
+#   # Build and publish a local docker image for development
+#   build_local-api:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
 
-      - name: change config server bootstrap value
-        run: |
-          sed -i 's/localhost:8080/keycloak:8080/' ./api/src/main/resources/application.yml
-          sed -i 's/localhost:3306/mysql-backend:3306/' ./api/src/main/resources/application.yml
-          sed -i 's/0.0.0.0:27017/fdapi-mongo:27017/' ./api/src/main/resources/application.yml
+#       - name: change config server bootstrap value
+#         run: |
+#           sed -i 's/localhost:8080/keycloak:8080/' ./api/src/main/resources/application.yml
+#           sed -i 's/localhost:3306/mysql-backend:3306/' ./api/src/main/resources/application.yml
+#           sed -i 's/0.0.0.0:27017/fdapi-mongo:27017/' ./api/src/main/resources/application.yml
 
-      - name: Build and push the local api docker image
-        uses: docker/build-push-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
-          repository: autopacker/local-api
-          tags: latest
-          path: ./api
+#       - name: Build and push the local api docker image
+#         uses: docker/build-push-action@v1
+#         with:
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_TOKEN }}
+#           repository: autopacker/local-api
+#           tags: latest
+#           path: ./api

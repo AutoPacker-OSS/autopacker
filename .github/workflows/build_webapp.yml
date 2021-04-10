@@ -1,11 +1,11 @@
-name: Web Application Build
+name: Build Web Application
 
 on:
   push:
     branches:
       - develop
     paths:
-      - web-application/**
+      - webapp/**
 
 jobs:
   # Build and publish docker image for web app

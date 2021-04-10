@@ -1,11 +1,11 @@
 name: Deploy User Service
 
 on:
-  workflow_run:
-    workflows:
-      - User Service Build
-    types:
-      - completed
+  push:
+    branches:
+      - develop
+    paths:
+      - api/**
 
 jobs:
   deploy_staging:
