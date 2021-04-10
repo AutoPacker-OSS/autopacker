@@ -14,9 +14,8 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 
     List<Organization> findAllByNameContaining(String search);
 
-    // TODO - test this
     @Query(value = "SELECT o.* FROM organization o " +
-            "INNER JOIN member m ON m.organization_id = o.id " +
+            "INNER JOIN org_member m ON m.organization_id = o.id " +
             "INNER JOIN user u ON u.id = m.user_id " +
             "WHERE u.username = ?1 AND LOWER(o.name) LIKE CONCAT('%', ?2, '%')",
             nativeQuery = true)

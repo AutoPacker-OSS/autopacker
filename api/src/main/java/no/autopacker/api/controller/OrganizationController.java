@@ -329,10 +329,22 @@ public class OrganizationController {
         }
     }
 
-    @GetMapping(value = "/organization/{username}/isMember/search")
-    public List<Organization> searchAllOrganizationsAUserIsMemberIn(@PathVariable("username") String username,
+    @GetMapping(value = "/{username}/isMember/search")
+    public ResponseEntity<List<OrganizationListItemDto>> searchAllOrganizationsAUserIsMemberIn(@PathVariable("username") String username,
                                                                     @RequestParam("q") String query) {
-        return this.organizationRepository.searchOrganizationsForUser(username, query);
+        // TODO Not needed?
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            List<Organization> organizations = this.organizationRepository.searchOrganizationsForUser(username, query);
+            List<OrganizationListItemDto> organizationListItemDtoList = this.organizationMapper.toOrganizationListItemDtos(organizations);
+            if (!organizationListItemDtoList.isEmpty()) {
+                return new ResponseEntity<>(organizationListItemDtoList, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @GetMapping(value = "/{organization}/projects")

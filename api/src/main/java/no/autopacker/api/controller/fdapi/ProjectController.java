@@ -32,6 +32,7 @@ import static no.autopacker.api.security.AuthConstants.ROLE_ADMIN;
 
 @CrossOrigin(origins = "*")
 @RestController
+@RequestMapping(value = "api")
 public class ProjectController {
     private final ProjectRepository projectRepo;
     private final ModuleRepository moduleRepo;

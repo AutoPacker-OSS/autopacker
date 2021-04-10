@@ -52,66 +52,66 @@ public class OrganizationDBInit implements CommandLineRunner {
 
         // Clear all repositories for data
         // TODO - don't clean all the data every time - make conditional inserts!
-        this.projectApplicationRepository.deleteAll();
-        this.memberApplicationRepository.deleteAll();
-        this.projectRepository.deleteAll();
-        this.organizationRepository.deleteAll();
-
-        User adminUser = userRepository.findByUsername("user");
-        User testUser = userRepository.findByUsername("Tionve");
-
-        // Create organization
-        Organization ntnu = new Organization(
-                "NTNU",
-                "Norwegian University of Science and Technology (NTNU) is a state university in Norway, and from 2016 the country's largest. It has headquarters in Trondheim and campuses in Gjøvik and Ålesund.", "https://www.ntnu.no/",
-                true,
-                adminUser);
-        this.organizationRepository.save(ntnu);
-        Organization testOrg = new Organization(
-                "Another Test organization",
-                "This is a test organization",
-                "https://example.com/",
-                true,
-                testUser);
-        this.organizationRepository.save(testOrg);
-
-        User arro = userRepository.findByUsername("Arro1990");
-        ntnu.addAdminMember(userRepository.findByUsername("vister"));
-        ntnu.addAdminMember(arro);
-        ntnu.addMember(userRepository.findByUsername("Tionve"));
-        ntnu.addMember(userRepository.findByUsername("Boodsom"));
-        ntnu.addMember(userRepository.findByUsername("Jone1994"));
-        ntnu.addMember(userRepository.findByUsername("Funt1959"));
-        ntnu.addMember(userRepository.findByUsername("Sithered"));
-        ntnu.addAdminMember(adminUser);
-        organizationRepository.save(ntnu);
-        testOrg.addAdminMember(userRepository.findByUsername("user2"));
-        User hatiou = userRepository.findByUsername("Hatiou1983");
-        testOrg.addMember(hatiou);
-        User chu = userRepository.findByUsername("chu3Il2ahkai");
-        testOrg.addMember(chu);
-        organizationRepository.save(testOrg);
-
-        // Create project
-        Project ntnuPrivateProj = createProject("NTNUPrivate", arro, ntnu, true,
-                "https://ntnu.no/projectOne", "A private NTNU project");
-        Project ntnuPublicProj = createProject("NTNUPublic", adminUser, ntnu, false,
-                "https://ntnu.no/projectSecret", "A public NTNU project");
-        ntnuPublicProj.setTags("test,tag,something");
-
-        Project testProjPublic = createProject("TestPublicProj", arro, null,false,
-                "http://myproject.no", "A public project SUBMITTED for Test organization");
-        Project testProjPrivate = createProject("TestPrivateProj", hatiou, null,true,
-                "http://myproject.no", "A private project SUBMITTED for Test organization");
-        this.projectRepository.saveAll(Arrays.asList(ntnuPublicProj, ntnuPrivateProj, testProjPrivate, testProjPublic));
-
-        // Create project application
-        this.projectApplicationRepository.save(new ProjectApplication(testProjPublic, ntnu, "Bachelor project"));
-        this.projectApplicationRepository.save(new ProjectApplication(testProjPrivate, ntnu, "Test project"));
-
-        // Create member application
-        this.memberApplicationRepository.save(new MemberApplication(hatiou, ntnu, ROLE_MEMBER, "Please accept me :D"));
-        this.memberApplicationRepository.save(new MemberApplication(chu, ntnu, ROLE_MEMBER, "Nice feature there"));
+//        this.projectApplicationRepository.deleteAll();
+//        this.memberApplicationRepository.deleteAll();
+//        this.projectRepository.deleteAll();
+//        this.organizationRepository.deleteAll();
+//
+//        User adminUser = userRepository.findByUsername("user");
+//        User testUser = userRepository.findByUsername("Tionve");
+//
+//        // Create organization
+//        Organization ntnu = new Organization(
+//                "NTNU",
+//                "Norwegian University of Science and Technology (NTNU) is a state university in Norway, and from 2016 the country's largest. It has headquarters in Trondheim and campuses in Gjøvik and Ålesund.", "https://www.ntnu.no/",
+//                true,
+//                adminUser);
+//        this.organizationRepository.save(ntnu);
+//        Organization testOrg = new Organization(
+//                "Another Test organization",
+//                "This is a test organization",
+//                "https://example.com/",
+//                true,
+//                testUser);
+//        this.organizationRepository.save(testOrg);
+//
+//        User arro = userRepository.findByUsername("Arro1990");
+//        ntnu.addAdminMember(userRepository.findByUsername("vister"));
+//        ntnu.addAdminMember(arro);
+//        ntnu.addMember(userRepository.findByUsername("Tionve"));
+//        ntnu.addMember(userRepository.findByUsername("Boodsom"));
+//        ntnu.addMember(userRepository.findByUsername("Jone1994"));
+//        ntnu.addMember(userRepository.findByUsername("Funt1959"));
+//        ntnu.addMember(userRepository.findByUsername("Sithered"));
+//        ntnu.addAdminMember(adminUser);
+//        organizationRepository.save(ntnu);
+//        testOrg.addAdminMember(userRepository.findByUsername("user2"));
+//        User hatiou = userRepository.findByUsername("Hatiou1983");
+//        testOrg.addMember(hatiou);
+//        User chu = userRepository.findByUsername("chu3Il2ahkai");
+//        testOrg.addMember(chu);
+//        organizationRepository.save(testOrg);
+//
+//        // Create project
+//        Project ntnuPrivateProj = createProject("NTNUPrivate", arro, ntnu, true,
+//                "https://ntnu.no/projectOne", "A private NTNU project");
+//        Project ntnuPublicProj = createProject("NTNUPublic", adminUser, ntnu, false,
+//                "https://ntnu.no/projectSecret", "A public NTNU project");
+//        ntnuPublicProj.setTags("test,tag,something");
+//
+//        Project testProjPublic = createProject("TestPublicProj", arro, null,false,
+//                "http://myproject.no", "A public project SUBMITTED for Test organization");
+//        Project testProjPrivate = createProject("TestPrivateProj", hatiou, null,true,
+//                "http://myproject.no", "A private project SUBMITTED for Test organization");
+//        this.projectRepository.saveAll(Arrays.asList(ntnuPublicProj, ntnuPrivateProj, testProjPrivate, testProjPublic));
+//
+//        // Create project application
+//        this.projectApplicationRepository.save(new ProjectApplication(testProjPublic, ntnu, "Bachelor project"));
+//        this.projectApplicationRepository.save(new ProjectApplication(testProjPrivate, ntnu, "Test project"));
+//
+//        // Create member application
+//        this.memberApplicationRepository.save(new MemberApplication(hatiou, ntnu, ROLE_MEMBER, "Please accept me :D"));
+//        this.memberApplicationRepository.save(new MemberApplication(chu, ntnu, ROLE_MEMBER, "Nice feature there"));
     }
 
     /**

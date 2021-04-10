@@ -45,28 +45,51 @@ function Organizations() {
 	}, []);
 
 	// Inspired from https://dev.to/gabe_ragland/debouncing-with-react-hooks-jci
+
 	useEffect(
 		() => {
 			// Make sure we have a value (user has entered something in input)
-			// Fire off our API call
-			axios({
-				method: "get",
-				url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/organization/" +
-					keycloak.idTokenParsed.preferred_username +
-					"/isMember" + (search ? ("/search?q=" + search) : ""),
-				headers: {
-					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-				},
-			}).then(function (response) {
-				if (response.data) {
-					setOrganizations(response.data);
-				} else {
-					setOrganizations([]);
-				}
-			});
+			if (debouncedSearchTerm) {
+				// Fire off our API call
+				axios({
+					method: "get",
+					url:
+						process.env.REACT_APP_APPLICATION_URL +
+						process.env.REACT_APP_API +
+						"/organization/" +
+						keycloak.idTokenParsed.preferred_username +
+						"/isMember/search?q=" +
+						search,
+					headers: {
+						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+					},
+				}).then(function (response) {
+					if (response.data) {
+						setOrganizations(response.data);
+					} else {
+						setOrganizations([]);
+					}
+				});
+			} else {
+				axios({
+					method: "get",
+					url:
+						process.env.REACT_APP_APPLICATION_URL +
+						process.env.REACT_APP_API +
+						"/organization/" +
+						keycloak.idTokenParsed.preferred_username +
+						"/isMember",
+					headers: {
+						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+					},
+				}).then(function (response) {
+					if (response.data) {
+						setOrganizations(response.data);
+					} else {
+						setOrganizations([]);
+					}
+				});
+			}
 		},
 		// This is the useEffect input array
 		// Our useEffect function will only execute if this value changes ...
@@ -75,6 +98,7 @@ function Organizations() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[debouncedSearchTerm]
 	);
+;
 
 	const routes = [
 		{
