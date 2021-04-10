@@ -1,12 +1,11 @@
-import { Button, Card, Col, Empty, Layout, Modal, PageHeader, Row, Tag, Typography } from "antd";
+import {Avatar, Button, Card, Col, Empty, Layout, Modal, PageHeader, Popover, Radio, Row, Tag, Typography} from "antd";
 import React, { useEffect } from "react";
 import {Link, Redirect, useParams} from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
-import { GlobalOutlined, SettingOutlined } from "@ant-design/icons";
+import {GlobalOutlined, PlayCircleOutlined, SettingOutlined} from "@ant-design/icons";
 import Moment from "moment";
-
 
 function OrgProjectOverview() {
 	// State
@@ -14,11 +13,19 @@ function OrgProjectOverview() {
 	const [projectModules, setProjectModules] = React.useState([]);
 	const [tags, setTags] = React.useState([]);
 	const [links, setLinks] = React.useState([]);
-	const [modalOpen, setModalOpen] = React.useState(false);
+
 	const [selectedModule, setSelectedModule] = React.useState(null);
+	const [servers, setServers] = React.useState([]);
+	const [selectedServer, setSelectedServer] = React.useState([]);
+	const [serverToSubmit, setServerToSubmit] = React.useState([]);
+	const [selectedRadio, setSelectedRadio] = React.useState(null);
+
+	const [modalOpen, setModalOpen] = React.useState(false);
+	const [serverModal, setServerModal] = React.useState(false);
+	let statusIcon = { type: "play-circle", color: "green" };
 
 	// Get antd sub components
-	const { Paragraph } = Typography;
+	const { Paragraph, Text } = Typography;
 	const { Content } = Layout;
 	const { Meta } = Card;
 
@@ -44,6 +51,7 @@ function OrgProjectOverview() {
 		}).then(function (response) {
 			console.log("DATA:", response.data);
 			setProject(response.data);
+			setProjectModules(response.data.modules);
 			if (response.data.tags) {
 				setTags(response.data.tags.split(","));
 			} else {
@@ -81,6 +89,59 @@ function OrgProjectOverview() {
 		</div>
 	);
 
+	const disabledButton = (
+		<div>
+			<p>The project is empty and have nothing to add to a server</p>
+		</div>
+	);
+
+	const getServers = () => {
+				axios({
+					method: "get",
+					url:
+						process.env.REACT_APP_APPLICATION_URL +
+						process.env.REACT_APP_API +
+						"/server",
+					headers: {
+						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+					},
+				}).then(function (response) {
+					setServers(response.data);
+					console.log(response.data)
+				});
+		}
+
+
+	const openServerModal = () => {
+		getServers();
+		setServerModal(true);
+	};
+
+	const menuAddToServer = () => {
+		 if(projectModules.length > 0 ){
+		 	console.log("This")
+		 	return(
+			<Link key={"add-to-server"} style={{ marginLeft: 10, marginRight: 10 }} onClick={(e) => openServerModal(e)}>
+				<Button>
+					Add To Server
+				</Button>
+			</Link>)
+		 } else  {
+			 return (
+					<Popover key={"add-to-server-disabled"}
+							 content={disabledButton}
+							 title="Button Disabled"
+							 placement="left">
+							 <Button
+								 style={{marginLeft: 10, marginRight: 10}}
+							 >
+							 Add To Server
+							 </Button>
+					</Popover>
+			 	)
+		 }
+	}
+
 
 	return (
 		<div style={{ width: "100%", height: "auto" }}>
@@ -93,15 +154,10 @@ function OrgProjectOverview() {
 				}}
 				title={title}
 				breadcrumb={{ routes: routes, itemRender: breadcrumbItemRender }}
-				extra={[
-					/*<Link key={0} style={{ marginLeft: 10, marginRight: 10 }} to="/profile/projects/add-module">
-						<Button type="link">
-							<PlusCircleOutlined /> Add Module
-						</Button>
-					</Link>,*/
+				extra={[ menuAddToServer(),
 					/*<Link key={1} style={{ marginLeft: 10, marginRight: 10 }} to="#">
-						<Icon type="download" /> Download
-					</Link>,*/
+                        <Icon type="download" /> Download
+                    </Link>,*/
 					// <Link
 					// 	id="project-settings-link"
 					// 	key={2}
@@ -199,7 +255,6 @@ function OrgProjectOverview() {
 						}}
 						description="Project contains no modules"
 					>
-
 					</Empty>
 				)}
 				{selectedModule !== null ? (
@@ -252,6 +307,53 @@ function OrgProjectOverview() {
 				) : (
 					<div />
 				)}
+					<Modal
+						title="Select a server you want to add this project to."
+						centered
+						visible={serverModal}
+						onOk={() => {
+							setServerToSubmit(selectedServer);
+							setServerModal(false);
+						}}
+						onCancel={() => {
+							setServerToSubmit(null);
+							setSelectedServer(null);
+							setSelectedRadio(null);
+							setServerModal(false);
+						}}
+					>
+						<Radio.Group style={{width: "100%"}} value={selectedRadio}>
+							{servers.map((servers) => (
+								<Card
+									key={servers.id}
+									hoverable
+									style={{height: "auto", marginBottom: 10, width: "100%"}}
+									size="small"
+									onClick={() => {
+										setSelectedServer(servers);
+										setSelectedRadio(servers.id);
+									}}
+								>
+									<div>
+										<Avatar
+											size="large"
+											icon={<PlayCircleOutlined style={{ color: statusIcon.color }} />}
+											style={{
+												float: "left",
+												verticalAlign: "middle",
+											}}
+										/>
+										<div style={{verticalAlign: "middle"}}>
+											<Text style={{marginLeft: 16}}>
+												{servers.title}
+											</Text>
+											<Radio value={servers.id} style={{float: "right"}}/>
+										</div>
+									</div>
+								</Card>
+							))}
+						</Radio.Group>
+					</Modal>
 			</Content>
 		</div>
 	);
