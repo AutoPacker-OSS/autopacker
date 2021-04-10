@@ -40,8 +40,16 @@ function RequestEditForm(props) {
 	useEffect(() => {
 		setProjectName(request.project.name);
 		setDesc(request.project.description);
-		setLinks(request.project.website.split(", "));
-		setTags(request.project.tags.split(","));
+		if (request.project.tags) {
+			setTags(request.project.tags.split(","));
+		} else {
+			setTags([]);
+		}
+		if (request.project.website) {
+			setLinks(request.project.website.split(","));
+		} else {
+			setLinks([]);
+		}
 		setComment(request.comment);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

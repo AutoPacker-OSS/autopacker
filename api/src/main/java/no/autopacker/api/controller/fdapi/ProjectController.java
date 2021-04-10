@@ -102,10 +102,12 @@ public class ProjectController {
             try {
                 if (query.trim().equals("")) {
                     List<Project> userProjects = projectRepo.findAllByOwner(user);
+                    userProjects.removeIf(Project::hasOrganization);
                     return ResponseEntity.ok(this.objectMapper.writeValueAsString(userProjects));
 
                 } else {
                     List<Project> userProjects = projectRepo.searchAllForUser(user.getId(), query);
+                    userProjects.removeIf(Project::hasOrganization);
                     return ResponseEntity.ok(this.objectMapper.writeValueAsString(userProjects));
                 }
             } catch (JsonProcessingException e) {
@@ -349,6 +351,7 @@ public class ProjectController {
         User authUser = userService.getAuthenticatedUser();
         if (authUser != null) {
             List<Project> projects = this.projectRepo.findAllByOwner(authUser);
+            projects.removeIf(Project::hasOrganization);
             try {
                 return ResponseEntity.ok(this.objectMapper.writeValueAsString(projects));
             } catch (JsonProcessingException e) {
