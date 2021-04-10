@@ -63,7 +63,7 @@ function OrgProjectOverview() {
 				setLinks([]);
 			}
 		});
-	}, []);
+	}, [keycloak.token, organizationName, projectId]);
 
 
 	const routes = [
