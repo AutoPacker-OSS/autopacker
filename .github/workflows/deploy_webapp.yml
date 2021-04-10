@@ -20,6 +20,6 @@ jobs:
           key: ${{ secrets.STAGING_PASSWORD }}
           port: ${{ secrets.STAGING_PORT }}
           script: |
-            cd ./AutoPacker
+            cd ./autopacker
             docker image pull autopacker/webapp
             docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d --force-recreate webapp
