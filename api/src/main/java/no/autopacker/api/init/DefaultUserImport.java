@@ -27,6 +27,7 @@ public class DefaultUserImport implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         addUserIfNotExists("user", ROLE_ADMIN, "Admin user", "autopacker01@gmail.com");
+        addUserIfNotExists("test", ROLE_ADMIN, "Test user", "test@example.no");
         addUserIfNotExists("vister", ROLE_MEMBER, "Victor F. Charlsson", "vister@dummy.no");
         addUserIfNotExists("Arro1990", ROLE_MEMBER, "Bethany B. Mowry", "BethanyBMowry@teleworm.us");
         addUserIfNotExists("Tionve", ROLE_MEMBER, "Sidney M. Norberg", "SidneyMNorberg@armyspy.com");

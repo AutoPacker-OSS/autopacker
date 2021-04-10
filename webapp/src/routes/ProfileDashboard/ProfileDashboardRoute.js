@@ -97,7 +97,13 @@ function ProfileDashboardLayout({children}) {
 						</div>
 
 						{menus.map(menuItem => (
-							<NavLink key={menuItem.key} activeClassName="ant-menu-item-selected" to={menuItem.to} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 24}}>
+							<NavLink
+								key={menuItem.key}
+								id={"sidebar-link-" + menuItem.key}
+								activeClassName="ant-menu-item-selected"
+								to={menuItem.to}
+								className="ant-menu-item ant-menu-item-only-child"
+								style={{paddingLeft: 24}}>
 								{menuItem.icon}
 								{collapsed ? null : menuItem.text}
 							</NavLink>

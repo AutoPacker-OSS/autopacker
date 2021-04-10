@@ -68,7 +68,7 @@ function NewOrganization() {
         if (keycloak.idTokenParsed.email_verified) {
             axios({
                 method: "post",
-                url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API_FDAPI  + "/organization/new-organization",
+                url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/new-organization",
                 headers: {
                     Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
                 },
@@ -205,7 +205,7 @@ function NewOrganization() {
 
                         <Radio.Group value="Public">
                             <Radio
-
+                                id="org-privacy-public"
                                 value="Public"
                                 onChange={() => {
                                     setRadioChecked(true);
@@ -216,6 +216,7 @@ function NewOrganization() {
                             </Radio>
                             <Radio
                                 value="Private"
+                                id="org-privacy-private"
                                 onChange={() => {
                                     setRadioChecked(true);
                                     setIsPublic(false);
@@ -248,6 +249,7 @@ function NewOrganization() {
                                     !validOrgName || !radioChecked
                                 }
                                 type="primary"
+                                id="create-org-btn"
                             >
                                 Create Organization
 

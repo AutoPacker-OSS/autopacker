@@ -16,10 +16,13 @@ import java.util.concurrent.TimeUnit;
 public class TestRunner {
     private static final Logger logger = LoggerFactory.getLogger(TestRunner.class);
     private static final String DASHBOARD_LINK_SELECTOR = "#main-dashboard-link b";
-    private static final String YOUR_PROJECTS_LINK_SELECTOR = "#sidebar-projects-link";
-    private static final String YOUR_SERVERS_LINK_SELECTOR = "#sidebar-servers-link";
+    private static final String YOUR_PROJECTS_LINK_SELECTOR = "#sidebar-link-projects";
+    private static final String YOUR_SERVERS_LINK_SELECTOR = "#sidebar-link-servers";
+    private static final String YOUR_ORGANIZATIONS_LINK_SELECTOR = "#sidebar-link-organizations";
     private static final String TAG_CLASS = ".ant-tag";
-    private static final String USER_DROPDOWN_MENU_XPATH = "//*[@id=\"root\"]/div/section/header/ul[2]/li[2]";
+    private static final String USER_DROPDOWN_MENU_SELECTOR = "#user-menu-link";
+    private static final String LOGOUT_SELECTOR = "#logout-link";
+    private static final String SIGN_IN_SELECTOR = "#sign-in-link";
     private WebDriver driver;
     private final Actions actions;
     private final String mainPageUrl;
@@ -129,6 +132,8 @@ public class TestRunner {
         if (driver == null) throw new IllegalStateException(WEBDRIVER_INIT_ERROR);
 
         boolean linksOK = true;
+
+        if (!goToYourProjects()) return false;
 
         // If no projects exist, create one
         if (!haveProjects()) {
@@ -278,6 +283,48 @@ public class TestRunner {
     }
 
     /**
+     * Go to "Your Organizations" page. Assume that we were signed in and on the page somewhere.
+     *
+     * @return True on success, false on failure.
+     * @throws InterruptedException When thread-sleep interrupted
+     */
+    public boolean goToYourOrganizations() throws InterruptedException {
+        logger.info("Go to Your Organizations");
+        if (!clickOnElement(YOUR_ORGANIZATIONS_LINK_SELECTOR)) return false;
+        Thread.sleep(1000);
+        return true;
+    }
+
+    /**
+     * Run tests of creating a new organization (and then deleting it)
+     * Starts and ends tests in "Your organizations" page
+     *
+     * @return
+     */
+    public boolean runNewOrgTests() {
+        if (!createNewOrg("TestPublicOrg", false)) return false;
+        // TODO - deletion of organizations must be implemented before the test can be run
+//        if (!deleteOrg("My public org")) return false;
+        return true;
+    }
+
+    /**
+     * Create new organization. Assume that we are in "Your organizations" page. Finish the test on the same page
+     *
+     * @param name
+     * @param isPrivate
+     * @return
+     */
+    private boolean createNewOrg(String name, boolean isPrivate) {
+        if (!clickOnElement("#new-organization-link")) return false;
+        if (!clickAndEnterText("#organizationName", name)) return false;
+        String radioButtonId = "#org-privacy-" + (isPrivate ? "private" : "public");
+        if (!clickOnElement(radioButtonId)) return false;
+        if (!clickOnElement("#create-org-btn")) return false;
+        return successAlertExists("Organization Added");
+    }
+
+    /**
      * Go to "Your Servers" page. Assume that we were signed in and on the page somewhere.
      *
      * @return True on success, false on failure.
@@ -298,17 +345,17 @@ public class TestRunner {
      */
     public boolean tryLogout() throws InterruptedException {
         logger.info("Attempting logout...");
-        WebElement userDropdownMenu = driver.findElement(By.xpath(USER_DROPDOWN_MENU_XPATH));
+        WebElement userDropdownMenu = driver.findElement(By.cssSelector(USER_DROPDOWN_MENU_SELECTOR));
         if (userDropdownMenu != null) {
 
             moveMouseOver(userDropdownMenu);
             Thread.sleep(500);
-            driver.findElement(By.xpath("//*[@id=\"logout\"]")).click();
+            driver.findElement(By.cssSelector(LOGOUT_SELECTOR)).click();
 
             logger.info("Clicking logout button");
             Thread.sleep(1000);
 
-            if (driver.findElement(By.xpath(USER_DROPDOWN_MENU_XPATH)).getText().equals("Sign in")) {
+            if (this.checkElementCount(SIGN_IN_SELECTOR) == 1) {
                 logger.info("Logout success...");
                 return true;
             } else {
@@ -468,6 +515,18 @@ public class TestRunner {
     }
 
     /**
+     * Check if an alert with a specific success-message is shown
+     *
+     * @param message The expected content (text) of the alert message
+     * @return
+     */
+    private boolean successAlertExists(String message) {
+        String alertMsgXpath = "//*[contains(@class,'ant-alert-success')]//div[contains(@class, 'ant-alert-message') and text() = '"
+                + message + "']";
+        return checkXPathElementCount(alertMsgXpath) == 1;
+    }
+
+    /**
      * Opens server setting page. Assumes that we are on server overview page.
      *
      * @return True on success, false on failure.
@@ -566,4 +625,5 @@ public class TestRunner {
     private int checkXPathElementCount(String xpath) {
         return driver.findElements(By.xpath(xpath)).size();
     }
+
 }

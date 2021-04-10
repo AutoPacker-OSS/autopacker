@@ -33,7 +33,7 @@ function ProfileProjectOverview() {
 		if (username && projectName) {
 			const url =
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API_FDAPI +
+				process.env.REACT_APP_API +
 				"/project-overview/" +
 				username +
 				"/" +

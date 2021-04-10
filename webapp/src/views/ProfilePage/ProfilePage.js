@@ -42,7 +42,7 @@ function ProfilePage() {
 			if (debouncedSearchTerm) {
 				const projectsUrl =
 					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API_FDAPI +
+					process.env.REACT_APP_API +
 					"/projects/" +
 					username +
 					"/public/search?q=" +
@@ -54,7 +54,7 @@ function ProfilePage() {
 			} else {
 				const projectsUrl =
 					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API_FDAPI +
+					process.env.REACT_APP_API +
 					"/projects/" +
 					username +
 					"/public";

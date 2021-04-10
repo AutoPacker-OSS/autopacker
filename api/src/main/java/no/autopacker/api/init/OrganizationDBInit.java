@@ -6,6 +6,7 @@ import no.autopacker.api.entity.organization.*;
 import no.autopacker.api.repository.UserRepository;
 import no.autopacker.api.repository.fdapi.ProjectRepository;
 import no.autopacker.api.repository.organization.*;
+import no.autopacker.api.utils.fdapi.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
@@ -92,19 +93,16 @@ public class OrganizationDBInit implements CommandLineRunner {
 //        organizationRepository.save(testOrg);
 //
 //        // Create project
-//        Project ntnuPrivateProj = new Project("NTNUPrivate", arro, "https://ntnu.no/projectOne", true);
-//        ntnuPrivateProj.setDescription("A private NTNU project");
-//        ntnuPrivateProj.setOrganization(ntnu);
-//        Project ntnuPublicProj = new Project("NTNUPublic", adminUser, "https://ntnu.no/projectSecret", false);
-//        ntnuPublicProj.setDescription("A public NTNU projec");
-//        ntnuPublicProj.setWebsite("http://localhost:3000");
+//        Project ntnuPrivateProj = createProject("NTNUPrivate", arro, ntnu, true,
+//                "https://ntnu.no/projectOne", "A private NTNU project");
+//        Project ntnuPublicProj = createProject("NTNUPublic", adminUser, ntnu, false,
+//                "https://ntnu.no/projectSecret", "A public NTNU project");
 //        ntnuPublicProj.setTags("test,tag,something");
-//        ntnuPublicProj.setOrganization(ntnu);
 //
-//        Project testProjPublic = new Project("TestPublicProj", adminUser, "http://myproject.no", false);
-//        testProjPublic.setDescription("A public project SUBMITTED for Test organization");
-//        Project testProjPrivate = new Project("TestPrivateProj", adminUser, "https://myproject.no?secret=42", true);
-//        testProjPrivate.setDescription("A private project SUBMITTED for Test organization");
+//        Project testProjPublic = createProject("TestPublicProj", arro, null,false,
+//                "http://myproject.no", "A public project SUBMITTED for Test organization");
+//        Project testProjPrivate = createProject("TestPrivateProj", hatiou, null,true,
+//                "http://myproject.no", "A private project SUBMITTED for Test organization");
 //        this.projectRepository.saveAll(Arrays.asList(ntnuPublicProj, ntnuPrivateProj, testProjPrivate, testProjPublic));
 //
 //        // Create project application
@@ -114,5 +112,25 @@ public class OrganizationDBInit implements CommandLineRunner {
 //        // Create member application
 //        this.memberApplicationRepository.save(new MemberApplication(hatiou, ntnu, ROLE_MEMBER, "Please accept me :D"));
 //        this.memberApplicationRepository.save(new MemberApplication(chu, ntnu, ROLE_MEMBER, "Nice feature there"));
+    }
+
+    /**
+     * Create a project and set necessary attributes
+     * @param name
+     * @param owner
+     * @param isPrivate
+     * @param website
+     * @param description
+     * @return
+     */
+    private Project createProject(String name, User owner, Organization organization, boolean isPrivate,
+                                  String website, String description) {
+        Project p = new Project(name, owner, isPrivate);
+        p.setWebsite(website);
+        p.setDescription(description);
+        String location = Utils.instance().getUserProjectDir(owner.getUsername(), name);
+        p.setLocation(location);
+        p.setOrganization(organization);
+        return p;
     }
 }

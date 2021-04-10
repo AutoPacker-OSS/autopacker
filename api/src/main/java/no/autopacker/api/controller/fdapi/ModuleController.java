@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import static no.autopacker.api.security.AuthConstants.ROLE_ADMIN;
 
 @RestController
+@RequestMapping(value = "api")
 public class ModuleController {
 
     private final ProjectRepository projectRepo;

@@ -53,10 +53,10 @@ public class Project {
     /**
      * Minimum argument constructor
      */
-    public Project(String name, User owner, String location, boolean isPrivate) {
+    public Project(String name, User owner, boolean isPrivate) {
         this.name = name;
         this.owner = owner;
-        this.location = location;
+        this.location = "";
         this.isPrivate = isPrivate;
         this.modules = new ArrayList<>();
     }
