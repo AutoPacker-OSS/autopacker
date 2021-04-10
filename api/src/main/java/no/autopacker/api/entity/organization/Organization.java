@@ -46,11 +46,7 @@ public class Organization {
     private User owner;
 
     @JsonIgnore
-    @OneToMany(
-            mappedBy = "organization",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
+    @OneToMany(mappedBy = "organization")
     private List<Member> members;
 
     @JsonIgnore
