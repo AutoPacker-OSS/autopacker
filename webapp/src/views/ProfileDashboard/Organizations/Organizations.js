@@ -98,7 +98,6 @@ function Organizations() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[debouncedSearchTerm]
 	);
-;
 
 	const routes = [
 		{
