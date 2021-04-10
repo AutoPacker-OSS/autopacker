@@ -40,7 +40,7 @@ function SearchResult(props) {
 		/* Fetch projects */
 
 		const projectsUrl =
-			process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API_FDAPI + "/projects/search?q=" + query;
+			process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/projects/search?q=" + query;
 
 		axios.get(projectsUrl).then((response) => {
 			setProjectsList(response.data);

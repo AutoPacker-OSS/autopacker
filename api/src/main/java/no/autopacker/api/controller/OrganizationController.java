@@ -72,13 +72,17 @@ public class OrganizationController {
 
     @PostMapping(value = "/new-organization")
     public ResponseEntity<String> createNewOrg(HttpEntity<String> httpEntity) {
+        User authUser = userService.getAuthenticatedUser();
+        if (authUser == null) {
+            return new ResponseEntity<>("Must log in to create organizations", HttpStatus.UNAUTHORIZED);
+        }
         String body = httpEntity.getBody();
         if (body != null) {
             JSONObject jsonObject = new JSONObject(body);
             return this.organizationService.createNewOrg(
                     jsonObject.getString("organizationName"),
                     jsonObject.getString("orgDesc"),
-                    jsonObject.getString("username"),
+                    authUser,
                     jsonObject.getString("url"),
                     jsonObject.getBoolean("isPublic"));
         } else {
@@ -326,9 +330,21 @@ public class OrganizationController {
     }
 
     @GetMapping(value = "/{username}/isMember/search")
-    public List<Organization> searchAllOrganizationsAUserIsMemberIn(@PathVariable("username") String username,
+    public ResponseEntity<List<OrganizationListItemDto>> searchAllOrganizationsAUserIsMemberIn(@PathVariable("username") String username,
                                                                     @RequestParam("q") String query) {
-        return this.organizationRepository.searchOrganizationsForUser(username, query);
+        // TODO Not needed?
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            List<Organization> organizations = this.organizationRepository.searchOrganizationsForUser(username, query);
+            List<OrganizationListItemDto> organizationListItemDtoList = this.organizationMapper.toOrganizationListItemDtos(organizations);
+            if (!organizationListItemDtoList.isEmpty()) {
+                return new ResponseEntity<>(organizationListItemDtoList, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @GetMapping(value = "/{organization}/projects")

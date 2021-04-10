@@ -45,10 +45,10 @@ function Organizations() {
 	}, []);
 
 	// Inspired from https://dev.to/gabe_ragland/debouncing-with-react-hooks-jci
+
 	useEffect(
 		() => {
 			// Make sure we have a value (user has entered something in input)
-			// TODO - refactor - copy-paste code in both if-else blocks
 			if (debouncedSearchTerm) {
 				// Fire off our API call
 				axios({
@@ -98,6 +98,7 @@ function Organizations() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[debouncedSearchTerm]
 	);
+;
 
 	const routes = [
 		{

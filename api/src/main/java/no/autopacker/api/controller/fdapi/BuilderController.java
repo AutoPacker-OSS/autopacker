@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
  * This class is responsible of taking resource calls for building the docker compose files.
  */
 @RestController
+@RequestMapping(value = "api")
 public class BuilderController {
 	private final BuilderService builderService;
 

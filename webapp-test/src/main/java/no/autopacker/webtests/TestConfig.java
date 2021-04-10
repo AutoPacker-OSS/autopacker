@@ -4,9 +4,13 @@ package no.autopacker.webtests;
  * Test configuration structure, stored in the application.yml file
  */
 public class TestConfig {
-    // Login credentials for AutoPacker user
-    private String username;
-    private String password;
+    // Login credentials for regular AutoPacker user
+    private String regularUsername;
+    private String regularPassword;
+
+    // Login credentials for admin user
+    private String adminUsername;
+    private String adminPassword;
 
     // When true, run tests in headless mode - without showing the browser window
     private boolean headless;
@@ -14,20 +18,36 @@ public class TestConfig {
     // Base URL of the webpage to test, the whole URL (http://stage.autopacker.no or http://localhost:3000, etc)
     private String url;
 
-    public String getUsername() {
-        return username;
+    public String getRegularUsername() {
+        return regularUsername;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setRegularUsername(String username) {
+        this.regularUsername = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getRegularPassword() {
+        return regularPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setRegularPassword(String password) {
+        this.regularPassword = password;
+    }
+
+    public String getAdminUsername() {
+        return adminUsername;
+    }
+
+    public void setAdminUsername(String adminUsername) {
+        this.adminUsername = adminUsername;
+    }
+
+    public String getAdminPassword() {
+        return adminPassword;
+    }
+
+    public void setAdminPassword(String adminPassword) {
+        this.adminPassword = adminPassword;
     }
 
     public boolean isHeadless() {

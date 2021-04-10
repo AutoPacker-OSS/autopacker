@@ -32,6 +32,7 @@ import static no.autopacker.api.security.AuthConstants.ROLE_ADMIN;
 
 @CrossOrigin(origins = "*")
 @RestController
+@RequestMapping(value = "api")
 public class ProjectController {
     private final ProjectRepository projectRepo;
     private final ModuleRepository moduleRepo;
@@ -149,9 +150,8 @@ public class ProjectController {
                     Utils.instance().validateUserWorkspace(username);
                     String projectPath = Utils.instance().getUserProjectDir(username, pm.getName());
                     File projectFolder = new File(projectPath);
-                    User owner = userRepository.findByUsername(username);
                     if (projectFolder.exists() ||
-                            projectRepo.findByOwnerAndName(owner, pm.getName()) != null) {
+                            projectRepo.findByOwnerAndName(authUser, pm.getName()) != null) {
                         response = ResponseEntity.status(HttpStatus.CONFLICT).body("Project already exists.");
                     } else {
                         if (projectFolder.mkdir()) {
@@ -235,7 +235,9 @@ public class ProjectController {
                         try {
                             FileUtils.cleanDirectory(projectDir);
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            System.out.println("Directory " + pm.getLocation() + " not found, can't be cleaned");
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Directory " + pm.getLocation() + " not found, can't be cleaned");
                         }
                         if (!projectDir.exists() || projectDir.delete()) {
                             projectRepo.delete(pm);

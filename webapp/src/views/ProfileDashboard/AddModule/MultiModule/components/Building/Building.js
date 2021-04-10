@@ -16,7 +16,7 @@ function Building() {
 		// TODO Undo when this section is finished
 		/* const url =
 			process.env.REACT_APP_APPLICATION_URL +
-			process.env.REACT_APP_API_FDAPI +
+			process.env.REACT_APP_API +
 			"/projects/" +
 			username +
 			"/" +
