@@ -83,6 +83,7 @@ function Projects() {
 					},
 				}).then(function (response) {
 					setProjects(response.data);
+					console.log(response.data)
 				});
 			}
 		},

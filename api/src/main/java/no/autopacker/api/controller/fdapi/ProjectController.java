@@ -27,7 +27,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -382,9 +384,15 @@ public class ProjectController {
         if (authUser != null) {
             Server server = serverRepository.findByServerId(serverId);
             String projectIds = server.getProjectIds();
-            projectIds.forEach()
+            Long ps = null;
+            List<Project> projects = new ArrayList<>();
+            for (String s : projectIds.split(",")) {
+                ps = Long.parseLong(s);
+                Project p = projectRepo.findProjectById(ps);
+                if(p != null){ projects.add(p);}
+                }
             try {
-                return ResponseEntity.ok(this.objectMapper.writeValueAsString(authUser));
+                return ResponseEntity.ok(this.objectMapper.writeValueAsString(projects));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong while parsing projects");

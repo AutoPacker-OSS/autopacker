@@ -13,6 +13,7 @@ import java.util.List;
 public interface ProjectRepository extends CrudRepository<Project, Long> {
     Project findByOwnerAndName(User owner, String name);
 
+    @Query(value = "SELECT * FROM project WHERE id = ?1", nativeQuery = true)
     Project findProjectById(Long id);
 
     List<Project> findAllByOwner(User owner);
