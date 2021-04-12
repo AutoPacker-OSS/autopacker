@@ -95,7 +95,7 @@ function ServerOverview() {
 					url:
 						process.env.REACT_APP_APPLICATION_URL +
 						process.env.REACT_APP_API +
-						"/projectsForServer"+
+						"/projectsForServer/"+
 						serverId,
 					headers: {
 						Authorization:
@@ -135,8 +135,7 @@ function ServerOverview() {
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
 				process.env.REACT_APP_API +
-				"/projectsForServer/"+
-				serverId,
+				"/projects",
 			headers: {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
