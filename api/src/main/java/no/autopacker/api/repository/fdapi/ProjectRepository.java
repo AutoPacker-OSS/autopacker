@@ -13,6 +13,9 @@ import java.util.List;
 public interface ProjectRepository extends CrudRepository<Project, Long> {
     Project findByOwnerAndName(User owner, String name);
 
+    @Query(value = "SELECT * FROM project WHERE id = ?1", nativeQuery = true)
+    Project findProjectById(Long id);
+
     List<Project> findAllByOwner(User owner);
 
     @Query(value = "SELECT * FROM project WHERE is_private = 0", nativeQuery = true)
@@ -44,4 +47,5 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
             "WHERE o.name = ?1 AND LOWER(p.name) LIKE CONCAT('%', ?2, '%')",
             nativeQuery = true)
     List<Project> searchAllForOrganization(String organizationName, String projectNameQuery);
+
 }

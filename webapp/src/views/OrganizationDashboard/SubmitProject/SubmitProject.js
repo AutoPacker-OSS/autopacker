@@ -54,13 +54,14 @@ function SubmitProject(props) {
 			method: "get",
 			url:
 				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_GENERAL_API +
+				process.env.REACT_APP_API +
 				"/projects",
 			headers: {
 				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
 			},
 		}).then(function (response) {
 			setProjects(response.data);
+			console.log(response.data)
 		});
 	}, [keycloak.token]);
 	
