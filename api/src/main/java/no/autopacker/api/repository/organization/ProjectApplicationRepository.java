@@ -19,7 +19,7 @@ public interface ProjectApplicationRepository extends JpaRepository<ProjectAppli
             "INNER JOIN user u ON p.owner_id = u.id " +
             "INNER JOIN org_member om ON u.id = om.user_id " +
             "INNER JOIN organization o ON om.organization_id = o.id " +
-            "WHERE o.name = ?1 AND u.username = ?2 AND is_accepted = false",
+            "WHERE o.name = ?1 AND u.username = ?2 AND is_accepted = false AND pa.organization_id = o.id",
             nativeQuery = true)
     List<ProjectApplication> findAllActiveForUserOrg(String organization, String username);
 
