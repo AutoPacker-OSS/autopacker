@@ -110,9 +110,9 @@ function Organizations() {
 		},
 	];
 
-	const selectCard = (id, name) => {
+	const selectCard = (name) => {
 		sessionStorage.setItem("selectedOrganizationName", name);
-		setSelectedCard(id);
+		setSelectedCard(name)
 	};
 
 	return (
@@ -155,12 +155,16 @@ function Organizations() {
 				<Row style={{ marginTop: 20 }} gutter={[24, 24]}>
 					{organizations.map((organization) => (
 						<Col xs={24} lg={8} xl={6} key={organization.id}>
-							{selectedCard !== null ? <Redirect to={"/organization/dashboard/" + organization.name} /> : <div />}
+							{selectedCard !== null ?(
+								<Redirect to={"/organization/dashboard/" + selectedCard} />
+							) : (
+								<div />
+							)}
 
 							<Card
 								hoverable
 								style={{ width: 240, height: 310 }}
-								onClick={() => selectCard(organization.id, organization.name)}
+								onClick={() => selectCard(organization.name)}
 								cover={
 									<img
 										alt="Organization logo"
