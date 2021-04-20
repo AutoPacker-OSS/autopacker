@@ -229,7 +229,8 @@ public class OrganizationService {
             organizationRepository.save(organization);
             organization.addAdminMember(owner);
             // Now save the membership
-            organizationRepository.save(organization);
+            Member member = organization.getMembers().get(0);
+            memberRepository.save(member);
             return new ResponseEntity<>("Organization Created", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Organization already existing!", HttpStatus.BAD_REQUEST);
