@@ -13,6 +13,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -111,7 +112,8 @@ public class OrganizationService {
 
                 if (accept) {
                     organization.addMemberWithRole(user, memberApplication.getRole());
-                    organizationRepository.save(organization);
+                    List<Member> members = organization.getMembers();
+                    memberRepository.save(members.get(members.size() - 1));
                     memberApplication.setAccepted(true);
                     this.memberApplicationRepository.save(memberApplication);
                 } else {
