@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { Typography, Button, Input, Divider, Modal } from "antd";
 import { createAlert } from "../../../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 
 function GeneralSetting(props) {
@@ -12,7 +12,7 @@ function GeneralSetting(props) {
 	const [verifiedDelete, setVerifiedDelete] = React.useState(false);
 	const [redirect, setRedirect] = React.useState(false);
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const { Title, Text } = Typography;
 	const server = props.server;
@@ -30,37 +30,38 @@ function GeneralSetting(props) {
 
 	function sendRequest() {
 		setModalVisible(false);
-		if (keycloak.idTokenParsed.email_verified) {
-			axios({
-				method: "delete",
-				url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/server/delete/" +
-					server.owner +
-					"/" +
-					server.serverId,
-				headers: {
-					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-				},
-			})
-				.then(() => {
-					dispatch(
-						createAlert(
-							"Server successfully deleted",
-							server.title + " has successfully been deleted.",
-							"success",
-							true
-						)
-					);
-					setRedirect(true);
-				})
-				.catch(() => {
-					dispatch(
-						createAlert("Server deletion failed", "Failed to delete the given server: " + server.title, "error", true)
-					);
-				});
-		}
+		// TODO UNCOMMENT THIS AND FIX THIS SHIT
+		// if (keycloak.idTokenParsed.email_verified) {
+		// 	axios({
+		// 		method: "delete",
+		// 		url:
+		// 			process.env.REACT_APP_APPLICATION_URL +
+		// 			process.env.REACT_APP_API +
+		// 			"/server/delete/" +
+		// 			server.owner +
+		// 			"/" +
+		// 			server.serverId,
+		// 		headers: {
+		// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 		},
+		// 	})
+		// 		.then(() => {
+		// 			dispatch(
+		// 				createAlert(
+		// 					"Server successfully deleted",
+		// 					server.title + " has successfully been deleted.",
+		// 					"success",
+		// 					true
+		// 				)
+		// 			);
+		// 			setRedirect(true);
+		// 		})
+		// 		.catch(() => {
+		// 			dispatch(
+		// 				createAlert("Server deletion failed", "Failed to delete the given server: " + server.title, "error", true)
+		// 			);
+		// 		});
+		// }
 	}
 
 	return (

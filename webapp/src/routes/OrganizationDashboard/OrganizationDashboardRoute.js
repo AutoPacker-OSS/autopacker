@@ -5,7 +5,6 @@ import {Link, NavLink, Redirect, Route} from "react-router-dom";
 import NTNU from "../../assets/image/ntnu.png";
 import ProfileAlert from "../../components/CustomAlerts/ProfileAlert";
 import Navbar from "../../components/Navbar/Navbar";
-import { useKeycloak } from "@react-keycloak/web";
 import { createAlert } from "../../store/actions/generalActions";
 import { getMenu } from "./menu";
 import axios from "axios";
@@ -14,6 +13,7 @@ import { selectMenuOption, toggleSubMenuOption } from "../../store/actions/gener
 // Import styles
 import "../ProfileDashboard/ProfileDashboardStyle.scss";
 import { FolderOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
+import {useOktaAuth} from "@okta/okta-react";
 
 /**
  * The default layout for a organization dashboard route
@@ -25,7 +25,7 @@ function OrganizationDashboardLayout({ children }) {
 	const { Sider, Content } = Layout;
 	const { SubMenu } = Menu;
 
-	const [keycloak] = useKeycloak();
+	const { authState, oktaAuth } = useOktaAuth();
 
 	// Get state from redux store
 	const organizationName = sessionStorage.getItem("selectedOrganizationName");
@@ -75,9 +75,10 @@ function OrganizationDashboardLayout({ children }) {
 	);
 
 	React.useEffect(() => {
-		if (keycloak.idTokenParsed.email_verified === false) {
-			dispatch(createAlert("Please verify your email address", text, "warning", true));
-		}
+		// TODO FIX THIS
+		// if (keycloak.idTokenParsed.email_verified === false) {
+		// 	dispatch(createAlert("Please verify your email address", text, "warning", true));
+		// }
 	}, []);
 
 	if (organizationName == null) {
@@ -123,19 +124,25 @@ function OrganizationDashboardLayout({ children }) {
 									{/* Submenu items */}
 									{menuItem.items !== null ? (
 										menuItem.items.map(childItem => {
-											if (childItem.role !== null) {
-												return keycloak.realmAccess.roles.includes("ADMIN") ? (
-													<NavLink key={childItem.key} activeClassName="ant-menu-item-selected" to={childItem.to} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
-														{childItem.text}
-													</NavLink>
-												) : null;
-											} else {
-												return (
-													<NavLink key={childItem.key} activeClassName="ant-menu-item-selected" to={childItem.to} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
-														{childItem.text}
-													</NavLink>
-												);
-											}
+											// TODO FIX THIS SHIT AFTER CHANGING ROLE MANAGEMENT TO THE API
+											// if (childItem.role !== null) {
+											// 	return keycloak.realmAccess.roles.includes("ADMIN") ? (
+											// 		<NavLink key={childItem.key} activeClassName="ant-menu-item-selected" to={childItem.to} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
+											// 			{childItem.text}
+											// 		</NavLink>
+											// 	) : null;
+											// } else {
+											// 	return (
+											// 		<NavLink key={childItem.key} activeClassName="ant-menu-item-selected" to={childItem.to} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
+											// 			{childItem.text}
+											// 		</NavLink>
+											// 	);
+											// }
+											return (
+												<NavLink key={childItem.key} activeClassName="ant-menu-item-selected" to={childItem.to} className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 48}}>
+													{childItem.text}
+												</NavLink>
+											);
 										})
 									) : null}
 								</SubMenu>
@@ -156,12 +163,12 @@ function OrganizationDashboardLayout({ children }) {
  * The route itself that is used for the profile dashboard related routes
  */
 function OrganizationDashboardRoute({ component: Component, ...rest }) {
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 	return (
 		<Route
 			{...rest}
 			render={(props) =>
-				keycloak.authenticated === true ? (
+				authState.isAuthenticated === true ? (
 					<OrganizationDashboardLayout>
 						<Suspense fallback={<div />}>
 							<Component {...props} />

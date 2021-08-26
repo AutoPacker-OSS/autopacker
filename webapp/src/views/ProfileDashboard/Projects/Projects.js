@@ -4,7 +4,7 @@ import { Link, Redirect } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { format } from "date-fns";
 import axios from "axios";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 // Import custom hooks
 import useDebounce from "./../../../hooks/useDebounce";
 // Import helper methods
@@ -20,7 +20,7 @@ function Projects() {
 
 	const debouncedSearchTerm = useDebounce(search, 500);
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const dispatch = useDispatch();
 
@@ -52,40 +52,41 @@ function Projects() {
 	useEffect(
 		() => {
 			// Make sure we have a value (user has entered something in input)
-			if (debouncedSearchTerm) {
-				// Fire off our API call
-				axios({
-					method: "get",
-					url:
-						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_API +
-						"/projects/" +
-						keycloak.idTokenParsed.preferred_username +
-						"/search?q=" +
-						search,
-					headers: {
-						Authorization:
-							keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-					},
-				}).then(function (response) {
-					setProjects(response.data);
-				});
-			} else {
-				axios({
-					method: "get",
-					url:
-						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_API +
-						"/projects",
-					headers: {
-						Authorization:
-							keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-					},
-				}).then(function (response) {
-					setProjects(response.data);
-					console.log(response.data)
-				});
-			}
+			// TODO UNCOMMENT THIS AND FIX THIS SHIT
+			// if (debouncedSearchTerm) {
+			// 	// Fire off our API call
+			// 	axios({
+			// 		method: "get",
+			// 		url:
+			// 			process.env.REACT_APP_APPLICATION_URL +
+			// 			process.env.REACT_APP_API +
+			// 			"/projects/" +
+			// 			keycloak.idTokenParsed.preferred_username +
+			// 			"/search?q=" +
+			// 			search,
+			// 		headers: {
+			// 			Authorization:
+			// 				authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+			// 		},
+			// 	}).then(function (response) {
+			// 		setProjects(response.data);
+			// 	});
+			// } else {
+			// 	axios({
+			// 		method: "get",
+			// 		url:
+			// 			process.env.REACT_APP_APPLICATION_URL +
+			// 			process.env.REACT_APP_API +
+			// 			"/projects",
+			// 		headers: {
+			// 			Authorization:
+			// 				authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+			// 		},
+			// 	}).then(function (response) {
+			// 		setProjects(response.data);
+			// 		console.log(response.data)
+			// 	});
+			// }
 		},
 		// This is the useEffect input array
 		// Our useEffect function will only execute if this value changes ...

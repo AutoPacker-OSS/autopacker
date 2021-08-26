@@ -15,7 +15,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import {Redirect, useParams} from "react-router-dom";
 import {createAlert, selectMenuOption} from "../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
 import {QuestionCircleOutlined} from "@ant-design/icons";
@@ -47,7 +47,7 @@ function NewOrgProject() {
 	const { Content } = Layout;
 	const { Paragraph, Text } = Typography;
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const dispatch = useDispatch();
 
@@ -111,7 +111,7 @@ function NewOrgProject() {
 				method: "post",
 				url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/createProject",
 				headers: {
-					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+					Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 				},
 				data: {
 					organizationName: organizationName,

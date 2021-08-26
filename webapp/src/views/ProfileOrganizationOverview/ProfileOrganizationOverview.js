@@ -15,7 +15,7 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import {Link, useParams} from "react-router-dom";
 import NTNU from "../../assets/image/ntnu.png";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 // Import custom hooks
 import useDebounce from "./../../hooks/useDebounce";
 
@@ -30,7 +30,7 @@ function ProfileOrganizationOverview() {
 	const [minNumbProjects, setMinNumbProjects] = React.useState(0);
 	const [maxNumbProjects, setMaxNumbProjects] = React.useState(10);
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	// Import sub components from antd
 	const { Title, Text, Paragraph } = Typography;
@@ -42,40 +42,41 @@ function ProfileOrganizationOverview() {
 	const { organizationName } = useParams();
 
 	useEffect(() => {
-		if (organizationName) {
-			clearSessionStorage()
-			const projectsUrl =
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/organization/" +
-				organizationName;
-
-			axios.get(projectsUrl).then((response) => {
-				setOrganization(response.data);
-			});
-
-			if (keycloak.authenticated) {
-				// First checking if the value isMemberOfOrganization is available in session, if not do a request.
-				axios
-					.get(
-						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_API +
-						"/organization/" +
-						organizationName +
-						"/" +
-						keycloak.idTokenParsed.preferred_username +
-						"/isMember"
-					)
-					.then((response) => {
-						sessionStorage.setItem("isMember", response.data);
-						setIsMember(response.data);
-					})
-					.catch(() => {
-						// Set default to true to hide the request membership button
-						setIsMember(true);
-					});
-			}
-		}
+		// TODO UNCOMMENT THIS AND FIX THIS SHIT
+		// if (organizationName) {
+		// 	clearSessionStorage()
+		// 	const projectsUrl =
+		// 		process.env.REACT_APP_APPLICATION_URL +
+		// 		process.env.REACT_APP_API +
+		// 		"/organization/" +
+		// 		organizationName;
+		//
+		// 	axios.get(projectsUrl).then((response) => {
+		// 		setOrganization(response.data);
+		// 	});
+		//
+		// 	if (keycloak.authenticated) {
+		// 		// First checking if the value isMemberOfOrganization is available in session, if not do a request.
+		// 		axios
+		// 			.get(
+		// 				process.env.REACT_APP_APPLICATION_URL +
+		// 				process.env.REACT_APP_API +
+		// 				"/organization/" +
+		// 				organizationName +
+		// 				"/" +
+		// 				keycloak.idTokenParsed.preferred_username +
+		// 				"/isMember"
+		// 			)
+		// 			.then((response) => {
+		// 				sessionStorage.setItem("isMember", response.data);
+		// 				setIsMember(response.data);
+		// 			})
+		// 			.catch(() => {
+		// 				// Set default to true to hide the request membership button
+		// 				setIsMember(true);
+		// 			});
+		// 	}
+		// }
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [organizationName]);
@@ -169,27 +170,28 @@ function ProfileOrganizationOverview() {
 								}}
 								title={organization.name}
 								onBack={() => window.history.back()}
-								extra={[
-									keycloak.authenticated ? (
-										keycloak.idTokenParsed.email_verified && !isMember ? (
-											<Button key="application" onClick={() => clearSessionStorage()}>
-												<Link
-													to={
-														"/organization/" +
-														organization.name +
-														"/membership"
-													}
-												>
-													Request Membership
-												</Link>
-											</Button>
-										) : (
-											<div />
-										)
-									) : (
-										<div />
-									),
-								]}
+								// TODO UNCOMMENT THIS AND FIX THIS SHIT
+								// extra={[
+								// 	keycloak.authenticated ? (
+								// 		keycloak.idTokenParsed.email_verified && !isMember ? (
+								// 			<Button key="application" onClick={() => clearSessionStorage()}>
+								// 				<Link
+								// 					to={
+								// 						"/organization/" +
+								// 						organization.name +
+								// 						"/membership"
+								// 					}
+								// 				>
+								// 					Request Membership
+								// 				</Link>
+								// 			</Button>
+								// 		) : (
+								// 			<div />
+								// 		)
+								// 	) : (
+								// 		<div />
+								// 	),
+								// ]}
 							>
 								<Paragraph ellipsis={{ rows: 3, expandable: true }}>
 									{organization.description}

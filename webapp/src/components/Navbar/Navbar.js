@@ -1,10 +1,9 @@
 import {Avatar, Input, Layout, Menu, Typography} from "antd";
 import React, {useEffect} from "react";
 import {Link, Redirect} from "react-router-dom";
-import {useKeycloak} from "@react-keycloak/web";
+import { useOktaAuth } from '@okta/okta-react';
 // Import styles
 import "./NavbarStyle.scss";
-import LoginBtn from "../Login/LoginBtn";
 import {ApartmentOutlined, FolderOutlined, HddOutlined, LogoutOutlined, SettingOutlined,} from "@ant-design/icons";
 
 /**
@@ -14,9 +13,11 @@ function Navbar() {
 	// state
 	const [search, setSearch] = React.useState("");
 	const [searchAction, setSearchAction] = React.useState(false);
+	const [userInfo, setUserInfo] = React.useState(null);
 
-	// Keycloak hook
-	const [keycloak] = useKeycloak();
+	// Okta hook
+	const { authState, oktaAuth } = useOktaAuth();
+	const login = () => oktaAuth.signInWithRedirect({originalUri: '/'});
 
 	// Get antd sub components
 	const {Header} = Layout;
@@ -28,14 +29,26 @@ function Navbar() {
 	}, [searchAction]);
 
 	const logout = () => {
-		keycloak.logout({
-			redirectUri: process.env.REACT_APP_REDIRECT_URL,
-		});
+		// keycloak.logout({
+		// 	redirectUri: process.env.REACT_APP_REDIRECT_URL,
+		// });
 	};
+
+
+	useEffect(() => {
+		if (!authState.isAuthenticated) {
+			// When user isn't authenticated, forget any user info
+			setUserInfo(null);
+		} else {
+			oktaAuth.getUserInfo().then(info => {
+				setUserInfo(info);
+			});
+		}
+	}, [authState, oktaAuth]);
 
 	return (
 		<Header className="header">
-			{keycloak.authenticated ? (
+			{authState.isAuthenticated ? (
 				<Link to="/profile/projects" id="main-dashboard-link">
 					<b style={{fontSize: 16, float: "left"}}>AutoPacker</b>
 				</Link>
@@ -55,7 +68,7 @@ function Navbar() {
 			{searchAction ? <Redirect to={"/search?q=" + search}/> : <div/>}
 
 			{/* Check if user is authenticated */}
-			{keycloak.authenticated ? (
+			{authState.isAuthenticated ? (
 				<Menu
 					mode="horizontal"
 					style={{lineHeight: "64px", float: "right"}}
@@ -70,7 +83,7 @@ function Navbar() {
 									}}
 								/>
 								<Typography.Text style={{marginLeft: 10}}>
-									{keycloak.idTokenParsed.preferred_username}
+									{userInfo.username}
 								</Typography.Text>
 							</div>
 						}
@@ -109,7 +122,8 @@ function Navbar() {
 			) : (
 				<Menu mode="horizontal" style={{lineHeight: "64px", float: "right"}}>
 					<Menu.Item>
-						<LoginBtn/>
+						<div id="sign-in-link" onClick={login}>Sign in</div>;
+						{/*<LoginBtn/>*/}
 					</Menu.Item>
 				</Menu>
 			)}

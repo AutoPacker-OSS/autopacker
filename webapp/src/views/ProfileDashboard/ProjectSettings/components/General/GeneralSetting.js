@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { Typography, Button, Input, Divider, Modal } from "antd";
 import { createAlert } from "../../../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 
 function GeneralSetting(props) {
@@ -16,7 +16,7 @@ function GeneralSetting(props) {
 	const owner = props.project.owner;
 	const projectName = props.project.name;
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const dispatch = useDispatch();
 
@@ -30,46 +30,47 @@ function GeneralSetting(props) {
 
 	function sendRequest() {
 		setModalVisible(false);
-		if (keycloak.idTokenParsed.email_verified) {
-			axios({
-				method: "delete",
-				url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/projects/" +
-					owner.username +
-					"/" +
-					projectName,
-				headers: {
-					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-				},
-				data: {
-					username: owner.username,
-					projectName: projectName,
-				},
-			})
-				.then(() => {
-					dispatch(
-						createAlert(
-							"Project successfully deleted",
-							projectName + " has successfully been deleted.",
-							"success",
-							true
-						)
-					);
-					setRedirect(true);
-				})
-				.catch(() => {
-					dispatch(
-						createAlert(
-							"Project deletion failed",
-							"Failed to delete the given project: " + projectName,
-							"error",
-							true
-						)
-					);
-				});
-		}
+		// TODO UNCOMMENT THIS AND FIX THIS SHIT
+		// if (keycloak.idTokenParsed.email_verified) {
+		// 	axios({
+		// 		method: "delete",
+		// 		url:
+		// 			process.env.REACT_APP_APPLICATION_URL +
+		// 			process.env.REACT_APP_API +
+		// 			"/projects/" +
+		// 			owner.username +
+		// 			"/" +
+		// 			projectName,
+		// 		headers: {
+		// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 		},
+		// 		data: {
+		// 			username: owner.username,
+		// 			projectName: projectName,
+		// 		},
+		// 	})
+		// 		.then(() => {
+		// 			dispatch(
+		// 				createAlert(
+		// 					"Project successfully deleted",
+		// 					projectName + " has successfully been deleted.",
+		// 					"success",
+		// 					true
+		// 				)
+		// 			);
+		// 			setRedirect(true);
+		// 		})
+		// 		.catch(() => {
+		// 			dispatch(
+		// 				createAlert(
+		// 					"Project deletion failed",
+		// 					"Failed to delete the given project: " + projectName,
+		// 					"error",
+		// 					true
+		// 				)
+		// 			);
+		// 		});
+		// }
 	}
 
 	return (

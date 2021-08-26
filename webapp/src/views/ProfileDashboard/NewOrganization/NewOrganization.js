@@ -3,7 +3,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { createAlert } from "../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
 import { QuestionCircleOutlined, LoadingOutlined } from "@ant-design/icons";
@@ -30,7 +30,7 @@ function NewOrganization() {
     const { Content } = Layout;
     const { TextArea } = Input;
 
-    const [keycloak] = useKeycloak();
+    const { authState } = useOktaAuth();
 
     const dispatch = useDispatch();
 
@@ -65,56 +65,57 @@ function NewOrganization() {
     const handleSubmit = (event) => {
         event.preventDefault();
         setLoading(true);
-        if (keycloak.idTokenParsed.email_verified) {
-            axios({
-                method: "post",
-                url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/new-organization",
-                headers: {
-                    Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-                },
-                data: {
-                    organizationName: orgName,
-                    orgDesc: orgDesc,
-                    url: url,
-                    isPublic: isPublic,
-                    username: keycloak.idTokenParsed.preferred_username,
-
-                },
-
-            })
-                .then(() => {
-                    dispatch(
-                        createAlert(
-                            "Organization Added",
-                            "Organization has been successfully added.",
-                            "success",
-                            true
-                        )
-                    );
-                    setLoading(false);
-                    setRedirect(true);
-                })
-                .catch(() => {
-                    dispatch(
-                        createAlert(
-                            "Failed to add organization",
-                            "You can't name the organization the same as another organization",
-                            "error",
-                            true
-                        )
-                    );
-                    setLoading(false);
-                });
-        } else {
-            dispatch(
-                createAlert(
-                    "Adding organization failed",
-                    "You can't add a organization without verifying your account. Please check your email inbox for a verification email, and follow the instructions.",
-                    "warning",
-                    true
-                )
-            );
-        }
+        // TODO UNCOMMENT THIS AND FIX THIS SHIT
+        // if (keycloak.idTokenParsed.email_verified) {
+        //     axios({
+        //         method: "post",
+        //         url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/new-organization",
+        //         headers: {
+        //             Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+        //         },
+        //         data: {
+        //             organizationName: orgName,
+        //             orgDesc: orgDesc,
+        //             url: url,
+        //             isPublic: isPublic,
+        //             username: keycloak.idTokenParsed.preferred_username,
+        //
+        //         },
+        //
+        //     })
+        //         .then(() => {
+        //             dispatch(
+        //                 createAlert(
+        //                     "Organization Added",
+        //                     "Organization has been successfully added.",
+        //                     "success",
+        //                     true
+        //                 )
+        //             );
+        //             setLoading(false);
+        //             setRedirect(true);
+        //         })
+        //         .catch(() => {
+        //             dispatch(
+        //                 createAlert(
+        //                     "Failed to add organization",
+        //                     "You can't name the organization the same as another organization",
+        //                     "error",
+        //                     true
+        //                 )
+        //             );
+        //             setLoading(false);
+        //         });
+        // } else {
+        //     dispatch(
+        //         createAlert(
+        //             "Adding organization failed",
+        //             "You can't add a organization without verifying your account. Please check your email inbox for a verification email, and follow the instructions.",
+        //             "warning",
+        //             true
+        //         )
+        //     );
+        // }
     };
 
     const validateName = (value) => {

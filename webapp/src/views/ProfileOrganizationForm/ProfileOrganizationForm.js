@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import NTNU from "../../assets/image/ntnu.png";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import { axiosRequest } from "../../util/axiosRequest";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
@@ -14,7 +14,7 @@ function ProfileOrganizationForm() {
 	const [role, setRole] = React.useState("");
 	const [comment, setComment] = React.useState("");
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	// State
 	const [organization, setOrganization] = React.useState({});
@@ -55,22 +55,23 @@ function ProfileOrganizationForm() {
 
 		const url = process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/requestMembership";
 
-		axios.post(url,
-			{
-				organizationName: organization.name,
-				username: keycloak.idTokenParsed.preferred_username,
-				name: name,
-				email: email,
-				role: role,
-				comment: comment,
-			}
-		).then((response) => {
-			message.success("Successfully sent the member application");
-			setRedirect(true);
-		}, (error) => {
-			message.error("Member already exist or you have already sent an application");
-			console.error(error);
-		});
+		// TODO UNCOMMENT THIS AND FIX THIS SHIT
+		// axios.post(url,
+		// 	{
+		// 		organizationName: organization.name,
+		// 		username: keycloak.idTokenParsed.preferred_username,
+		// 		name: name,
+		// 		email: email,
+		// 		role: role,
+		// 		comment: comment,
+		// 	}
+		// ).then((response) => {
+		// 	message.success("Successfully sent the member application");
+		// 	setRedirect(true);
+		// }, (error) => {
+		// 	message.error("Member already exist or you have already sent an application");
+		// 	console.error(error);
+		// });
 
 	};
 
@@ -117,9 +118,10 @@ function ProfileOrganizationForm() {
 							<Form
 								{...formItemLayout}
 								style={{ marginTop: 20 }}
-								initialValues={{
-									["username"]: keycloak.idTokenParsed.preferred_username,
-								}}
+								// TODO UNCOMMENT THIS AND FIX THIS SHIT
+								// initialValues={{
+								// 	["username"]: keycloak.idTokenParsed.preferred_username,
+								// }}
 							>
 								<Form.Item
 									name="username"
@@ -239,17 +241,18 @@ function ProfileOrganizationForm() {
 									<TextArea onChange={(event) => setComment(event.target.value)} />
 								</Form.Item>
 								<div style={{ width: "100%", textAlign: "center" }} onClick={(e) => handleSubmit(e)}>
-									<Button
-										disabled={
-											keycloak.idTokenParsed.preferred_username.length <= 0 ||
-											name.length <= 0 ||
-											email.length <= 0 ||
-											role.length <= 0
-										}
-										type="primary"
-									>
-										Submit Form
-									</Button>
+									{/*// TODO UNCOMMENT THIS AND FIX THIS SHIT*/}
+									{/*<Button*/}
+									{/*	disabled={*/}
+									{/*		keycloak.idTokenParsed.preferred_username.length <= 0 ||*/}
+									{/*		name.length <= 0 ||*/}
+									{/*		email.length <= 0 ||*/}
+									{/*		role.length <= 0*/}
+									{/*	}*/}
+									{/*	type="primary"*/}
+									{/*>*/}
+									{/*	Submit Form*/}
+									{/*</Button>*/}
 								</div>
 							</Form>
 						</Col>

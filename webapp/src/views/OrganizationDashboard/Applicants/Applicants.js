@@ -1,12 +1,12 @@
 import { Button, Col, Collapse, Descriptions, Input, Layout, Modal, PageHeader, Row, Typography } from "antd";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 // Identicon
 import Identicon from "../../../assets/image/download.png";
 import { createAlert } from "../../../store/actions/generalActions";
 import {useParams} from "react-router-dom";
+import {useOktaAuth} from "@okta/okta-react";
 
 function Applicants() {
 	// State
@@ -22,7 +22,7 @@ function Applicants() {
 	const [selectedApplicantName, setSelectedApplicantName] = React.useState("");
 	const [selectedApplicantRole, setSelectedApplicantRole] = React.useState("");
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const { organizationName } = useParams();
 
@@ -44,7 +44,7 @@ function Applicants() {
 				organizationName +
 				"/member-applications",
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 		}).then(function (response) {
 			console.log("APPLICANTS:", response.data);
@@ -70,7 +70,7 @@ function Applicants() {
 			method: "post",
 			url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/acceptMemberRequest",
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 			data: {
 				organizationName: organizationName,
@@ -101,7 +101,7 @@ function Applicants() {
 			method: "post",
 			url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/declineMemberRequest",
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 			data: {
 				organizationName: organizationName,

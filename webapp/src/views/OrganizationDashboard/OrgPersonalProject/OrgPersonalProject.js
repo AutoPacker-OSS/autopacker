@@ -1,7 +1,7 @@
 import {Card, Col, Layout, PageHeader, Row, Tag, Typography} from "antd";
 import React, { useEffect } from "react";
 import {Redirect, useParams} from "react-router-dom";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import Moment from 'moment';
 
@@ -10,7 +10,7 @@ function OrgPersonalProject() {
     const [projects, setProjects] = React.useState([]);
     const [selectedCard, setSelectedCard] = React.useState(null);
 
-    const [keycloak] = useKeycloak();
+    const { authState } = useOktaAuth();
     const { organizationName } = useParams();
 
     // Get antd sub components
@@ -31,13 +31,13 @@ function OrgPersonalProject() {
                         "/projects/"+
                         keycloak.idTokenParsed.preferred_username,
                     headers: {
-                        Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+                        Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
                     },
                 }).then(function (response) {
                     setProjects(response.data);
                 });
         },
-        [keycloak.idTokenParsed.preferred_username, keycloak.token, organizationName]
+        [keycloak.idTokenParsed.preferred_username, authState.accessToken, organizationName]
     );
 
     const routes = [

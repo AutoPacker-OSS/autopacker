@@ -1,7 +1,7 @@
 import {Layout, PageHeader, Table, Typography, Select, Modal, Button} from "antd";
 
 import React, { useEffect } from "react";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import {createAlert} from "../../../store/actions/generalActions";
 import {useDispatch} from "react-redux";
@@ -21,7 +21,7 @@ function RoleControl() {
     const [user, setUser] = React.useState("");
     const [newRole, setNewRole] = React.useState("");
 
-    const [keycloak] = useKeycloak();
+    const { authState } = useOktaAuth();
 
     // Import sub components from antd
     const { Paragraph } = Typography;
@@ -40,7 +40,7 @@ function RoleControl() {
                 organizationName +
                 "/members",
             headers: {
-                Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+                Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
             },
         }).then(function (response) {
             let arr = [];
@@ -53,110 +53,112 @@ function RoleControl() {
             });
             setMembers(arr);
         });
-    }, [keycloak.token, organizationName, reload]);
+    }, [authState.accessToken, organizationName, reload]);
 
     const handleChangeRole = (event) => {
         event.preventDefault();
         turnOffModal(false);
-        if (keycloak.idTokenParsed.email_verified) {
-            axios({
-                method: "post",
-                url:
-                    process.env.REACT_APP_APPLICATION_URL +
-                    process.env.REACT_APP_API +
-                    "/organization/changeRole",
-                headers: {
-                    Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-                },
-                data: {
-                    organizationName: organizationName,
-                    username: user,
-                    role: newRole
-                },
-            })
-                .then(function () {
-                    dispatch(
-                        createAlert(
-                            "Role Request Submitted",
-                            "You have successfully submitted the role changes.",
-                            "success",
-                            true
-                        )
-                    );
-                    setReload(!reload);
-                })
-                .catch(() => {
-                    dispatch(
-                        createAlert(
-                            "Role Request Failed",
-                            "Something went wrong while trying to submit the role changes. Try again later.",
-                            "error",
-                            true
-                        )
-                    );
-                });
-        } else {
-            dispatch(
-                createAlert(
-                    "Role Request Failed",
-                    "You can't submit changes without being Admin of an organization and have a verified account.",
-                    "warning",
-                    true
-                )
-            );
-        }
+        // TODO UNCOMMENT THIS AND FIX THIS SHIT
+        // if (keycloak.idTokenParsed.email_verified) {
+        //     axios({
+        //         method: "post",
+        //         url:
+        //             process.env.REACT_APP_APPLICATION_URL +
+        //             process.env.REACT_APP_API +
+        //             "/organization/changeRole",
+        //         headers: {
+        //             Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+        //         },
+        //         data: {
+        //             organizationName: organizationName,
+        //             username: user,
+        //             role: newRole
+        //         },
+        //     })
+        //         .then(function () {
+        //             dispatch(
+        //                 createAlert(
+        //                     "Role Request Submitted",
+        //                     "You have successfully submitted the role changes.",
+        //                     "success",
+        //                     true
+        //                 )
+        //             );
+        //             setReload(!reload);
+        //         })
+        //         .catch(() => {
+        //             dispatch(
+        //                 createAlert(
+        //                     "Role Request Failed",
+        //                     "Something went wrong while trying to submit the role changes. Try again later.",
+        //                     "error",
+        //                     true
+        //                 )
+        //             );
+        //         });
+        // } else {
+        //     dispatch(
+        //         createAlert(
+        //             "Role Request Failed",
+        //             "You can't submit changes without being Admin of an organization and have a verified account.",
+        //             "warning",
+        //             true
+        //         )
+        //     );
+        // }
     };
 
     const handleUserDeletion = (event) => {
         event.preventDefault();
         turnOffModal(false);
-        if (keycloak.idTokenParsed.email_verified) {
-            axios({
-                method: "post",
-                url:
-                    process.env.REACT_APP_APPLICATION_URL +
-                    process.env.REACT_APP_API +
-                    "/organization/deleteMember",
-                headers: {
-                    Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-                },
-                data: {
-                    organizationName: organizationName,
-                    username: user
-
-                },
-            })
-                .then(function () {
-                    dispatch(
-                        createAlert(
-                            "Role Request Submitted",
-                            "You have successfully submitted the deletion.",
-                            "success",
-                            true
-                        )
-                    );
-                    setReload(!reload);
-                })
-                .catch(() => {
-                    dispatch(
-                        createAlert(
-                            "Deletion Request Failed",
-                            "Something went wrong while trying to submit the deletion changes. Try again later.",
-                            "error",
-                            true
-                        )
-                    );
-                });
-        } else {
-            dispatch(
-                createAlert(
-                    "Deletion Request Failed",
-                    "You can't submit changes without being Admin of an organization and have a verified account.",
-                    "warning",
-                    true
-                )
-            );
-        }
+        // TODO UNCOMMENT THIS AND FIX THIS SHIT
+        // if (keycloak.idTokenParsed.email_verified) {
+        //     axios({
+        //         method: "post",
+        //         url:
+        //             process.env.REACT_APP_APPLICATION_URL +
+        //             process.env.REACT_APP_API +
+        //             "/organization/deleteMember",
+        //         headers: {
+        //             Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+        //         },
+        //         data: {
+        //             organizationName: organizationName,
+        //             username: user
+        //
+        //         },
+        //     })
+        //         .then(function () {
+        //             dispatch(
+        //                 createAlert(
+        //                     "Role Request Submitted",
+        //                     "You have successfully submitted the deletion.",
+        //                     "success",
+        //                     true
+        //                 )
+        //             );
+        //             setReload(!reload);
+        //         })
+        //         .catch(() => {
+        //             dispatch(
+        //                 createAlert(
+        //                     "Deletion Request Failed",
+        //                     "Something went wrong while trying to submit the deletion changes. Try again later.",
+        //                     "error",
+        //                     true
+        //                 )
+        //             );
+        //         });
+        // } else {
+        //     dispatch(
+        //         createAlert(
+        //             "Deletion Request Failed",
+        //             "You can't submit changes without being Admin of an organization and have a verified account.",
+        //             "warning",
+        //             true
+        //         )
+        //     );
+        // }
     };
     const routes = [
         {

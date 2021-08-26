@@ -13,7 +13,7 @@ import {
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createAlert } from "../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 
 import RequestEditForm from "./components/RequestEditForm/RequestEditForm";
@@ -34,31 +34,32 @@ function Submissions() {
 	const { Content } = Layout;
 	const { Panel } = Collapse;
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const { organizationName } = useParams();
 
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if (organizationName) {
-			axios({
-				method: "get",
-				url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/organization/" +
-					organizationName +
-					"/project-applications/" +
-					keycloak.idTokenParsed.preferred_username,
-				headers: {
-					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-				},
-			}).then(function (response) {
-				console.log("DATA:", response.data);
-				setRequests(response.data);
-			});
-		}
+		// TODO UNCOMMENT THIS AND FIX THIS SHIT
+		// if (organizationName) {
+		// 	axios({
+		// 		method: "get",
+		// 		url:
+		// 			process.env.REACT_APP_APPLICATION_URL +
+		// 			process.env.REACT_APP_API +
+		// 			"/organization/" +
+		// 			organizationName +
+		// 			"/project-applications/" +
+		// 			keycloak.idTokenParsed.preferred_username,
+		// 		headers: {
+		// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 		},
+		// 	}).then(function (response) {
+		// 		console.log("DATA:", response.data);
+		// 		setRequests(response.data);
+		// 	});
+		// }
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [organizationName, refreshList]);
 
@@ -89,7 +90,7 @@ function Submissions() {
 				"/delete-project-application/" +
 				applicationId,
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 		})
 			.then(() => {

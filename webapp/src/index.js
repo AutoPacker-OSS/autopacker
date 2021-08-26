@@ -6,8 +6,9 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "react-redux";
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import thunk from "redux-thunk";
-import { KeycloakProvider } from "@react-keycloak/web";
-import keycloak from "./keycloak";
+import { Security } from '@okta/okta-react';
+import { OktaAuth } from '@okta/okta-auth-js';
+import {oktaConfig} from './okta-config';
 
 // Import reducer(s)
 import generalReducer from "./store/reducers/generalReducer";
@@ -40,17 +41,10 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 // Create the redux store and adding middleware and such
 const reduxStore = createStore(rootReducer, composeEnhancers(applyMiddleware(loggerMiddleware, thunk)));
 
-/**
- * check-sso will only authenticate the client if the user is already logged-in,
- * if the user is not logged-in the browser will be redirected back to the
- * application and remain unauthenticated
- * */
-const keycloakProviderInitConfig = {
-	onLoad: "check-sso",
-};
+const oktaAuth = new OktaAuth(oktaConfig);
 
 const app = (
-	<KeycloakProvider keycloak={keycloak} initConfig={keycloakProviderInitConfig}>
+	<Security oktaAuth={oktaAuth} restoreOriginalUri="http://localhost:3000/">
 		<Router>
 			<Provider store={reduxStore}>
 				<ModalStack>
@@ -58,7 +52,7 @@ const app = (
 				</ModalStack>
 			</Provider>
 		</Router>
-	</KeycloakProvider>
+	</Security>
 );
 
 // Render

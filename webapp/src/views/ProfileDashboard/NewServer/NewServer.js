@@ -3,7 +3,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { createAlert } from "../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
 import { QuestionCircleOutlined, LoadingOutlined } from "@ant-design/icons";
@@ -34,7 +34,7 @@ function NewServer() {
 	const { Content } = Layout;
 	const { TextArea } = Input;
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const dispatch = useDispatch();
 
@@ -67,57 +67,58 @@ function NewServer() {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		setLoading(true);
-		if (keycloak.idTokenParsed.email_verified) {
-			axios({
-				method: "post",
-				url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/server/new-server",
-				headers: {
-					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-				},
-				data: {
-					title: title,
-					desc: desc,
-					ip: ip,
-					username: username,
-					ssh: sshKey,
-				},
-			})
-				.then(() => {
-					dispatch(
-						createAlert(
-							"Server Added",
-							"Server has been successfully added. You can now add projects you wish to deploy to the server",
-							"success",
-							true
-						)
-					);
-					setLoading(false);
-					setRedirect(true);
-				})
-				.catch(() => {
-					dispatch(
-						createAlert(
-							"Failed to add server",
-							"You can't name the server the same as another server",
-							"error",
-							true
-						)
-					);
-					setLoading(false);
-				});
-		} else {
-			dispatch(
-				createAlert(
-					"Adding Server failed",
-					"You can't add a server without verifying your account. Please check your email inbox for a verification email, and follow the instructions.",
-					"warning",
-					true
-				)
-			);
-		}
+		// TODO UNCOMMENT THIS AND FIX THIS SHIT
+		// if (keycloak.idTokenParsed.email_verified) {
+		// 	axios({
+		// 		method: "post",
+		// 		url:
+		// 			process.env.REACT_APP_APPLICATION_URL +
+		// 			process.env.REACT_APP_API +
+		// 			"/server/new-server",
+		// 		headers: {
+		// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 		},
+		// 		data: {
+		// 			title: title,
+		// 			desc: desc,
+		// 			ip: ip,
+		// 			username: username,
+		// 			ssh: sshKey,
+		// 		},
+		// 	})
+		// 		.then(() => {
+		// 			dispatch(
+		// 				createAlert(
+		// 					"Server Added",
+		// 					"Server has been successfully added. You can now add projects you wish to deploy to the server",
+		// 					"success",
+		// 					true
+		// 				)
+		// 			);
+		// 			setLoading(false);
+		// 			setRedirect(true);
+		// 		})
+		// 		.catch(() => {
+		// 			dispatch(
+		// 				createAlert(
+		// 					"Failed to add server",
+		// 					"You can't name the server the same as another server",
+		// 					"error",
+		// 					true
+		// 				)
+		// 			);
+		// 			setLoading(false);
+		// 		});
+		// } else {
+		// 	dispatch(
+		// 		createAlert(
+		// 			"Adding Server failed",
+		// 			"You can't add a server without verifying your account. Please check your email inbox for a verification email, and follow the instructions.",
+		// 			"warning",
+		// 			true
+		// 		)
+		// 	);
+		// }
 	};
 
 	const validateName = (value) => {

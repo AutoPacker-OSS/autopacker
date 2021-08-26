@@ -1,7 +1,7 @@
 import { Button, Col, Input, Layout, PageHeader, Row, Typography } from "antd";
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 // Import custom hooks
 import useDebounce from "./../../../hooks/useDebounce";
@@ -15,7 +15,7 @@ function Servers() {
 	const [search, setSearch] = React.useState("");
 	const [servers, setServers] = React.useState([]);
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const debouncedSearchTerm = useDebounce(search, 500);
 
@@ -53,7 +53,7 @@ function Servers() {
 					"/server/" +
 					search,
 					headers: {
-						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+						Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 					},
 				}).then(function (response) {
 					setServers(response.data);
@@ -66,7 +66,7 @@ function Servers() {
 					process.env.REACT_APP_API +
 					"/server",
 					headers: {
-						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+						Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 					},
 				}).then(function (response) {
 					setServers(response.data);

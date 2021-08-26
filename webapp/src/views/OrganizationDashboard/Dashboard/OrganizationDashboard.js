@@ -2,12 +2,12 @@ import { Card, Col, Input, Layout, PageHeader, Row, Tag, Typography } from "antd
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {Redirect, useParams} from "react-router-dom";
-import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 import Moment from 'moment';
 // Import custom hooks
 import useDebounce from "./../../../hooks/useDebounce";
 import {format} from "date-fns";
+import {useOktaAuth} from "@okta/okta-react";
 // Import helper methods
 
 function OrganizationDashboard() {
@@ -21,7 +21,7 @@ function OrganizationDashboard() {
 
 	const debouncedSearchTerm = useDebounce(search, 500);
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const { organizationName } = useParams();
 
@@ -38,7 +38,7 @@ function OrganizationDashboard() {
 			method: "get",
 			url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/" + organizationName,
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 		}).then(function (response) {
 			setOrganization(response.data);
@@ -62,7 +62,7 @@ function OrganizationDashboard() {
 						"/projects/search?q=" +
 						search,
 					headers: {
-						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+						Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 					},
 				}).then(function (response) {
 					setProjects(response.data);
@@ -77,7 +77,7 @@ function OrganizationDashboard() {
 						organizationName +
 						"/projects",
 					headers: {
-						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+						Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 					},
 				}).then(function (response) {
 					setProjects(response.data);

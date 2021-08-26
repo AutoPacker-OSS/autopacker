@@ -1,7 +1,7 @@
 import {Avatar, Button, Card, Col, Empty, Layout, Modal, PageHeader, Popover, Radio, Row, Tag, Typography} from "antd";
 import React, { useEffect } from "react";
 import {Link, Redirect, useParams} from "react-router-dom";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
 import {GlobalOutlined, PlayCircleOutlined, SettingOutlined} from "@ant-design/icons";
@@ -31,7 +31,7 @@ function OrgProjectOverview() {
 	const { Meta } = Card;
 	const dispatch = useDispatch();
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const { organizationName } = useParams();
 	const projectId = sessionStorage.getItem("selectedProjectId");
@@ -48,7 +48,7 @@ function OrgProjectOverview() {
 				"/overview/" +
 				projectId,
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 		}).then(function (response) {
 			console.log("DATA:", response.data);
@@ -65,7 +65,7 @@ function OrgProjectOverview() {
 				setLinks([]);
 			}
 		});
-	}, [keycloak.token, organizationName, projectId]);
+	}, [authState.accessToken, organizationName, projectId]);
 
 
 	const routes = [
@@ -108,7 +108,7 @@ function OrgProjectOverview() {
 				process.env.REACT_APP_API +
 				"/server/add-project",
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 			data: {
 				server_id: server.serverId,
@@ -138,7 +138,7 @@ function OrgProjectOverview() {
 						process.env.REACT_APP_API +
 						"/server",
 					headers: {
-						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+						Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 					},
 				}).then(function (response) {
 					setServers(response.data);

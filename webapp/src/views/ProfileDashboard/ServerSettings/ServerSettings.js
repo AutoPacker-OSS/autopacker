@@ -1,6 +1,6 @@
 import { Card, Col, Layout, Menu, PageHeader, Row } from "antd";
 import React, { useEffect } from "react";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 
 import GeneralSetting from "./components/General/GeneralSetting";
@@ -11,7 +11,7 @@ function ServerSettings() {
 	const [activeOption, setActiveOption] = React.useState(1);
 	const [server, setServer] = React.useState({});
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const { Content } = Layout;
 
@@ -26,7 +26,7 @@ function ServerSettings() {
 				"/server/server-overview/" +
 				serverId,
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 		}).then(function (response) {
 			setServer(response.data);

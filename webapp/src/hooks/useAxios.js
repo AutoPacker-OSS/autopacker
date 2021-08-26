@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 
 // TODO Make this work! :D
 export default function useAxios(servicePort) {
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 	const [axiosInstance, setAxiosInstance] = useState({});
 
 	useEffect(() => {
 		const instance = axios.create({
 			baseURL: process.env.REACT_APP_APPLICATION_URL + servicePort,
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 		});
 
@@ -21,7 +21,7 @@ export default function useAxios(servicePort) {
 		return () => {
 			setAxiosInstance({});
 		};
-	}, [servicePort, keycloak, keycloak.token]);
+	}, [servicePort, keycloak, authState.accessToken]);
 
 	return axiosInstance.instance;
 }

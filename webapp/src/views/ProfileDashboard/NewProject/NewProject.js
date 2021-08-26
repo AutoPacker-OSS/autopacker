@@ -4,7 +4,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { createAlert } from "../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
 import { QuestionCircleOutlined } from "@ant-design/icons";
@@ -32,7 +32,7 @@ function NewProject() {
 	const { Content } = Layout;
 	const { Paragraph } = Typography;
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const dispatch = useDispatch();
 
@@ -109,55 +109,56 @@ function NewProject() {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 
-		if (keycloak.idTokenParsed.email_verified) {
-			axios({
-				method: "post",
-				url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/projects",
-				headers: {
-					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-				},
-				data: {
-					name: newProjectName,
-					description: newProjectDescription,
-					website: newProjectWebsite,
-					tags: tags,
-					isPrivate: privateProject,
-					// TODO Uncomment this when we have implemented the functionality for it
-					/* license: newLicence,
-					initializeREADME: initREADME */
-				},
-			})
-				.then(function () {
-					dispatch(
-						createAlert(
-							"Project Created",
-							"Project has successfully been created. You can now add modules to the project.",
-							"success",
-							true
-						)
-					);
-					setRedirect(true);
-				})
-				.catch(() => {
-					dispatch(
-						createAlert(
-							"Failed to create project",
-							"Failed to create the given project, try again later. If it doesn't work make an issue on GitHub.",
-							"error",
-							true
-						)
-					);
-				});
-		} else {
-			dispatch(
-				createAlert(
-					"Project Creation failed",
-					"You can't create a project without verifying your account. Please check your email inbox for a verification email, and follow the instructions.",
-					"warning",
-					true
-				)
-			);
-		}
+		// TODO FIX THIS SHIT
+		// if (keycloak.idTokenParsed.email_verified) {
+		// 	axios({
+		// 		method: "post",
+		// 		url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/projects",
+		// 		headers: {
+		// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 		},
+		// 		data: {
+		// 			name: newProjectName,
+		// 			description: newProjectDescription,
+		// 			website: newProjectWebsite,
+		// 			tags: tags,
+		// 			isPrivate: privateProject,
+		// 			// TODO Uncomment this when we have implemented the functionality for it
+		// 			/* license: newLicence,
+		// 			initializeREADME: initREADME */
+		// 		},
+		// 	})
+		// 		.then(function () {
+		// 			dispatch(
+		// 				createAlert(
+		// 					"Project Created",
+		// 					"Project has successfully been created. You can now add modules to the project.",
+		// 					"success",
+		// 					true
+		// 				)
+		// 			);
+		// 			setRedirect(true);
+		// 		})
+		// 		.catch(() => {
+		// 			dispatch(
+		// 				createAlert(
+		// 					"Failed to create project",
+		// 					"Failed to create the given project, try again later. If it doesn't work make an issue on GitHub.",
+		// 					"error",
+		// 					true
+		// 				)
+		// 			);
+		// 		});
+		// } else {
+		// 	dispatch(
+		// 		createAlert(
+		// 			"Project Creation failed",
+		// 			"You can't create a project without verifying your account. Please check your email inbox for a verification email, and follow the instructions.",
+		// 			"warning",
+		// 			true
+		// 		)
+		// 	);
+		// }
 	};
 
 	const validateName = (value) => {

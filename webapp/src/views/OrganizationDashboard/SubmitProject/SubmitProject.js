@@ -15,7 +15,7 @@ import React, { useEffect } from "react";
 import { useDispatch} from "react-redux";
 import {Redirect, useParams} from "react-router-dom";
 import { createAlert, selectMenuOption } from "../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 
 
@@ -44,7 +44,7 @@ function SubmitProject(props) {
 	const { Content } = Layout;
 	const { Paragraph, Text } = Typography;
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const { organizationName } = useParams();
 	const dispatch = useDispatch();
@@ -57,66 +57,67 @@ function SubmitProject(props) {
 				process.env.REACT_APP_API +
 				"/projects",
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 		}).then(function (response) {
 			setProjects(response.data);
 			console.log(response.data)
 		});
-	}, [keycloak.token]);
+	}, [authState.accessToken]);
 	
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
 
-		if (keycloak.idTokenParsed.email_verified) {
-			axios({
-				method: "post",
-				url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/organization/submitProject",
-				headers: {
-					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-				},
-				data: {
-					organizationName: organizationName,
-					projectId: actualProject.id,
-					comment: comment,
-				},
-			})
-				.then(function () {
-					dispatch(
-						createAlert(
-							"Project Request Submitted",
-							"You have successfully submitted a project. You will receive a notification on email when the request has been handled.",
-							"success",
-							true
-						)
-					);
-					dispatch(selectMenuOption("9"));
-					setRedirect(true);
-				})
-				.catch(() => {
-					dispatch(
-						createAlert(
-							"Project Request Failed",
-							"Something went wrong while trying to submit the project. There might be an existing project with the specified name",
-							"error",
-							true
-						)
-					);
-				});
-		} else {
-			dispatch(
-				createAlert(
-					"Project submission failed",
-					"You can't submit a project without verifying your account. Please check your email inbox for a verification email, and follow the instructions.",
-					"warning",
-					true
-				)
-			);
-		}
+		// TODO UNCOMMENT THIS AND FIX THIS SHIT
+		// if (keycloak.idTokenParsed.email_verified) {
+		// 	axios({
+		// 		method: "post",
+		// 		url:
+		// 			process.env.REACT_APP_APPLICATION_URL +
+		// 			process.env.REACT_APP_API +
+		// 			"/organization/submitProject",
+		// 		headers: {
+		// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 		},
+		// 		data: {
+		// 			organizationName: organizationName,
+		// 			projectId: actualProject.id,
+		// 			comment: comment,
+		// 		},
+		// 	})
+		// 		.then(function () {
+		// 			dispatch(
+		// 				createAlert(
+		// 					"Project Request Submitted",
+		// 					"You have successfully submitted a project. You will receive a notification on email when the request has been handled.",
+		// 					"success",
+		// 					true
+		// 				)
+		// 			);
+		// 			dispatch(selectMenuOption("9"));
+		// 			setRedirect(true);
+		// 		})
+		// 		.catch(() => {
+		// 			dispatch(
+		// 				createAlert(
+		// 					"Project Request Failed",
+		// 					"Something went wrong while trying to submit the project. There might be an existing project with the specified name",
+		// 					"error",
+		// 					true
+		// 				)
+		// 			);
+		// 		});
+		// } else {
+		// 	dispatch(
+		// 		createAlert(
+		// 			"Project submission failed",
+		// 			"You can't submit a project without verifying your account. Please check your email inbox for a verification email, and follow the instructions.",
+		// 			"warning",
+		// 			true
+		// 		)
+		// 	);
+		// }
 	};
 
 	const formItemLayout = {
@@ -140,8 +141,6 @@ function SubmitProject(props) {
 			breadcrumbName: "Submit Project",
 		},
 	];
-
-
 
 	return (
 		<div style={{ width: "100%" }}>

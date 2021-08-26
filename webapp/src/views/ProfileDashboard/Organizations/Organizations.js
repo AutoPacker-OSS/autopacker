@@ -2,7 +2,7 @@ import {Button, Card, Col, Input, Layout, PageHeader, Row, Typography} from "ant
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import {Link, Redirect} from "react-router-dom";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 // Import redux actions
 import axios from "axios";
 // Import custom hooks
@@ -14,7 +14,7 @@ function Organizations() {
 	const [organizations, setOrganizations] = React.useState([]);
 	const [selectedCard, setSelectedCard] = React.useState(null);
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const debouncedSearchTerm = useDebounce(search, 500);
 
@@ -49,47 +49,48 @@ function Organizations() {
 	useEffect(
 		() => {
 			// Make sure we have a value (user has entered something in input)
-			if (debouncedSearchTerm) {
-				// Fire off our API call
-				axios({
-					method: "get",
-					url:
-						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_API +
-						"/organization/" +
-						keycloak.idTokenParsed.preferred_username +
-						"/isMember/search?q=" +
-						search,
-					headers: {
-						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-					},
-				}).then(function (response) {
-					if (response.data) {
-						setOrganizations(response.data);
-					} else {
-						setOrganizations([]);
-					}
-				});
-			} else {
-				axios({
-					method: "get",
-					url:
-						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_API +
-						"/organization/" +
-						keycloak.idTokenParsed.preferred_username +
-						"/isMember",
-					headers: {
-						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-					},
-				}).then(function (response) {
-					if (response.data) {
-						setOrganizations(response.data);
-					} else {
-						setOrganizations([]);
-					}
-				});
-			}
+			// TODO UNCOMMENT THIS AND FIX THIS SHIT
+			// if (debouncedSearchTerm) {
+			// 	// Fire off our API call
+			// 	axios({
+			// 		method: "get",
+			// 		url:
+			// 			process.env.REACT_APP_APPLICATION_URL +
+			// 			process.env.REACT_APP_API +
+			// 			"/organization/" +
+			// 			keycloak.idTokenParsed.preferred_username +
+			// 			"/isMember/search?q=" +
+			// 			search,
+			// 		headers: {
+			// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+			// 		},
+			// 	}).then(function (response) {
+			// 		if (response.data) {
+			// 			setOrganizations(response.data);
+			// 		} else {
+			// 			setOrganizations([]);
+			// 		}
+			// 	});
+			// } else {
+			// 	axios({
+			// 		method: "get",
+			// 		url:
+			// 			process.env.REACT_APP_APPLICATION_URL +
+			// 			process.env.REACT_APP_API +
+			// 			"/organization/" +
+			// 			keycloak.idTokenParsed.preferred_username +
+			// 			"/isMember",
+			// 		headers: {
+			// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+			// 		},
+			// 	}).then(function (response) {
+			// 		if (response.data) {
+			// 			setOrganizations(response.data);
+			// 		} else {
+			// 			setOrganizations([]);
+			// 		}
+			// 	});
+			// }
 		},
 		// This is the useEffect input array
 		// Our useEffect function will only execute if this value changes ...

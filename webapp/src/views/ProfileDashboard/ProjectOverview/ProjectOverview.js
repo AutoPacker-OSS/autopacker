@@ -2,7 +2,7 @@ import { Button, Card, Col, Empty, Layout, Modal, PageHeader, Row, Tag, Typograp
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 
 import { createAlert } from "../../../store/actions/generalActions";
@@ -28,7 +28,7 @@ function ProjectOverview() {
 	const { Content } = Layout;
 	const { Meta } = Card;
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const projectName = sessionStorage.getItem("selectedProjectName");
 
@@ -36,27 +36,28 @@ function ProjectOverview() {
 
 	useEffect(() => {
 		setSelectedModule(null);
-		axios({
-			method: "get",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/projects/" +
-				keycloak.idTokenParsed.preferred_username +
-				"/" +
-				projectName,
-			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-			},
-		}).then(function (response) {
-			setProject(response.data);
-			if (response.data.tags) {
-				setTags(response.data.tags.split(","));
-			} else {
-				setTags([]);
-			}
-			setProjectModules(response.data.modules);
-		});
+		// TODO UNCOMMENT THIS AND FIX THIS SHIT
+		// axios({
+		// 	method: "get",
+		// 	url:
+		// 		process.env.REACT_APP_APPLICATION_URL +
+		// 		process.env.REACT_APP_API +
+		// 		"/projects/" +
+		// 		keycloak.idTokenParsed.preferred_username +
+		// 		"/" +
+		// 		projectName,
+		// 	headers: {
+		// 		Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 	},
+		// }).then(function (response) {
+		// 	setProject(response.data);
+		// 	if (response.data.tags) {
+		// 		setTags(response.data.tags.split(","));
+		// 	} else {
+		// 		setTags([]);
+		// 	}
+		// 	setProjectModules(response.data.modules);
+		// });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [refreshList]);
 
@@ -101,46 +102,47 @@ function ProjectOverview() {
 	};
 
 	const deleteModal = () => {
-		axios({
-			method: "delete",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/projects/" +
-				keycloak.idTokenParsed.preferred_username +
-				"/" +
-				projectName +
-				"/" +
-				moduleToDeleteSelected.name,
-			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-			},
-		})
-			.then(() => {
-				dispatch(
-					createAlert(
-						"Module successfully deleted",
-						"You have successfully deleted the module: " + moduleToDeleteSelected.name,
-						"success",
-						true
-					)
-				);
-				toggleRefresh();
-				closeDeleteModal();
-			})
-			.catch(() => {
-				dispatch(
-					createAlert(
-						"Failed to delete module",
-						"Failed to delete the module: " +
-							moduleToDeleteSelected.name +
-							". Please write an issue on GitHub if this is unresolved",
-						"error",
-						true
-					)
-				);
-				closeDeleteModal();
-			});
+		// TODO UNCOMMENT THIS AND FIX THIS SHIT
+		// axios({
+		// 	method: "delete",
+		// 	url:
+		// 		process.env.REACT_APP_APPLICATION_URL +
+		// 		process.env.REACT_APP_API +
+		// 		"/projects/" +
+		// 		keycloak.idTokenParsed.preferred_username +
+		// 		"/" +
+		// 		projectName +
+		// 		"/" +
+		// 		moduleToDeleteSelected.name,
+		// 	headers: {
+		// 		Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 	},
+		// })
+		// 	.then(() => {
+		// 		dispatch(
+		// 			createAlert(
+		// 				"Module successfully deleted",
+		// 				"You have successfully deleted the module: " + moduleToDeleteSelected.name,
+		// 				"success",
+		// 				true
+		// 			)
+		// 		);
+		// 		toggleRefresh();
+		// 		closeDeleteModal();
+		// 	})
+		// 	.catch(() => {
+		// 		dispatch(
+		// 			createAlert(
+		// 				"Failed to delete module",
+		// 				"Failed to delete the module: " +
+		// 					moduleToDeleteSelected.name +
+		// 					". Please write an issue on GitHub if this is unresolved",
+		// 				"error",
+		// 				true
+		// 			)
+		// 		);
+		// 		closeDeleteModal();
+		// 	});
 	};
 
 	return (

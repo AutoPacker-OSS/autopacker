@@ -3,7 +3,7 @@ import { TweenOneGroup } from "rc-tween-one";
 import React, { useEffect } from "react";
 import { useDispatch  } from "react-redux";
 import { createAlert } from "../../../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
@@ -19,7 +19,7 @@ function RequestEditForm(props) {
 	// Controller state
 	const [tagInput, setTagInput] = React.useState("");
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	// Import sub components from antd
 	const { TextArea } = Input;
@@ -72,7 +72,7 @@ function RequestEditForm(props) {
 				process.env.REACT_APP_API +
 				"/organization/updateProjectSubmission",
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 			data: {
 				organizationName: organizationName,
