@@ -10,6 +10,10 @@
     "@testing-library/jest-dom": "^5.8.0",
     "@testing-library/react": "^10.0.4",
     "@testing-library/user-event": "^12.0.14",
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.7.3",
+    "@types/react": "^17.0.19",
+    "@types/react-dom": "^17.0.9",
     "antd": "^4.4.3",
     "axios": "^0.21.1",
     "date-fns": "^2.15.0",
@@ -25,6 +29,7 @@
     "redux-thunk": "^2.3.0",
     "save": "^2.4.0",
     "styled-components": "^5.2.1",
+    "typescript": "^4.4.2",
     "yarn": "^1.22.4"
   },
   "scripts": {

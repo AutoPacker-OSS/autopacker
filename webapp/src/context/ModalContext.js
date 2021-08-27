@@ -2,6 +2,7 @@ import React, {createContext, useContext, useMemo, useState} from "react";
 
 export const ModalStackContext = createContext({});
 
+// TODO Rewrite into typescript (got an existing one already)
 export function ModalStack({
    children,
    renderModals: ModalsComponent = Modals,

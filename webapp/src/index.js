@@ -2,13 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { BrowserRouter as Router } from "react-router-dom";
-import { Provider } from "react-redux";
-import { applyMiddleware, combineReducers, compose, createStore } from "redux";
+import {BrowserRouter as Router} from "react-router-dom";
+import {Provider} from "react-redux";
+import {applyMiddleware, combineReducers, compose, createStore} from "redux";
 import thunk from "redux-thunk";
-import { Security } from '@okta/okta-react';
-import { OktaAuth } from '@okta/okta-auth-js';
+import {Security} from '@okta/okta-react';
+import {OktaAuth} from '@okta/okta-auth-js';
 import {oktaConfig} from './okta-config';
+import {UserProvider} from "./context/UserContext";
 
 // Import reducer(s)
 import generalReducer from "./store/reducers/generalReducer";
@@ -20,19 +21,19 @@ import "antd/dist/antd.css";
 import {ModalStack} from "./context/ModalContext";
 
 const rootReducer = combineReducers({
-	general: generalReducer,
+    general: generalReducer,
 });
 
 // TODO Somewhere along the steps below regarding redux, something is fubar
 
 // Logs the redux related state changes (Just for testing)
 const loggerMiddleware = () => {
-	return (next) => {
-		return (action) => {
-			const result = next(action);
-			return result;
-		};
-	};
+    return (next) => {
+        return (action) => {
+            const result = next(action);
+            return result;
+        };
+    };
 };
 
 // Setting up browser debug support (see https://github.com/zalmoxisus/redux-devtools-extension)
@@ -44,15 +45,17 @@ const reduxStore = createStore(rootReducer, composeEnhancers(applyMiddleware(log
 const oktaAuth = new OktaAuth(oktaConfig);
 
 const app = (
-	<Security oktaAuth={oktaAuth} restoreOriginalUri="http://localhost:3000/">
-		<Router>
-			<Provider store={reduxStore}>
-				<ModalStack>
-					<App />
-				</ModalStack>
-			</Provider>
-		</Router>
-	</Security>
+    <Router>
+        <Security oktaAuth={oktaAuth} restoreOriginalUri="http://localhost:3000/">
+            <Provider store={reduxStore}>
+                <UserProvider>
+                    <ModalStack>
+                        <App/>
+                    </ModalStack>
+                </UserProvider>
+            </Provider>
+        </Security>
+    </Router>
 );
 
 // Render

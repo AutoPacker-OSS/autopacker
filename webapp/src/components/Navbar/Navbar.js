@@ -1,10 +1,11 @@
 import {Avatar, Input, Layout, Menu, Typography} from "antd";
-import React, {useEffect} from "react";
+import React, {useContext, useEffect} from "react";
 import {Link, Redirect} from "react-router-dom";
 import { useOktaAuth } from '@okta/okta-react';
 // Import styles
 import "./NavbarStyle.scss";
 import {ApartmentOutlined, FolderOutlined, HddOutlined, LogoutOutlined, SettingOutlined,} from "@ant-design/icons";
+import {UserContext} from "../../context/UserContext";
 
 /**
  * Represents the navigation bar at the top of the homepage
@@ -13,10 +14,10 @@ function Navbar() {
 	// state
 	const [search, setSearch] = React.useState("");
 	const [searchAction, setSearchAction] = React.useState(false);
-	const [userInfo, setUserInfo] = React.useState(null);
 
 	// Okta hook
 	const { authState, oktaAuth } = useOktaAuth();
+	const {userInfo} = useContext(UserContext);
 	const login = () => oktaAuth.signInWithRedirect({originalUri: '/'});
 
 	// Get antd sub components
@@ -33,18 +34,6 @@ function Navbar() {
 		// 	redirectUri: process.env.REACT_APP_REDIRECT_URL,
 		// });
 	};
-
-
-	useEffect(() => {
-		if (!authState.isAuthenticated) {
-			// When user isn't authenticated, forget any user info
-			setUserInfo(null);
-		} else {
-			oktaAuth.getUserInfo().then(info => {
-				setUserInfo(info);
-			});
-		}
-	}, [authState, oktaAuth]);
 
 	return (
 		<Header className="header">
@@ -83,7 +72,7 @@ function Navbar() {
 									}}
 								/>
 								<Typography.Text style={{marginLeft: 10}}>
-									{userInfo.username}
+									{userInfo?.preferred_username}
 								</Typography.Text>
 							</div>
 						}
