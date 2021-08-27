@@ -3,11 +3,10 @@ package no.autopacker.api.service;
 import no.autopacker.api.entity.User;
 import no.autopacker.api.repository.UserRepository;
 import no.autopacker.api.interfaces.UserService;
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,17 +32,11 @@ public class UserServiceImpl implements UserService {
     // Password must be eight characters or longer
     private static final String VALID_PATTERN = "((?=.*[a-z])(?=.*\\d)(?=.*[A-Z]).{8,40})";
 
-    // Services
-    private final KeycloakServiceImpl keycloakService;
-
     // Repositories
     private final UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(
-            KeycloakServiceImpl keycloakService,
-            UserRepository userRepository) {
-        this.keycloakService = keycloakService;
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -64,13 +57,14 @@ public class UserServiceImpl implements UserService {
             if (userFound == null) {
                 if (validatePassword(password)) {
                     // Add user to keycloak
-                    String userId = this.keycloakService.createNewUser(user, password);
+                    // TODO THIS HAS CHANGED DUE TO CHANGING OF IDP FROM KEYCLOAK TO OKTA
+//                    String userId = this.keycloakService.createNewUser(user, password);
 
                     // Update user id with the GUID received from keycloak registration
-                    user.setId(userId);
+//                    user.setId(userId);
 
                     // Lastly add the user meta to user table
-                    this.userRepository.save(user);
+//                    this.userRepository.save(user);
 
                     return ResponseEntity.ok().build();
                 } else {
@@ -202,16 +196,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getAuthenticatedUser() {
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser =
-                (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = null;
-        if (authenticatedUser != null) {
-            String username = authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername();
-            if (username != null) {
-                user = this.userRepository.findByUsername(username);
-            }
-        }
+//        if (authenticatedUser != null) {
+//            String username = authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername();
+//            if (username != null) {
+//                user = this.userRepository.findByUsername(username);
+//            }
+//        }
         return user;
     }
 }

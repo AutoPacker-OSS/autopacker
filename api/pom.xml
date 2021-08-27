@@ -17,13 +17,12 @@
 
   <properties>
     <java.version>11</java.version>
-    <keycloak.version>10.0.1</keycloak.version>
+    <keycloak.version>9.0.1</keycloak.version>
     <security.version>2.3.0.RELEASE</security.version>
     <jackson.version>2.10.0</jackson.version>
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
@@ -36,9 +35,9 @@
     </dependency>
 
     <dependency>
-      <groupId>org.springframework.security.oauth.boot</groupId>
-      <artifactId>spring-security-oauth2-autoconfigure</artifactId>
-      <version>${security.version}</version>
+      <groupId>com.okta.spring</groupId>
+      <artifactId>okta-spring-boot-starter</artifactId>
+      <version>2.1.0</version>
     </dependency>
 
     <dependency>
@@ -49,18 +48,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-mail</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-spring-boot-starter</artifactId>
-      <version>${keycloak.version}</version>
-    </dependency>
-
-    <dependency>
-      <artifactId>keycloak-admin-client</artifactId>
-      <groupId>org.keycloak</groupId>
-      <version>${keycloak.version}</version>
     </dependency>
 
     <dependency>
@@ -100,6 +87,12 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.10</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.11.0</version>
     </dependency>
 
     <dependency>
@@ -170,19 +163,6 @@
       <version>2.0.1.Final</version>
     </dependency>
   </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <!-- Keycloak -->
-      <dependency>
-        <groupId>org.keycloak.bom</groupId>
-        <artifactId>keycloak-adapter-bom</artifactId>
-        <version>${keycloak.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <build>
     <plugins>

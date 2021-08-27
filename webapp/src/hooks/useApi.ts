@@ -48,9 +48,10 @@ export class ProblemDetailError extends Error implements ProblemDetail{
 
 export const useApi = () => {
     const { authState } = useOktaAuth();
-    const baseApiUrl = "http://localhost:8081";
+    const baseApiUrl = "http://localhost:8081/api";
 
     const handleErrors = async (res: Response) => {
+        console.log("handleErrors res:", res);
         const json = async () => {
             try{
                 return await res.json();
@@ -58,6 +59,7 @@ export const useApi = () => {
                 return null;
             }
         }
+        console.log(json());
 
         if (!res.ok) {
             const errorObject = await json();
