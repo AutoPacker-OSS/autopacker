@@ -48,7 +48,7 @@ export class ProblemDetailError extends Error implements ProblemDetail{
 
 export const useApi = () => {
     const { authState } = useOktaAuth();
-    const baseApiUrl = "http://localhost:8081/api";
+    const baseApiUrl = process.env.REACT_APP_API_BASE_URL;
 
     const handleErrors = async (res: Response) => {
         console.log("handleErrors res:", res);

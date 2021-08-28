@@ -16,7 +16,6 @@ function Building(props) {
 	const projectName = sessionStorage.getItem("selectedProjectName");
 
 	useEffect(() => {
-		// TODO UNCOMMENT THIS AND FIX THIS SHIT
 		// const url =
 		// 	process.env.REACT_APP_APPLICATION_URL +
 		// 	process.env.REACT_APP_API +

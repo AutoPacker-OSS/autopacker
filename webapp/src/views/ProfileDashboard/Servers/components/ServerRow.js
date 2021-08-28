@@ -66,7 +66,7 @@ function ServerRow(props) {
 						verticalAlign: "middle",
 					}}
 					size={96}
-				></Avatar>
+				/>
 				<div style={{ marginTop: -3 }}>
 					<Text strong style={{ fontSize: 20 }}>
 						{props.title}

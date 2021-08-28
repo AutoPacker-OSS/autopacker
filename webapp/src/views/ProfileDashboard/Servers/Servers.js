@@ -9,6 +9,7 @@ import useDebounce from "./../../../hooks/useDebounce";
 // Import custom components
 import ServerRow from "./components/ServerRow";
 import {breadcrumbItemRender} from "../../../util/breadcrumbItemRender";
+import {useApi} from "../../../hooks/useApi";
 
 function Servers() {
 	// State
@@ -16,6 +17,7 @@ function Servers() {
 	const [servers, setServers] = React.useState([]);
 
 	const { authState } = useOktaAuth();
+	const {get} = useApi();
 
 	const debouncedSearchTerm = useDebounce(search, 500);
 
@@ -45,39 +47,13 @@ function Servers() {
 			// Make sure we have a value (user has entered something in input)
 			if (debouncedSearchTerm) {
 				// Fire off our API call
-				axios({
-					method: "get",
-					url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/server/" +
-					search,
-					headers: {
-						Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-					},
-				}).then(function (response) {
-					setServers(response.data);
-				});
+				get(`/server/${search}`)
+					.then(resp => setServers(resp));
 			} else {
-				axios({
-					method: "get",
-					url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/server",
-					headers: {
-						Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-					},
-				}).then(function (response) {
-					setServers(response.data);
-				});
+				get(`/server`)
+					.then(resp => setServers(resp));
 			}
 		},
-		// This is the useEffect input array
-		// Our useEffect function will only execute if this value changes ...
-		// ... and thanks to our hook it will only change if the original ...
-		// value (searchTerm) hasn't changed for more than 500ms.
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[debouncedSearchTerm]
 	);
 

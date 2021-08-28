@@ -1,6 +1,6 @@
 import {Button, Layout, Menu} from "antd";
 import {ApartmentOutlined, DesktopOutlined, FolderOutlined, HddOutlined} from "@ant-design/icons";
-import React, {Suspense} from "react";
+import React, {Suspense, useContext} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {NavLink, Redirect, Route} from "react-router-dom";
 import Identicon from "../../assets/image/download.png";
@@ -13,6 +13,8 @@ import axios from "axios";
 // Import styles
 import "./ProfileDashboardStyle.scss";
 import {useOktaAuth} from "@okta/okta-react";
+import {UserContext} from "../../context/UserContext";
+import {useApi} from "../../hooks/useApi";
 
 /**
  * The default layout for a profile dashboard route
@@ -21,6 +23,8 @@ function ProfileDashboardLayout({children}) {
 	const [collapsed, setCollapsed] = React.useState(false);
 
 	const { authState } = useOktaAuth();
+	const {userInfo} = useContext(UserContext);
+	const {get} = useApi();
 
 	// Get antd sub components
 	const {Sider, Content} = Layout;
@@ -37,33 +41,34 @@ function ProfileDashboardLayout({children}) {
 				style={{padding: 0}}
 				type="link"
 				onClick={() => {
-					const url =
-						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_API +
-						"/auth/resendVerificationToken";
-
-					axios
-						.get(url)
-						.then(() => {
-							dispatch(
-								createAlert(
-									"New verification token sent",
-									"Successfully sent a new verification token. Please check your inbox for a new verification email.",
-									"success",
-									true
-								)
-							);
-						})
-						.catch(() => {
-							dispatch(
-								createAlert(
-									"Request failed",
-									"Could not request a new verification token. Try again later or contact support here: contact@autopacker.no",
-									"error",
-									true
-								)
-							);
-						});
+					// TODO NOT SURE IF THIS IS USED ANYMORE AS WE ARE USING EXTERNAL IDP
+					// const url =
+					// 	process.env.REACT_APP_APPLICATION_URL +
+					// 	process.env.REACT_APP_API +
+					// 	"/auth/resendVerificationToken";
+					//
+					// axios
+					// 	.get(url)
+					// 	.then(() => {
+					// 		dispatch(
+					// 			createAlert(
+					// 				"New verification token sent",
+					// 				"Successfully sent a new verification token. Please check your inbox for a new verification email.",
+					// 				"success",
+					// 				true
+					// 			)
+					// 		);
+					// 	})
+					// 	.catch(() => {
+					// 		dispatch(
+					// 			createAlert(
+					// 				"Request failed",
+					// 				"Could not request a new verification token. Try again later or contact support here: contact@autopacker.no",
+					// 				"error",
+					// 				true
+					// 			)
+					// 		);
+					// 	});
 				}}
 			>
 				Click here to resend
@@ -72,10 +77,9 @@ function ProfileDashboardLayout({children}) {
 	);
 
 	React.useEffect(() => {
-		// TODO FIX THIS SHIT
-		// if (keycloak.idTokenParsed.email_verified === false) {
-		// 	dispatch(createAlert("Please verify your email address", text, "warning", true));
-		// }
+		if (userInfo.email_verified === false) {
+			dispatch(createAlert("Please verify your email address", text, "warning", true));
+		}
 	}, []);
 
 	return (
@@ -111,7 +115,7 @@ function ProfileDashboardLayout({children}) {
 						))}
 
 						{/* Monitor */}
-						{/*TODO FIX THIS SHIT AFTER CHANGING ROLE MANAGEMENT TO THE API*/}
+						{/*TODO FIX THIS AFTER CHANGING ROLE MANAGEMENT TO THE API*/}
 						{/*{keycloak.realmAccess.roles.includes("ADMIN") ? (*/}
 						{/*	<div className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 24}}>*/}
 						{/*		<a href="https://stage.autopacker.no/monitor/" target="_blank" rel="noopener noreferrer"*/}

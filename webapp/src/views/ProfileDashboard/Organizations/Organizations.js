@@ -1,5 +1,5 @@
 import {Button, Card, Col, Input, Layout, PageHeader, Row, Typography} from "antd";
-import React, { useEffect } from "react";
+import React, {useContext, useEffect} from "react";
 import { useDispatch } from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import {useOktaAuth} from "@okta/okta-react";
@@ -7,6 +7,8 @@ import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 // Import custom hooks
 import useDebounce from "./../../../hooks/useDebounce";
+import {UserContext} from "../../../context/UserContext";
+import {useApi} from "../../../hooks/useApi";
 
 function Organizations() {
 	// State
@@ -15,6 +17,8 @@ function Organizations() {
 	const [selectedCard, setSelectedCard] = React.useState(null);
 
 	const { authState } = useOktaAuth();
+	const {userInfo} = useContext(UserContext);
+	const {get} = useApi();
 
 	const debouncedSearchTerm = useDebounce(search, 500);
 
@@ -30,7 +34,6 @@ function Organizations() {
 	const { Meta } = Card;
 
 
-
 	useEffect(() => {
 			if (ref.current && ref.current.getBoundingClientRect().width) {
 				setBtnWidth(ref.current.getBoundingClientRect().width);
@@ -44,59 +47,18 @@ function Organizations() {
 		setSelectedCard(null);
 	}, []);
 
-	// Inspired from https://dev.to/gabe_ragland/debouncing-with-react-hooks-jci
-
 	useEffect(
 		() => {
 			// Make sure we have a value (user has entered something in input)
-			// TODO UNCOMMENT THIS AND FIX THIS SHIT
-			// if (debouncedSearchTerm) {
-			// 	// Fire off our API call
-			// 	axios({
-			// 		method: "get",
-			// 		url:
-			// 			process.env.REACT_APP_APPLICATION_URL +
-			// 			process.env.REACT_APP_API +
-			// 			"/organization/" +
-			// 			keycloak.idTokenParsed.preferred_username +
-			// 			"/isMember/search?q=" +
-			// 			search,
-			// 		headers: {
-			// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			// 		},
-			// 	}).then(function (response) {
-			// 		if (response.data) {
-			// 			setOrganizations(response.data);
-			// 		} else {
-			// 			setOrganizations([]);
-			// 		}
-			// 	});
-			// } else {
-			// 	axios({
-			// 		method: "get",
-			// 		url:
-			// 			process.env.REACT_APP_APPLICATION_URL +
-			// 			process.env.REACT_APP_API +
-			// 			"/organization/" +
-			// 			keycloak.idTokenParsed.preferred_username +
-			// 			"/isMember",
-			// 		headers: {
-			// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			// 		},
-			// 	}).then(function (response) {
-			// 		if (response.data) {
-			// 			setOrganizations(response.data);
-			// 		} else {
-			// 			setOrganizations([]);
-			// 		}
-			// 	});
-			// }
+			if (debouncedSearchTerm) {
+				// Fire off our API call
+				get(`/organization/${userInfo.preferred_username}/isMember/search?q=${search}`)
+					.then(resp => setOrganizations(resp));
+			} else {
+				get(`/organization/${userInfo.preferred_username}/isMember`)
+					.then(resp => setOrganizations(resp));
+			}
 		},
-		// This is the useEffect input array
-		// Our useEffect function will only execute if this value changes ...
-		// ... and thanks to our hook it will only change if the original ...
-		// value (searchTerm) hasn't changed for more than 500ms.
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[debouncedSearchTerm]
 	);
 
