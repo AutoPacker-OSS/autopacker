@@ -1,10 +1,12 @@
-import React from "react";
+import React, {useContext} from "react";
 import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { Typography, Button, Input, Divider, Modal } from "antd";
 import { createAlert } from "../../../../../store/actions/generalActions";
 import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
+import {useApi} from "../../../../../hooks/useApi";
+import {UserContext} from "../../../../../context/UserContext";
 
 function GeneralSetting(props) {
 	// State
@@ -17,6 +19,8 @@ function GeneralSetting(props) {
 	const projectName = props.project.name;
 
 	const { authState } = useOktaAuth();
+	const {get, _delete} = useApi();
+	const {userInfo} = useContext(UserContext);
 
 	const dispatch = useDispatch();
 
@@ -30,47 +34,31 @@ function GeneralSetting(props) {
 
 	function sendRequest() {
 		setModalVisible(false);
-		// TODO UNCOMMENT THIS AND FIX THIS SHIT
-		// if (keycloak.idTokenParsed.email_verified) {
-		// 	axios({
-		// 		method: "delete",
-		// 		url:
-		// 			process.env.REACT_APP_APPLICATION_URL +
-		// 			process.env.REACT_APP_API +
-		// 			"/projects/" +
-		// 			owner.username +
-		// 			"/" +
-		// 			projectName,
-		// 		headers: {
-		// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-		// 		},
-		// 		data: {
-		// 			username: owner.username,
-		// 			projectName: projectName,
-		// 		},
-		// 	})
-		// 		.then(() => {
-		// 			dispatch(
-		// 				createAlert(
-		// 					"Project successfully deleted",
-		// 					projectName + " has successfully been deleted.",
-		// 					"success",
-		// 					true
-		// 				)
-		// 			);
-		// 			setRedirect(true);
-		// 		})
-		// 		.catch(() => {
-		// 			dispatch(
-		// 				createAlert(
-		// 					"Project deletion failed",
-		// 					"Failed to delete the given project: " + projectName,
-		// 					"error",
-		// 					true
-		// 				)
-		// 			);
-		// 		});
-		// }
+		if (userInfo.email_verified) {
+			_delete(`/projects/${owner.username}/${projectName}`, {
+				username: owner.username,
+				projectName: projectName,
+			}).then(() => {
+				dispatch(
+					createAlert(
+						"Project successfully deleted",
+						projectName + " has successfully been deleted.",
+						"success",
+						true
+					)
+				);
+				setRedirect(true);
+			}).catch(() => {
+					dispatch(
+						createAlert(
+							"Project deletion failed",
+							"Failed to delete the given project: " + projectName,
+							"error",
+							true
+						)
+					);
+				});
+		}
 	}
 
 	return (

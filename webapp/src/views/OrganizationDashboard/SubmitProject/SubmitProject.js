@@ -11,7 +11,7 @@ import {
 	Tooltip,
 	Typography,
 } from "antd";
-import React, { useEffect } from "react";
+import React, {useContext, useEffect} from "react";
 import { useDispatch} from "react-redux";
 import {Redirect, useParams} from "react-router-dom";
 import { createAlert, selectMenuOption } from "../../../store/actions/generalActions";
@@ -20,6 +20,8 @@ import axios from "axios";
 
 
 import { QuestionCircleOutlined, UploadOutlined } from "@ant-design/icons";
+import {useApi} from "../../../hooks/useApi";
+import {UserContext} from "../../../context/UserContext";
 
 // TODO - refactor. A lot of code duplicated from NewOrgProject.js?
 function SubmitProject(props) {
@@ -45,79 +47,57 @@ function SubmitProject(props) {
 	const { Paragraph, Text } = Typography;
 
 	const { authState } = useOktaAuth();
+	const {get, post} = useApi();
+	const {userInfo} = useContext(UserContext);
 
 	const { organizationName } = useParams();
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		axios({
-			method: "get",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/projects",
-			headers: {
-				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			},
-		}).then(function (response) {
-			setProjects(response.data);
-			console.log(response.data)
-		});
+		get(`/projects`)
+			.then(resp => {
+				setProjects(resp.data);
+			});
 	}, [authState.accessToken]);
-	
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-
-		// TODO UNCOMMENT THIS AND FIX THIS SHIT
-		// if (keycloak.idTokenParsed.email_verified) {
-		// 	axios({
-		// 		method: "post",
-		// 		url:
-		// 			process.env.REACT_APP_APPLICATION_URL +
-		// 			process.env.REACT_APP_API +
-		// 			"/organization/submitProject",
-		// 		headers: {
-		// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-		// 		},
-		// 		data: {
-		// 			organizationName: organizationName,
-		// 			projectId: actualProject.id,
-		// 			comment: comment,
-		// 		},
-		// 	})
-		// 		.then(function () {
-		// 			dispatch(
-		// 				createAlert(
-		// 					"Project Request Submitted",
-		// 					"You have successfully submitted a project. You will receive a notification on email when the request has been handled.",
-		// 					"success",
-		// 					true
-		// 				)
-		// 			);
-		// 			dispatch(selectMenuOption("9"));
-		// 			setRedirect(true);
-		// 		})
-		// 		.catch(() => {
-		// 			dispatch(
-		// 				createAlert(
-		// 					"Project Request Failed",
-		// 					"Something went wrong while trying to submit the project. There might be an existing project with the specified name",
-		// 					"error",
-		// 					true
-		// 				)
-		// 			);
-		// 		});
-		// } else {
-		// 	dispatch(
-		// 		createAlert(
-		// 			"Project submission failed",
-		// 			"You can't submit a project without verifying your account. Please check your email inbox for a verification email, and follow the instructions.",
-		// 			"warning",
-		// 			true
-		// 		)
-		// 	);
-		// }
+		if (userInfo.email_verified) {
+			post(`/organization/submitProject`, {
+				organizationName: organizationName,
+				projectId: actualProject.id,
+				comment: comment,
+			}).then(function () {
+				dispatch(
+					createAlert(
+						"Project Request Submitted",
+						"You have successfully submitted a project. You will receive a notification on email when the request has been handled.",
+						"success",
+						true
+					)
+				);
+				dispatch(selectMenuOption("9"));
+				setRedirect(true);
+			}).catch(() => {
+				dispatch(
+					createAlert(
+						"Project Request Failed",
+						"Something went wrong while trying to submit the project. There might be an existing project with the specified name",
+						"error",
+						true
+					)
+				);
+			});
+		} else {
+			dispatch(
+				createAlert(
+					"Project submission failed",
+					"You can't submit a project without verifying your account. Please check your email inbox for a verification email, and follow the instructions.",
+					"warning",
+					true
+				)
+			);
+		}
 	};
 
 	const formItemLayout = {

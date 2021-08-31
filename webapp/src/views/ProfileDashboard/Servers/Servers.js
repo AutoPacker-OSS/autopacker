@@ -41,7 +41,6 @@ function Servers() {
 		}
 	});
 
-	// Inspired from https://dev.to/gabe_ragland/debouncing-with-react-hooks-jci
 	useEffect(
 		() => {
 			// Make sure we have a value (user has entered something in input)

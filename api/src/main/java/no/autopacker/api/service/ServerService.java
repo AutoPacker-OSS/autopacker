@@ -90,7 +90,6 @@ public class ServerService {
      * context
      */
     public ResponseEntity<String> getAllServers() {
-        System.out.println("KURWA");
         User authUser = userService.getAuthenticatedUser();
         if (authUser != null) {
             List<Server> servers = serverRepository.findAllByOwner(authUser.getUsername());

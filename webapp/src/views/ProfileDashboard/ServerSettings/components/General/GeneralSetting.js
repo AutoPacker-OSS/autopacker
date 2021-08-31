@@ -1,10 +1,12 @@
-import React from "react";
+import React, {useContext} from "react";
 import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { Typography, Button, Input, Divider, Modal } from "antd";
 import { createAlert } from "../../../../../store/actions/generalActions";
 import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
+import {useApi} from "../../../../../hooks/useApi";
+import {UserContext} from "../../../../../context/UserContext";
 
 function GeneralSetting(props) {
 	// State
@@ -13,6 +15,8 @@ function GeneralSetting(props) {
 	const [redirect, setRedirect] = React.useState(false);
 
 	const { authState } = useOktaAuth();
+	const {get, _delete} = useApi();
+	const {userInfo} = useContext(UserContext);
 
 	const { Title, Text } = Typography;
 	const server = props.server;
@@ -30,38 +34,25 @@ function GeneralSetting(props) {
 
 	function sendRequest() {
 		setModalVisible(false);
-		// TODO UNCOMMENT THIS AND FIX THIS SHIT
-		// if (keycloak.idTokenParsed.email_verified) {
-		// 	axios({
-		// 		method: "delete",
-		// 		url:
-		// 			process.env.REACT_APP_APPLICATION_URL +
-		// 			process.env.REACT_APP_API +
-		// 			"/server/delete/" +
-		// 			server.owner +
-		// 			"/" +
-		// 			server.serverId,
-		// 		headers: {
-		// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-		// 		},
-		// 	})
-		// 		.then(() => {
-		// 			dispatch(
-		// 				createAlert(
-		// 					"Server successfully deleted",
-		// 					server.title + " has successfully been deleted.",
-		// 					"success",
-		// 					true
-		// 				)
-		// 			);
-		// 			setRedirect(true);
-		// 		})
-		// 		.catch(() => {
-		// 			dispatch(
-		// 				createAlert("Server deletion failed", "Failed to delete the given server: " + server.title, "error", true)
-		// 			);
-		// 		});
-		// }
+		if (userInfo.email_verified) {
+			_delete(`/server/delete/${server.owner}/${server.serverId}`)
+				.then(() => {
+					dispatch(
+						createAlert(
+							"Server successfully deleted",
+							server.title + " has successfully been deleted.",
+							"success",
+							true
+						)
+					);
+					setRedirect(true);
+				})
+				.catch(() => {
+					dispatch(
+						createAlert("Server deletion failed", "Failed to delete the given server: " + server.title, "error", true)
+					);
+				});
+		}
 	}
 
 	return (

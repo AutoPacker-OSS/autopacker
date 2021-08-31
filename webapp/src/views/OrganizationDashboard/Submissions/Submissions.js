@@ -10,7 +10,7 @@ import {
 	Tag,
 	Typography,
 } from "antd";
-import React, { useEffect } from "react";
+import React, {useContext, useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createAlert } from "../../../store/actions/generalActions";
 import {useOktaAuth} from "@okta/okta-react";
@@ -18,6 +18,8 @@ import axios from "axios";
 
 import RequestEditForm from "./components/RequestEditForm/RequestEditForm";
 import {useParams} from "react-router-dom";
+import {UserContext} from "../../../context/UserContext";
+import {useApi} from "../../../hooks/useApi";
 
 function Submissions() {
 	// State
@@ -35,31 +37,17 @@ function Submissions() {
 	const { Panel } = Collapse;
 
 	const { authState } = useOktaAuth();
-
+	const {userInfo} = useContext(UserContext);
 	const { organizationName } = useParams();
+	const {get, _delete} = useApi();
 
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		// TODO UNCOMMENT THIS AND FIX THIS SHIT
-		// if (organizationName) {
-		// 	axios({
-		// 		method: "get",
-		// 		url:
-		// 			process.env.REACT_APP_APPLICATION_URL +
-		// 			process.env.REACT_APP_API +
-		// 			"/organization/" +
-		// 			organizationName +
-		// 			"/project-applications/" +
-		// 			keycloak.idTokenParsed.preferred_username,
-		// 		headers: {
-		// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-		// 		},
-		// 	}).then(function (response) {
-		// 		console.log("DATA:", response.data);
-		// 		setRequests(response.data);
-		// 	});
-		// }
+		if (organizationName) {
+			get(`/server/${organizationName}/project-applications/${userInfo.preferred_username}`)
+				.then(resp => setRequests(resp));
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [organizationName, refreshList]);
 
@@ -79,20 +67,7 @@ function Submissions() {
 	];
 
 	const deleteRequest = (applicationId) => {
-		// TODO Change method to DELETE and equivalent on general-api backend service
-		axios({
-			method: "delete",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/organization/" +
-				organizationName +
-				"/delete-project-application/" +
-				applicationId,
-			headers: {
-				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			},
-		})
+		_delete(`/server/${organizationName}/delete-project-application/${applicationId}`)
 			.then(() => {
 				dispatch(
 					createAlert(
@@ -104,18 +79,17 @@ function Submissions() {
 				);
 				toggleRefresh();
 				setOpenDeleteModal(false);
-			})
-			.catch(() => {
-				dispatch(
-					createAlert(
-						"Request Deletion Failed",
-						"Failed to delete the project request",
-						"error",
-						true
-					)
-				);
-				setOpenDeleteModal(false);
-			});
+			}).catch(() => {
+			dispatch(
+				createAlert(
+					"Request Deletion Failed",
+					"Failed to delete the project request",
+					"error",
+					true
+				)
+			);
+			setOpenDeleteModal(false);
+		});
 	};
 
 	return (

@@ -149,13 +149,14 @@ export const useApi = () => {
             })
     }
 
-    const _delete = async<T> (route: string, optionalHeaders = {}) : Promise<T> => {
+    const _delete = async<T> (route: string, body?: T, optionalHeaders = {}) : Promise<T> => {
         const url = getUrl(route)
         const deleteParams = {
             method: 'DELETE',
             headers: getHeaders({
                 ...optionalHeaders
-            })
+            }),
+            body: JSON.stringify(body)
         }
         return await fetch(url, deleteParams)
             .then(handleErrors)
