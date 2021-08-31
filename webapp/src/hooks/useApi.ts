@@ -51,7 +51,6 @@ export const useApi = () => {
     const baseApiUrl = process.env.REACT_APP_API_BASE_URL;
 
     const handleErrors = async (res: Response) => {
-        console.log("handleErrors res:", res);
         const json = async () => {
             try{
                 return await res.json();
@@ -59,7 +58,6 @@ export const useApi = () => {
                 return null;
             }
         }
-        console.log(json());
 
         if (!res.ok) {
             const errorObject = await json();
@@ -97,7 +95,7 @@ export const useApi = () => {
             ...optionalHeaders,
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            "Authorization": `Bearer ${authState?.accessToken}`
+            "Authorization": `Bearer ${authState?.accessToken?.accessToken}`
         }
     }
 

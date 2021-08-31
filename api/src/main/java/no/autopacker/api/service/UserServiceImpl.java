@@ -196,14 +196,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authenticatedUser = SecurityContextHolder.getContext().getAuthentication();
         User user = null;
-//        if (authenticatedUser != null) {
-//            String username = authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername();
-//            if (username != null) {
-//                user = this.userRepository.findByUsername(username);
-//            }
-//        }
+        if (authenticatedUser != null) {
+            String username = authenticatedUser.getName();
+            if (username != null) {
+                user = this.userRepository.findByUsername(username);
+            }
+        }
         return user;
     }
 }
