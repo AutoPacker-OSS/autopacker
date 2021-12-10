@@ -1,13 +1,12 @@
 import {Layout, PageHeader, Table, Typography, Select, Modal, Button} from "antd";
 
 import React, {useContext, useEffect} from "react";
-import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import {createAlert} from "../../../store/actions/generalActions";
 import {useDispatch} from "react-redux";
 import {useParams} from "react-router-dom";
 import {useApi} from "../../../hooks/useApi";
-import {UserContext} from "../../../context/UserContext";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function RoleControl() {
     // State
@@ -19,13 +18,11 @@ function RoleControl() {
     const [deleteModal, setDeleteModal] = React.useState(false);
     const [roleModal, setRoleModal] = React.useState(false);
 
-
-    const [user, setUser] = React.useState("");
+    const [orgUser, setUser] = React.useState("");
     const [newRole, setNewRole] = React.useState("");
 
-    const { authState } = useOktaAuth();
     const {get, post} = useApi();
-    const {userInfo} = useContext(UserContext);
+    const { user, isAuthenticated, isLoading } = useAuth0();
 
     // Import sub components from antd
     const { Paragraph } = Typography;
@@ -46,15 +43,15 @@ function RoleControl() {
                 });
                 setMembers(arr);
             });
-    }, [authState.accessToken, organizationName, reload]);
+    }, [user, organizationName, reload]);
 
     const handleChangeRole = (event) => {
         event.preventDefault();
         turnOffModal(false);
-        if (userInfo.email_verified) {
+        if (user.email_verified) {
             post(`/organization/changeRole`, {
                 organizationName: organizationName,
-                username: user,
+                username:orgUser,
                 role: newRole
             }).then(() => {
                     dispatch(
@@ -91,10 +88,10 @@ function RoleControl() {
     const handleUserDeletion = (event) => {
         event.preventDefault();
         turnOffModal(false);
-        if (userInfo.email_verified) {
+        if (user.email_verified) {
             post(`/organization/deleteMember`, {
                 organizationName: organizationName,
-                username: user
+               orgUsername:orgUser
             }).then(() => {
                 dispatch(
                     createAlert(
@@ -139,13 +136,13 @@ function RoleControl() {
     ];
 
     const { Option } = Select;
-    function changeRoleModal(value, user, role) {
+    function changeRoleModal(value,orgUser, role) {
         setUser(user);
         setNewRole(role)
         setRoleModal(value);
     }
 
-    function deleteMemberModal(value, user){
+    function deleteMemberModal(value,orgUser){
         setDeleteModal(value);
         setUser(user);
     }

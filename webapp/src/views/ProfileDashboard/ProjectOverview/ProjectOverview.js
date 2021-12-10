@@ -2,7 +2,6 @@ import { Button, Card, Col, Empty, Layout, Modal, PageHeader, Row, Tag, Typograp
 import React, {useContext, useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
-import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 
 import { createAlert } from "../../../store/actions/generalActions";
@@ -10,8 +9,8 @@ import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
 import { GlobalOutlined, PlusCircleOutlined, SettingOutlined, GitlabOutlined, DeleteOutlined } from "@ant-design/icons";
 import {format} from "date-fns";
 import Moment from "moment";
-import {UserContext} from "../../../context/UserContext";
 import {useApi} from "../../../hooks/useApi";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function ProjectOverview() {
 	// State
@@ -30,8 +29,7 @@ function ProjectOverview() {
 	const { Content } = Layout;
 	const { Meta } = Card;
 
-	const { authState } = useOktaAuth();
-	const {userInfo} = useContext(UserContext);
+	const { user, isAuthenticated, isLoading } = useAuth0();
 	const {get} = useApi();
 
 	const projectName = sessionStorage.getItem("selectedProjectName");
@@ -40,7 +38,7 @@ function ProjectOverview() {
 
 	useEffect(() => {
 		setSelectedModule(null);
-		get(`/projects/${userInfo.preferred_username}/${projectName}`)
+		get(`/projects/${user.username}/${projectName}`)
 			.then(resp => {
 				setProject(resp.data);
 				if (resp.data.tags) {
@@ -89,48 +87,48 @@ function ProjectOverview() {
 		setModuleToDeleteSelected(null);
 	};
 
-	const deleteModal = () => {
-		axios({
-			method: "delete",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/projects/" +
-				userInfo.preferred_username +
-				"/" +
-				projectName +
-				"/" +
-				moduleToDeleteSelected.name,
-			headers: {
-				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			},
-		})
-			.then(() => {
-				dispatch(
-					createAlert(
-						"Module successfully deleted",
-						"You have successfully deleted the module: " + moduleToDeleteSelected.name,
-						"success",
-						true
-					)
-				);
-				setRefreshList(!refreshList);
-				closeDeleteModal();
-			})
-			.catch(() => {
-				dispatch(
-					createAlert(
-						"Failed to delete module",
-						"Failed to delete the module: " +
-							moduleToDeleteSelected.name +
-							". Please write an issue on GitHub if this is unresolved",
-						"error",
-						true
-					)
-				);
-				closeDeleteModal();
-			});
-	};
+	// const deleteModal = () => {
+	// 	axios({
+	// 		method: "delete",
+	// 		url:
+	// 			process.env.REACT_APP_APPLICATION_URL +
+	// 			process.env.REACT_APP_API +
+	// 			"/projects/" +
+	// 			user.username +
+	// 			"/" +
+	// 			projectName +
+	// 			"/" +
+	// 			moduleToDeleteSelected.name,
+	// 		headers: {
+	// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+	// 		},
+	// 	})
+	// 		.then(() => {
+	// 			dispatch(
+	// 				createAlert(
+	// 					"Module successfully deleted",
+	// 					"You have successfully deleted the module: " + moduleToDeleteSelected.name,
+	// 					"success",
+	// 					true
+	// 				)
+	// 			);
+	// 			setRefreshList(!refreshList);
+	// 			closeDeleteModal();
+	// 		})
+	// 		.catch(() => {
+	// 			dispatch(
+	// 				createAlert(
+	// 					"Failed to delete module",
+	// 					"Failed to delete the module: " +
+	// 						moduleToDeleteSelected.name +
+	// 						". Please write an issue on GitHub if this is unresolved",
+	// 					"error",
+	// 					true
+	// 				)
+	// 			);
+	// 			closeDeleteModal();
+	// 		});
+	// };
 
 	return (
 		<div style={{ width: "100%", height: "auto" }}>
@@ -313,7 +311,8 @@ function ProjectOverview() {
 						title={'Delete "' + moduleToDeleteSelected.name + '"?'}
 						centered
 						visible={deleteModalOpen}
-						onOk={() => deleteModal()}
+						// TODO FIX THIS :)
+						// onOk={() => deleteModal()}
 						okText="Yes"
 						okType="danger"
 						onCancel={() => closeDeleteModal()}

@@ -2,13 +2,12 @@ import {Button, Card, Col, Input, Layout, PageHeader, Row, Typography} from "ant
 import React, {useContext, useEffect} from "react";
 import { useDispatch } from "react-redux";
 import {Link, Redirect} from "react-router-dom";
-import {useOktaAuth} from "@okta/okta-react";
 // Import redux actions
 import axios from "axios";
 // Import custom hooks
 import useDebounce from "./../../../hooks/useDebounce";
-import {UserContext} from "../../../context/UserContext";
 import {useApi} from "../../../hooks/useApi";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function Organizations() {
 	// State
@@ -16,8 +15,7 @@ function Organizations() {
 	const [organizations, setOrganizations] = React.useState([]);
 	const [selectedCard, setSelectedCard] = React.useState(null);
 
-	const { authState } = useOktaAuth();
-	const {userInfo} = useContext(UserContext);
+	const { user, isAuthenticated, isLoading } = useAuth0();
 	const {get} = useApi();
 
 	const debouncedSearchTerm = useDebounce(search, 500);
@@ -52,10 +50,10 @@ function Organizations() {
 			// Make sure we have a value (user has entered something in input)
 			if (debouncedSearchTerm) {
 				// Fire off our API call
-				get(`/organization/${userInfo.preferred_username}/isMember/search?q=${search}`)
+				get(`/organization/${user.username}/isMember/search?q=${search}`)
 					.then(resp => setOrganizations(resp));
 			} else {
-				get(`/organization/${userInfo.preferred_username}/isMember`)
+				get(`/organization/${user.username}/isMember`)
 					.then(resp => setOrganizations(resp));
 			}
 		},

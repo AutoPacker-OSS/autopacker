@@ -6,10 +6,7 @@ import {BrowserRouter as Router} from "react-router-dom";
 import {Provider} from "react-redux";
 import {applyMiddleware, combineReducers, compose, createStore} from "redux";
 import thunk from "redux-thunk";
-import {Security} from '@okta/okta-react';
-import {OktaAuth} from '@okta/okta-auth-js';
-import {oktaConfig} from './okta-config';
-import {UserProvider} from "./context/UserContext";
+import { Auth0Provider } from "@auth0/auth0-react";
 
 // Import reducer(s)
 import generalReducer from "./store/reducers/generalReducer";
@@ -42,19 +39,19 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 // Create the redux store and adding middleware and such
 const reduxStore = createStore(rootReducer, composeEnhancers(applyMiddleware(loggerMiddleware, thunk)));
 
-const oktaAuth = new OktaAuth(oktaConfig);
 
 const app = (
     <Router>
-        <Security oktaAuth={oktaAuth} restoreOriginalUri="http://localhost:3000/">
+        <Auth0Provider 
+            domain="dev-0t37hfrq.us.auth0.com"
+            clientId="HqMpePlaawKhfqb3DCx9zdCyxl2OboAM"
+            redirectUri={window.location.origin}>
             <Provider store={reduxStore}>
-                <UserProvider>
-                    <ModalStack>
-                        <App/>
-                    </ModalStack>
-                </UserProvider>
+                <ModalStack>
+                    <App/>
+                </ModalStack>
             </Provider>
-        </Security>
+        </Auth0Provider>
     </Router>
 );
 

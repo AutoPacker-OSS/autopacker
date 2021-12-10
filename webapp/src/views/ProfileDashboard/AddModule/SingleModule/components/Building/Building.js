@@ -1,10 +1,9 @@
 import { Col, Row, Spin } from "antd";
 import React, {useContext, useEffect} from "react";
 import { useSelector } from "react-redux";
-import {useOktaAuth} from "@okta/okta-react";
 import { LoadingOutlined } from "@ant-design/icons";
-import {UserContext} from "../../../../../../context/UserContext";
 import {useApi} from "../../../../../../hooks/useApi";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function Building(props) {
 	// Get methods from props
@@ -13,43 +12,72 @@ function Building(props) {
 	// Get value from props
 	const { setupInfo, file } = props.values;
 
-	const { authState } = useOktaAuth();
-	const {userInfo} = useContext(UserContext);
 	const {get} = useApi();
+	const { user, isAuthenticated, isLoading } = useAuth0();
 
 	const projectName = sessionStorage.getItem("selectedProjectName");
 
-	useEffect(() => {
-		const requestUrl = `/projects/${userInfo.preferred_username}/${projectName}/${setupInfo.name}/add`;
+	// useEffect(() => {
+	// 	const requestUrl = `/projects/${user.username}/${projectName}/${setupInfo.name}/add`;
 
-		let formData = new FormData();
-		formData.append("desc", setupInfo.desc);
-		formData.append("config-type", setupInfo["config-type"]);
-		formData.append("config-params", '{ "port": ' + setupInfo.port + " }");
-		formData.append("module-file", file[0]);
+	// 	let formData = new FormData();
+	// 	formData.append("desc", setupInfo.desc);
+	// 	formData.append("config-type", setupInfo["config-type"]);
+	// 	formData.append("config-params", '{ "port": ' + setupInfo.port + " }");
+	// 	formData.append("module-file", file[0]);
 
-		// TODO Change this to use the useAPI when ready
-		fetch(requestUrl, {
-			method: "POST",
-			headers: {
-				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			},
-			body: formData,
-		})
-			.then((response) => {
-				if (response.status === 200 || response.status === 201) {
-					setUploadSuccess(true);
-				} else {
-					setUploadSuccess(false);
-				}
-				nextStep();
-			})
-			.catch(() => {
-				nextStep();
-				setUploadSuccess(false);
-			});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	// 	// TODO Change this to use the useAPI when ready
+	// 	fetch(requestUrl, {
+	// 		method: "POST",
+	// 		headers: {
+	// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+	// 		},
+	// 		body: formData,
+	// 	})
+	// 		.then((response) => {
+	// 			if (response.status === 200 || response.status === 201) {
+	// 				setUploadSuccess(true);
+	// 			} else {
+	// 				setUploadSuccess(false);
+	// 			}
+	// 			nextStep();
+	// 		})
+	// 		.catch(() => {
+	// 			nextStep();
+	// 			setUploadSuccess(false);
+	// 		});
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, []);
+
+	// TODO Extract into own UserContext, similar to the one we had earlier. hehe
+	// useEffect(() => {
+	// 	const getUserMetadata = async () => {
+	// 		const domain = "YOUR_DOMAIN";
+	
+	// 		try {
+	// 			const accessToken = await getAccessTokenSilently({
+	// 				audience: `https://${domain}/api/v2/`,
+	// 				scope: "read:current_user",
+	// 			});
+	
+	// 			const userDetailsByIdUrl = `https://${domain}/api/v2/users/${user.sub}`;
+	
+	// 			const metadataResponse = await fetch(userDetailsByIdUrl, {
+	// 				headers: {
+	// 					Authorization: `Bearer ${accessToken}`,
+	// 				},
+	// 			});
+	
+	// 			const { user_metadata } = await metadataResponse.json();
+	
+	// 			setUserMetadata(user_metadata);
+	// 		} catch (e) {
+	// 			console.log(e.message);
+	// 		}
+	// 	};
+	
+	// 	getUserMetadata();
+	// }, [getAccessTokenSilently, user?.sub]);
 
 	return (
 		<div>

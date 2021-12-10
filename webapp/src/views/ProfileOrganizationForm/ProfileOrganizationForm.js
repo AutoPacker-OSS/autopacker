@@ -3,11 +3,10 @@ import axios from "axios";
 import React, {useContext, useEffect} from "react";
 import { Redirect } from "react-router-dom";
 import NTNU from "../../assets/image/ntnu.png";
-import {useOktaAuth} from "@okta/okta-react";
 import { axiosRequest } from "../../util/axiosRequest";
 import { QuestionCircleOutlined } from "@ant-design/icons";
-import {UserContext} from "../../context/UserContext";
 import {useApi} from "../../hooks/useApi";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function ProfileOrganizationForm() {
 	// Form state
@@ -16,8 +15,7 @@ function ProfileOrganizationForm() {
 	const [role, setRole] = React.useState("");
 	const [comment, setComment] = React.useState("");
 
-	const { authState } = useOktaAuth();
-	const {userInfo} = useContext(UserContext);
+	const { user, isAuthenticated, isLoading } = useAuth0();
 	const {get} = useApi();
 
 	// State
@@ -61,7 +59,7 @@ function ProfileOrganizationForm() {
 		axios.post(url,
 			{
 				organizationName: organization.name,
-				username: userInfo.preferred_username,
+				username: user.username,
 				name: name,
 				email: email,
 				role: role,
@@ -120,7 +118,7 @@ function ProfileOrganizationForm() {
 								{...formItemLayout}
 								style={{ marginTop: 20 }}
 								initialValues={{
-									["username"]: userInfo.preferred_username,
+									["username"]: user.username,
 								}}
 							>
 								<Form.Item
@@ -243,7 +241,7 @@ function ProfileOrganizationForm() {
 								<div style={{ width: "100%", textAlign: "center" }} onClick={(e) => handleSubmit(e)}>
 									<Button
 										disabled={
-											userInfo.preferred_username.length <= 0 ||
+											user.username.length <= 0 ||
 											name.length <= 0 ||
 											email.length <= 0 ||
 											role.length <= 0

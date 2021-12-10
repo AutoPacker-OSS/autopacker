@@ -6,7 +6,7 @@ import { createAlert } from "../../../../../store/actions/generalActions";
 import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import {useApi} from "../../../../../hooks/useApi";
-import {UserContext} from "../../../../../context/UserContext";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function GeneralSetting(props) {
 	// State
@@ -18,9 +18,8 @@ function GeneralSetting(props) {
 	const owner = props.project.owner;
 	const projectName = props.project.name;
 
-	const { authState } = useOktaAuth();
+	const { user, isAuthenticated, isLoading } = useAuth0();
 	const {get, _delete} = useApi();
-	const {userInfo} = useContext(UserContext);
 
 	const dispatch = useDispatch();
 
@@ -34,7 +33,7 @@ function GeneralSetting(props) {
 
 	function sendRequest() {
 		setModalVisible(false);
-		if (userInfo.email_verified) {
+		if (user.email_verified) {
 			_delete(`/projects/${owner.username}/${projectName}`, {
 				username: owner.username,
 				projectName: projectName,

@@ -15,11 +15,10 @@ import axios from "axios";
 import React, {useContext, useEffect} from "react";
 import {Link, useParams} from "react-router-dom";
 import NTNU from "../../assets/image/ntnu.png";
-import {useOktaAuth} from "@okta/okta-react";
 // Import custom hooks
 import useDebounce from "./../../hooks/useDebounce";
 import {useApi} from "../../hooks/useApi";
-import {UserContext} from "../../context/UserContext";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function ProfileOrganizationOverview() {
 	// State
@@ -32,8 +31,7 @@ function ProfileOrganizationOverview() {
 	const [minNumbProjects, setMinNumbProjects] = React.useState(0);
 	const [maxNumbProjects, setMaxNumbProjects] = React.useState(10);
 
-	const { authState } = useOktaAuth();
-	const {userInfo} = useContext(UserContext);
+	const { user, isAuthenticated, isLoading } = useAuth0();
 	const {get} = useApi();
 
 	// Import sub components from antd
@@ -51,9 +49,9 @@ function ProfileOrganizationOverview() {
 			get(`/organization/${organizationName}`)
 				.then(resp => setOrganization(resp));
 
-			if (authState?.isAuthenticated) {
+			if (isAuthenticated) {
 				// First checking if the value isMemberOfOrganization is available in session, if not do a request.
-				get(`/organization/${organizationName}/${userInfo.preferred_username}/isMember`)
+				get(`/organization/${organizationName}/${user.username}/isMember`)
 					.then(resp => {
 						sessionStorage.setItem("isMember", resp.data);
 						setIsMember(resp.data);
@@ -130,8 +128,8 @@ function ProfileOrganizationOverview() {
 								title={organization.name}
 								onBack={() => window.history.back()}
 								extra={[
-									userInfo?.isAuthenticated ? (
-										userInfo?.email_verified && !isMember ? (
+									isAuthenticated ? (
+										user?.email_verified && !isMember ? (
 											<Button key="application" onClick={() => sessionStorage.removeItem("isMember")}>
 												<Link
 													to={

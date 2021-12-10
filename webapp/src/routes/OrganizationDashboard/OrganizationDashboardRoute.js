@@ -13,7 +13,7 @@ import { selectMenuOption, toggleSubMenuOption } from "../../store/actions/gener
 // Import styles
 import "../ProfileDashboard/ProfileDashboardStyle.scss";
 import { FolderOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
-import {useOktaAuth} from "@okta/okta-react";
+import { useAuth0 } from "@auth0/auth0-react";
 
 /**
  * The default layout for a organization dashboard route
@@ -25,7 +25,7 @@ function OrganizationDashboardLayout({ children }) {
 	const { Sider, Content } = Layout;
 	const { SubMenu } = Menu;
 
-	const { authState, oktaAuth } = useOktaAuth();
+	const { user, isAuthenticated, isLoading } = useAuth0();
 
 	// Get state from redux store
 	const organizationName = sessionStorage.getItem("selectedOrganizationName");
@@ -163,12 +163,12 @@ function OrganizationDashboardLayout({ children }) {
  * The route itself that is used for the profile dashboard related routes
  */
 function OrganizationDashboardRoute({ component: Component, ...rest }) {
-	const { authState } = useOktaAuth();
+	const { user, isAuthenticated, isLoading } = useAuth0();
 	return (
 		<Route
 			{...rest}
 			render={(props) =>
-				authState.isAuthenticated === true ? (
+				isAuthenticated === true ? (
 					<OrganizationDashboardLayout>
 						<Suspense fallback={<div />}>
 							<Component {...props} />

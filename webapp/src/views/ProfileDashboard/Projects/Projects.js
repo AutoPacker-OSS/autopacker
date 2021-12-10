@@ -7,8 +7,8 @@ import useDebounce from "./../../../hooks/useDebounce";
 // Import helper methods
 import {breadcrumbItemRender} from "../../../util/breadcrumbItemRender";
 import {GlobalOutlined} from "@ant-design/icons";
-import {UserContext} from "../../../context/UserContext";
 import {useApi} from "../../../hooks/useApi";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function Projects() {
     // State
@@ -18,7 +18,7 @@ function Projects() {
 
     const debouncedSearchTerm = useDebounce(search, 500);
 
-    const {userInfo} = useContext(UserContext);
+    const { user, isAuthenticated, isLoading } = useAuth0();
     const {get} = useApi();
 
     //Button width/height size initial state
@@ -50,7 +50,7 @@ function Projects() {
         // Make sure we have a value (user has entered something in input)
         if (debouncedSearchTerm) {
             // Fire off our API call
-            get(`/projects/${userInfo.preferred_username}/search?q=${search}`)
+            get(`/projects/${user.username}/search?q=${search}`)
                 .then(resp => setProjects(resp));
         } else {
             get(`/projects`)

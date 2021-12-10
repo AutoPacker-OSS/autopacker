@@ -4,12 +4,11 @@ import React, {useContext} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { createAlert } from "../../../store/actions/generalActions";
-import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import {useApi} from "../../../hooks/useApi";
-import {UserContext} from "../../../context/UserContext";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function NewProject() {
 	const [newProjectName, setProjectName] = React.useState("");
@@ -34,9 +33,8 @@ function NewProject() {
 	const { Content } = Layout;
 	const { Paragraph } = Typography;
 
-	const { authState } = useOktaAuth();
 	const {get, post} = useApi();
-	const {userInfo} = useContext(UserContext);
+	const { user, isAuthenticated, isLoading } = useAuth0();
 
 	const dispatch = useDispatch();
 
@@ -112,7 +110,7 @@ function NewProject() {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		if (userInfo.email_verified) {
+		if (user.email_verified) {
 			post(`/projects`, {
 				name: newProjectName,
 				description: newProjectDescription,

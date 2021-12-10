@@ -3,10 +3,9 @@ import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { Typography, Button, Input, Divider, Modal } from "antd";
 import { createAlert } from "../../../../../store/actions/generalActions";
-import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import {useApi} from "../../../../../hooks/useApi";
-import {UserContext} from "../../../../../context/UserContext";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function GeneralSetting(props) {
 	// State
@@ -14,9 +13,8 @@ function GeneralSetting(props) {
 	const [verifiedDelete, setVerifiedDelete] = React.useState(false);
 	const [redirect, setRedirect] = React.useState(false);
 
-	const { authState } = useOktaAuth();
+	const { user, isAuthenticated, isLoading } = useAuth0();
 	const {get, _delete} = useApi();
-	const {userInfo} = useContext(UserContext);
 
 	const { Title, Text } = Typography;
 	const server = props.server;
@@ -34,7 +32,7 @@ function GeneralSetting(props) {
 
 	function sendRequest() {
 		setModalVisible(false);
-		if (userInfo.email_verified) {
+		if (user.email_verified) {
 			_delete(`/server/delete/${server.owner}/${server.serverId}`)
 				.then(() => {
 					dispatch(

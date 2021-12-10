@@ -15,13 +15,12 @@ import React, {useContext, useEffect} from "react";
 import { useDispatch} from "react-redux";
 import {Redirect, useParams} from "react-router-dom";
 import { createAlert, selectMenuOption } from "../../../store/actions/generalActions";
-import {useOktaAuth} from "@okta/okta-react";
+import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 
 
 import { QuestionCircleOutlined, UploadOutlined } from "@ant-design/icons";
 import {useApi} from "../../../hooks/useApi";
-import {UserContext} from "../../../context/UserContext";
 
 // TODO - refactor. A lot of code duplicated from NewOrgProject.js?
 function SubmitProject(props) {
@@ -46,23 +45,22 @@ function SubmitProject(props) {
 	const { Content } = Layout;
 	const { Paragraph, Text } = Typography;
 
-	const { authState } = useOktaAuth();
 	const {get, post} = useApi();
-	const {userInfo} = useContext(UserContext);
 
 	const { organizationName } = useParams();
 	const dispatch = useDispatch();
+	const { user, isAuthenticated, isLoading } = useAuth0();
 
 	useEffect(() => {
 		get(`/projects`)
 			.then(resp => {
 				setProjects(resp.data);
 			});
-	}, [authState.accessToken]);
+	}, [user]);
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		if (userInfo.email_verified) {
+		if (user.email_verified) {
 			post(`/organization/submitProject`, {
 				organizationName: organizationName,
 				projectId: actualProject.id,

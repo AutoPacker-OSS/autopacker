@@ -138,7 +138,6 @@ public class UserController {
         }
     }
 
-
     @GetMapping(value = "/search")
     public ResponseEntity<String> searchUsers(@RequestParam("q") String query) {
         try {

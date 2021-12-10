@@ -1,11 +1,10 @@
 import {Avatar, Input, Layout, Menu, Typography} from "antd";
 import React, {useContext, useEffect} from "react";
 import {Link, Redirect} from "react-router-dom";
-import { useOktaAuth } from '@okta/okta-react';
+import { useAuth0 } from "@auth0/auth0-react";
 // Import styles
 import "./NavbarStyle.scss";
 import {ApartmentOutlined, FolderOutlined, HddOutlined, LogoutOutlined, SettingOutlined,} from "@ant-design/icons";
-import {UserContext} from "../../context/UserContext";
 
 /**
  * Represents the navigation bar at the top of the homepage
@@ -16,9 +15,7 @@ function Navbar() {
 	const [searchAction, setSearchAction] = React.useState(false);
 
 	// Okta hook
-	const { authState, oktaAuth } = useOktaAuth();
-	const {userInfo} = useContext(UserContext);
-	const login = () => oktaAuth.signInWithRedirect({originalUri: '/'});
+	const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
 
 	// Get antd sub components
 	const {Header} = Layout;
@@ -29,15 +26,9 @@ function Navbar() {
 		setSearchAction(false);
 	}, [searchAction]);
 
-	const logout = () => {
-		// keycloak.logout({
-		// 	redirectUri: process.env.REACT_APP_REDIRECT_URL,
-		// });
-	};
-
 	return (
 		<Header className="header">
-			{authState.isAuthenticated ? (
+			{isAuthenticated ? (
 				<Link to="/profile/projects" id="main-dashboard-link">
 					<b style={{fontSize: 16, float: "left"}}>AutoPacker</b>
 				</Link>
@@ -57,7 +48,7 @@ function Navbar() {
 			{searchAction ? <Redirect to={"/search?q=" + search}/> : <div/>}
 
 			{/* Check if user is authenticated */}
-			{authState.isAuthenticated ? (
+			{isAuthenticated ? (
 				<Menu
 					mode="horizontal"
 					style={{lineHeight: "64px", float: "right"}}
@@ -72,7 +63,7 @@ function Navbar() {
 									}}
 								/>
 								<Typography.Text style={{marginLeft: 10}}>
-									{userInfo?.preferred_username}
+									{user?.email}
 								</Typography.Text>
 							</div>
 						}
@@ -102,7 +93,7 @@ function Navbar() {
 								Settings
 							</Link>
 						</Menu.Item>
-						<Menu.Item onClick={logout} id="logout-link">
+						<Menu.Item onClick={() => logout({ returnTo: window.location.origin })} id="logout-link">
 							<LogoutOutlined/>
 							Logout
 						</Menu.Item>
@@ -111,7 +102,7 @@ function Navbar() {
 			) : (
 				<Menu mode="horizontal" style={{lineHeight: "64px", float: "right"}}>
 					<Menu.Item>
-						<div id="sign-in-link" onClick={login}>Sign in</div>;
+						<div id="sign-in-link" onClick={() => loginWithRedirect()}>Sign in</div>;
 						{/*<LoginBtn/>*/}
 					</Menu.Item>
 				</Menu>

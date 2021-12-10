@@ -5,6 +5,7 @@
   "dependencies": {
     "@ant-design/colors": "^4.0.0",
     "@ant-design/icons": "^4.2.1",
+    "@auth0/auth0-react": "^1.8.0",
     "@okta/okta-auth-js": "^5.4.0",
     "@okta/okta-react": "^6.1.0",
     "@testing-library/jest-dom": "^5.8.0",

@@ -12,9 +12,8 @@ import {createAlert} from "../../store/actions/generalActions";
 import axios from "axios";
 // Import styles
 import "./ProfileDashboardStyle.scss";
-import {useOktaAuth} from "@okta/okta-react";
-import {UserContext} from "../../context/UserContext";
 import {useApi} from "../../hooks/useApi";
+import { useAuth0 } from "@auth0/auth0-react";
 
 /**
  * The default layout for a profile dashboard route
@@ -22,8 +21,7 @@ import {useApi} from "../../hooks/useApi";
 function ProfileDashboardLayout({children}) {
 	const [collapsed, setCollapsed] = React.useState(false);
 
-	const { authState } = useOktaAuth();
-	const {userInfo} = useContext(UserContext);
+	const { user, isAuthenticated, isLoading } = useAuth0();
 	const {get} = useApi();
 
 	// Get antd sub components
@@ -77,7 +75,7 @@ function ProfileDashboardLayout({children}) {
 	);
 
 	React.useEffect(() => {
-		if (userInfo.email_verified === false) {
+		if (user.email_verified === false) {
 			dispatch(createAlert("Please verify your email address", text, "warning", true));
 		}
 	}, []);
@@ -142,12 +140,12 @@ function ProfileDashboardLayout({children}) {
  * The route itself that is used for the profile dashboard related routes
  */
 function ProfileDashboardRoute({component: Component, ...rest}) {
-	const { authState } = useOktaAuth();
+	const { isAuthenticated } = useAuth0();
 	return (
 		<Route
 			{...rest}
 			render={(props) =>
-				authState.isAuthenticated === true ? (
+				isAuthenticated === true ? (
 					<ProfileDashboardLayout>
 						<Suspense fallback={<div/>}>
 							<Component {...props} />

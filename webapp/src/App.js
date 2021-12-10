@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { Route, Switch } from "react-router-dom";
-import {LoginCallback, useOktaAuth} from '@okta/okta-react';
+import { useAuth0 } from "@auth0/auth0-react";
 // Import custom route
 import PublicLazyRoute from "./routes/PublicLazyRoute/PublicLazyRoute";
 import ProfileDashboardRoute from "./routes/ProfileDashboard/ProfileDashboardRoute";
@@ -45,10 +45,10 @@ const ServerSettings = React.lazy(() => import("./views/ProfileDashboard/ServerS
  * Handles the routing mechanism in the application
  */
 function App() {
-	const { authState } = useOktaAuth();
+	const { user, isAuthenticated, isLoading } = useAuth0();
 
 	let router = null;
-	if (authState !== null ? authState.isAuthenticated : false) {
+	if (user !== null ? isAuthenticated : false) {
 		router = (
 			<React.Fragment>
 				{/*Organization*/}
@@ -120,7 +120,7 @@ function App() {
 				{/* <PublicLazyRoute path="/registrationConfirmation" component={Verification} /> */}
 				<PublicLazyRoute exact path="/account/:username" component={ProfilePage} />
 				<PublicLazyRoute path="/search" component={SearchResult} />
-				<Route path="/login/callback" component={LoginCallback} />
+				{/* <Route path="/login/callback" component={LoginCallback} /> */}
 				{/* This route is on the bottom of the list */}
 				<Route
 					exact
