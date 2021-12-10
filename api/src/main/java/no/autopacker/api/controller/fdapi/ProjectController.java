@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
 
 import static no.autopacker.api.security.AuthConstants.ROLE_ADMIN;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "api")
 public class ProjectController {

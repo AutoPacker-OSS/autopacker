@@ -38,10 +38,11 @@
       <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
       <version>${security.version}</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-jose -->
     <dependency>
-      <groupId>com.okta.spring</groupId>
-      <artifactId>okta-spring-boot-starter</artifactId>
-      <version>1.4.0</version>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-oauth2-jose</artifactId>
+      <version>5.2.2.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>

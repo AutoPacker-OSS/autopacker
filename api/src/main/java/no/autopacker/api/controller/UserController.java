@@ -29,7 +29,6 @@ import org.springframework.web.context.request.WebRequest;
  */
 @RestController
 @RequestMapping(value = "api/auth")
-@CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserService userService;
