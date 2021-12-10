@@ -2,6 +2,7 @@ package no.autopacker.api.entity;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
@@ -18,6 +19,7 @@ import no.autopacker.api.entity.organization.Organization;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * Represents a user entity and contains methods for accessing user specific information
@@ -28,6 +30,8 @@ import java.util.List;
 public class User {
 
     @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
     @NotEmpty

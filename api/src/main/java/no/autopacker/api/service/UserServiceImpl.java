@@ -1,5 +1,7 @@
 package no.autopacker.api.service;
 
+import javax.security.sasl.AuthenticationException;
+import lombok.SneakyThrows;
 import no.autopacker.api.entity.User;
 import no.autopacker.api.repository.UserRepository;
 import no.autopacker.api.interfaces.UserService;
@@ -76,6 +78,25 @@ public class UserServiceImpl implements UserService {
         } else {
             return new ResponseEntity<>("Username is already taken", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @SneakyThrows
+    @Override
+    public User findOrCreateUser(User user, Locale locale) {
+        User dbUser;
+
+        // search in db for user
+        dbUser = user.getUsername() != null ? this.userRepository.findByUsername(user.getUsername()) : null;
+        dbUser = dbUser == null && user.getEmail() != null ? this.userRepository.findByEmailIgnoreCase(user.getEmail()) : null;
+
+        if (dbUser != null) return dbUser;
+
+        // create user if it doesnt exist
+        if (user.getUsername() == null || user.getEmail() == null) {
+            throw new AuthenticationException("User is missing email or username.");
+        }
+
+        return this.userRepository.save(user);
     }
 
     @Override
@@ -198,12 +219,20 @@ public class UserServiceImpl implements UserService {
     public User getAuthenticatedUser() {
         Authentication authenticatedUser = SecurityContextHolder.getContext().getAuthentication();
         User user = null;
-        if (authenticatedUser != null) {
-            String username = authenticatedUser.getName();
-            if (username != null) {
-                user = this.userRepository.findByUsername(username);
-            }
+
+        if (authenticatedUser == null) return null;
+
+        String username = authenticatedUser.getName();
+
+        // TODO email is not preset [i <3 php]
+        // auth0 identity is too long
+        if (username.contains("auth0|")) {
+            username = username.replaceAll("auth0\\|", "");
         }
-        return user;
+
+        // identity does not have email yet
+        String email = authenticatedUser.getName() + "@auth0.oauth";
+
+        return this.findOrCreateUser(new User(username, email), Locale.getDefault());
     }
 }

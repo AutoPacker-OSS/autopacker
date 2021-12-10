@@ -12,6 +12,7 @@ import java.util.Objects;
 
 public class AudienceValidator implements OAuth2TokenValidator<Jwt> {
     private final String audience;
+    private final String extAudience = "https://dev-0t37hfrq.us.auth0.com/api/v2/";
 
     AudienceValidator(String audience) {
         Assert.hasText(audience, "audience is null or empty");
@@ -20,7 +21,9 @@ public class AudienceValidator implements OAuth2TokenValidator<Jwt> {
 
     public OAuth2TokenValidatorResult validate(Jwt jwt) {
         List<String> audiences = jwt.getAudience();
-        if (audiences.contains(this.audience)) {
+
+        // TODO jwt token audience points to auth0 not locally [i <3 php]
+        if (audiences.contains(this.audience) || audiences.contains(extAudience)) {
             return OAuth2TokenValidatorResult.success();
         }
         OAuth2Error err = new OAuth2Error(OAuth2ErrorCodes.INVALID_GRANT);
