@@ -45,7 +45,9 @@ const app = (
         <Auth0Provider 
             domain="dev-0t37hfrq.us.auth0.com"
             clientId="HqMpePlaawKhfqb3DCx9zdCyxl2OboAM"
-            redirectUri={window.location.origin}>
+            redirectUri={window.location.origin}
+            audience="https://dev-0t37hfrq.us.auth0.com/api/v2/"
+            scope="read:current_user update:current_user_metadata">
             <Provider store={reduxStore}>
                 <ModalStack>
                     <App/>
