@@ -1,5 +1,4 @@
 import {ApartmentOutlined, FolderOutlined, HddOutlined} from "@ant-design/icons";
-import React from "react";
 
 export const menus = [
 	{

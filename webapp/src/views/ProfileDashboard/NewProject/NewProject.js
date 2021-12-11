@@ -2,7 +2,7 @@ import { Button, Form, Input, Layout, PageHeader, Radio, Tag, Tooltip, Typograph
 import { TweenOneGroup } from "rc-tween-one";
 import React, {useContext} from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { createAlert } from "../../../store/actions/generalActions";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
@@ -189,7 +189,7 @@ function NewProject() {
 					minHeight: 280,
 				}}
 			>
-				{redirect ? <Redirect to="/profile/projects" /> : <div />}
+				{redirect ? <Navigate to="/profile/projects" /> : <div />}
 				<Form {...formItemLayout}>
 					<Form.Item
 						name="projectName"

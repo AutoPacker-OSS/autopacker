@@ -1,7 +1,7 @@
 import {Button, Form, Input, Layout, PageHeader, Tooltip, Typography, Spin, Radio} from "antd";
 import React, {useContext} from "react";
 import { useDispatch } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { createAlert } from "../../../store/actions/generalActions";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
@@ -144,7 +144,7 @@ function NewOrganization() {
                     minHeight: 280,
                 }}
             >
-                {redirect ? <Redirect to="/profile/organizations" /> : <div />}
+                {redirect ? <Navigate to="/profile/organizations" /> : <div />}
                 <Form {...formItemLayout}>
                     <Form.Item
                         name="organizationName"

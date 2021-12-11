@@ -2,7 +2,6 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { Typography, Divider, Form, Button, Input } from "antd";
 import { createAlert } from "../../../../../store/actions/generalActions";
-import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 
 function PasswordSetting() {
@@ -18,7 +17,6 @@ function PasswordSetting() {
 	// Import sub components from antd
 	const { Title } = Typography;
 
-	const { authState } = useOktaAuth();
 
 	const dispatch = useDispatch();
 
@@ -58,27 +56,27 @@ function PasswordSetting() {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		if (oldPassword.length >= 8 || validNewPassword === "success" || validConfirmPassword === "success") {
-			axios({
-				method: "post",
-				url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/auth/changePassword",
-				headers: {
-					Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-				},
-				data: {
-					oldPassword: oldPassword,
-					newPassword: newPassword,
-					confirmPassword: confirmPassword,
-				},
-			})
-				.then(() => {
-					dispatch(createAlert("Password changed", "Password has successfully been changed", "success", true));
-					setOldPassword("");
-					setNewPassword("");
-					setConfirmPassword("");
-				})
-				.catch(() => {
-					dispatch(createAlert("Password change failed", "Couldn't change password", "warning", true));
-				});
+			// axios({
+			// 	method: "post",
+			// 	url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/auth/changePassword",
+			// 	headers: {
+			// 		Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+			// 	},
+			// 	data: {
+			// 		oldPassword: oldPassword,
+			// 		newPassword: newPassword,
+			// 		confirmPassword: confirmPassword,
+			// 	},
+			// })
+			// 	.then(() => {
+			// 		dispatch(createAlert("Password changed", "Password has successfully been changed", "success", true));
+			// 		setOldPassword("");
+			// 		setNewPassword("");
+			// 		setConfirmPassword("");
+			// 	})
+			// 	.catch(() => {
+			// 		dispatch(createAlert("Password change failed", "Couldn't change password", "warning", true));
+			// 	});
 		}
 	};
 

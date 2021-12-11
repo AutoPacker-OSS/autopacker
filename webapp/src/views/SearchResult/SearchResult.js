@@ -1,7 +1,7 @@
 import { Avatar, Col, Divider, Input, Pagination, Row, Tabs, Typography } from "antd";
 import axios from "axios";
 import React, { useEffect } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { ApartmentOutlined, UserOutlined } from "@ant-design/icons";
 
 function SearchResult(props) {
@@ -118,7 +118,7 @@ function SearchResult(props) {
 								enterButton
 							/>
 						</Col>
-						{searchAction ? <Redirect to={"/search?q=" + search} /> : <div />}
+						{searchAction ? <Navigate to={"/search?q=" + search} /> : <div />}
 						<Col xs={24}>
 							<Tabs defaultActiveKey={"1"}>
 								{/* Projects Tab */}

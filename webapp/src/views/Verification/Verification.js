@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Layout, Result, Button } from "antd";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
 // Custom components
 import Navbar from "../../components/Navbar/Navbar";
-import RedirectProfileHome from "../../components/Redirects/RedirectProfileHome";
 // Custom alert
 import { createAlert } from "../../store/actions/generalActions";
 
@@ -104,7 +103,7 @@ function Verification() {
 	return (
 		<React.Fragment>
 			<Layout>
-				{authenticationRedirect ? <RedirectProfileHome /> : <div />}
+				{authenticationRedirect ? <Navigate to="/profile/projects" /> : <div />}
 				{/* Navigation bar */}
 				<Navbar />
 				{/* Feedback */}

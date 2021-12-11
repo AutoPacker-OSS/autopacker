@@ -1,7 +1,7 @@
 import { Button, Card, Col, Empty, Layout, Modal, PageHeader, Row, Tag, Typography } from "antd";
 import React, {useContext, useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
+import { Link, Navigate  } from "react-router-dom";
 import axios from "axios";
 
 import { createAlert } from "../../../store/actions/generalActions";
@@ -132,7 +132,7 @@ function ProjectOverview() {
 
 	return (
 		<div style={{ width: "100%", height: "auto" }}>
-			{projectName === null ? <Redirect to="/profile/projects" /> : <div />}
+			{projectName === null ? <Navigate  to="/profile/projects" /> : <div />}
 			<PageHeader
 				style={{
 					border: "1px solid rgb(235, 237, 240)",

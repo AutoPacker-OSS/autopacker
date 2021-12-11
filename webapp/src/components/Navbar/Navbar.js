@@ -1,6 +1,6 @@
 import {Avatar, Input, Layout, Menu, Typography} from "antd";
 import React, {useContext, useEffect} from "react";
-import {Link, Redirect} from "react-router-dom";
+import {Link, Navigate} from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 // Import styles
 import "./NavbarStyle.scss";
@@ -45,7 +45,7 @@ function Navbar() {
 					style={{width: 200, paddingTop: "16px"}}
 				/>
 			</div>
-			{searchAction ? <Redirect to={"/search?q=" + search}/> : <div/>}
+			{searchAction ? <Navigate to={"/search?q=" + search}/> : <div/>}
 
 			{/* Check if user is authenticated */}
 			{isAuthenticated ? (
@@ -63,7 +63,7 @@ function Navbar() {
 									}}
 								/>
 								<Typography.Text style={{marginLeft: 10}}>
-									{user?.email}
+									{user.email}
 								</Typography.Text>
 							</div>
 						}
@@ -102,7 +102,7 @@ function Navbar() {
 			) : (
 				<Menu mode="horizontal" style={{lineHeight: "64px", float: "right"}}>
 					<Menu.Item>
-						<div id="sign-in-link" onClick={() => loginWithRedirect()}>Sign in</div>;
+						<div id="sign-in-link" onClick={() => loginWithRedirect()}>Sign in</div>
 						{/*<LoginBtn/>*/}
 					</Menu.Item>
 				</Menu>

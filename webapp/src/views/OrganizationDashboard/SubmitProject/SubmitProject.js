@@ -13,7 +13,7 @@ import {
 } from "antd";
 import React, {useContext, useEffect} from "react";
 import { useDispatch} from "react-redux";
-import {Redirect, useParams} from "react-router-dom";
+import {Navigate, useParams} from "react-router-dom";
 import { createAlert, selectMenuOption } from "../../../store/actions/generalActions";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
@@ -142,7 +142,7 @@ function SubmitProject(props) {
 				}}
 			>
 				{redirect ? (
-					<Redirect to={"/organization/submissions/" + organizationName} />
+					<Navigate to={"/organization/submissions/" + organizationName} />
 				) : (
 					<div />
 				)}

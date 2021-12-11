@@ -50,7 +50,6 @@ public class DefaultUserImport implements CommandLineRunner {
         if (user == null) {
             System.out.println("Adding default user " + username);
             user = new User(username, email);
-            user.setId(username + ".fakeId");
             user.setName(name);
             user.setSystemRole(roleName);
             userRepository.save(user);

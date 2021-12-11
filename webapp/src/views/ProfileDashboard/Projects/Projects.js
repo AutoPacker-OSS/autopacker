@@ -1,6 +1,6 @@
 import {Button, Card, Col, Input, Layout, PageHeader, Row, Tag, Typography} from "antd";
 import React, {useContext, useEffect} from "react";
-import {Link, Redirect} from "react-router-dom";
+import {Link, useHistory, Navigate } from "react-router-dom";
 import {format} from "date-fns";
 // Import custom hooks
 import useDebounce from "./../../../hooks/useDebounce";
@@ -112,7 +112,7 @@ function Projects() {
                     {projects.map((project) => (
                         <Col xs={24} lg={8} xl={6} xxl={4} key={project.id}>
                             {selectedCard !== null ? (
-                                <Redirect to={"/profile/projects/overview/" + selectedCard}/>
+                                <Navigate  to={"/profile/projects/overview/" + selectedCard}/>
                             ) : (
                                 <div/>
                             )}

@@ -1,7 +1,6 @@
 import { Button, Col, Input, Layout, PageHeader, Row, Typography } from "antd";
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 // Import custom hooks
 import useDebounce from "./../../../hooks/useDebounce";
@@ -16,7 +15,6 @@ function Servers() {
 	const [search, setSearch] = React.useState("");
 	const [servers, setServers] = React.useState([]);
 
-	const { authState } = useOktaAuth();
 	const {get} = useApi();
 
 	const debouncedSearchTerm = useDebounce(search, 500);

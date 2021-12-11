@@ -1,7 +1,7 @@
 import {Button, Card, Col, Input, Layout, PageHeader, Row, Typography} from "antd";
 import React, {useContext, useEffect} from "react";
 import { useDispatch } from "react-redux";
-import {Link, Redirect} from "react-router-dom";
+import {Link, Navigate} from "react-router-dom";
 // Import redux actions
 import axios from "axios";
 // Import custom hooks
@@ -117,7 +117,7 @@ function Organizations() {
 					{organizations.map((organization) => (
 						<Col xs={24} lg={8} xl={6} key={organization.id}>
 							{selectedCard !== null ?(
-								<Redirect to={"/organization/dashboard/" + selectedCard} />
+								<Navigate to={"/organization/dashboard/" + selectedCard} />
 							) : (
 								<div />
 							)}
