@@ -231,7 +231,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // identity does not have email yet
-        String email = authenticatedUser.getName() + "@auth0.oauth";
+        String email = username + "@auth0.oauth";
 
         return this.findOrCreateUser(new User(username, email), Locale.getDefault());
     }
