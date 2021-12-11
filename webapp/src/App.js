@@ -8,37 +8,33 @@ import OrganizationDashboardRoute from "./routes/OrganizationDashboard/Organizat
 // Custom alert
 
 // Lazy Loading Views setup (only loaded when needed)
-const Home = React.lazy(() => import("./views/Home/Home"));
-const Dashboard = React.lazy(() => import("./views/ProfileDashboard/Dashboard/Dashboard"));
-const Projects = React.lazy(() => import("./views/ProfileDashboard/Projects/Projects"));
-const ProjectOverview = React.lazy(() => import("./views/ProfileDashboard/ProjectOverview/ProjectOverview"));
-const OrgProjectOverview = React.lazy(() => import("./views/OrganizationDashboard/OrgProjectOverview/OrgProjectOverview"));
-const Servers = React.lazy(() => import("./views/ProfileDashboard/Servers/Servers"));
-const ServerOverview = React.lazy(() => import("./views/ProfileDashboard/ServerOverview/ServerOverview"));
-const NewServer = React.lazy(() => import("./views/ProfileDashboard/NewServer/NewServer"));
-const NewProject = React.lazy(() => import("./views/ProfileDashboard/NewProject/NewProject"));
-const NewOrganization = React.lazy(() => import("./views/ProfileDashboard/NewOrganization/NewOrganization"));
-const RoleControl = React.lazy(() => import("./views/OrganizationDashboard/RoleControl/RoleControl"));
-// const Verification = React.lazy(() => import("./views/Verification/Verification"));
-const SearchResult = React.lazy(() => import("./views/SearchResult/SearchResult"));
-const ProfilePage = React.lazy(() => import("./views/ProfilePage/ProfilePage"));
-const ProfileProjectOverview = React.lazy(() => import("./views/ProfileProjectOverview/ProfileProjectOverview"));
-const Settings = React.lazy(() => import("./views/ProfileDashboard/Settings/Settings"));
-const OrganizationDashboard = React.lazy(() => import("./views/OrganizationDashboard/Dashboard/OrganizationDashboard"));
-//const OrgPersonalProject = React.lazy(() => import("./views/OrganizationDashboard/OrgPersonalProject/OrgPersonalProject"));
-//const PreSubmissionOverview = React.lazy(() => import("./views/OrganizationDashboard/PreSubmissionOverview/PreSubmissionOverview"));
-const Organizations = React.lazy(() => import("./views/ProfileDashboard/Organizations/Organizations"));
-const Members = React.lazy(() => import("./views/OrganizationDashboard/Members/Members"));
-const Applicants = React.lazy(() => import("./views/OrganizationDashboard/Applicants/Applicants"));
-const ProjectRequests = React.lazy(() => import("./views/OrganizationDashboard/ProjectRequests/ProjectRequests"));
-const ProjectSettings = React.lazy(() => import("./views/ProfileDashboard/ProjectSettings/ProjectSettings"));
-//const NewOrgProject = React.lazy(() => import("./views/OrganizationDashboard/NewOrgProject/NewOrgProject"));
-const SubmitProject = React.lazy(() => import("./views/OrganizationDashboard/SubmitProject/SubmitProject"));
-const ProfileOrganizationOverview = React.lazy(() => import("./views/ProfileOrganizationOverview/ProfileOrganizationOverview"));
-const ProfileOrganizationForm = React.lazy(() => import("./views/ProfileOrganizationForm/ProfileOrganizationForm"));
-const Submissions = React.lazy(() => import("./views/OrganizationDashboard/Submissions/Submissions"));
-const ModuleSelection = React.lazy(() => import("./views/ProfileDashboard/AddModule/ModuleSelection"));
-const ServerSettings = React.lazy(() => import("./views/ProfileDashboard/ServerSettings/ServerSettings"));
+import Home from "./views/Home/Home";
+import Dashboard from "./views/ProfileDashboard/Dashboard/Dashboard";
+import Projects from "./views/ProfileDashboard/Projects/Projects";
+import ProjectOverview from "./views/ProfileDashboard/ProjectOverview/ProjectOverview";
+import OrgProjectOverview from "./views/OrganizationDashboard/OrgProjectOverview/OrgProjectOverview";
+import Servers from "./views/ProfileDashboard/Servers/Servers";
+import ServerOverview from "./views/ProfileDashboard/ServerOverview/ServerOverview";
+import NewServer from "./views/ProfileDashboard/NewServer/NewServer";
+import NewProject from "./views/ProfileDashboard/NewProject/NewProject";
+import NewOrganization from "./views/ProfileDashboard/NewOrganization/NewOrganization";
+import RoleControl from "./views/OrganizationDashboard/RoleControl/RoleControl";
+import SearchResult from "./views/SearchResult/SearchResult";
+import ProfilePage from "./views/ProfilePage/ProfilePage";
+import ProfileProjectOverview from "./views/ProfileProjectOverview/ProfileProjectOverview";
+import Settings from "./views/ProfileDashboard/Settings/Settings";
+import OrganizationDashboard from "./views/OrganizationDashboard/Dashboard/OrganizationDashboard";
+import Organizations from "./views/ProfileDashboard/Organizations/Organizations";
+import Members from "./views/OrganizationDashboard/Members/Members";
+import Applicants from "./views/OrganizationDashboard/Applicants/Applicants";
+import ProjectRequests from "./views/OrganizationDashboard/ProjectRequests/ProjectRequests";
+import ProjectSettings from "./views/ProfileDashboard/ProjectSettings/ProjectSettings";
+import SubmitProject from "./views/OrganizationDashboard/SubmitProject/SubmitProject";
+import ProfileOrganizationOverview from "./views/ProfileOrganizationOverview/ProfileOrganizationOverview";
+import ProfileOrganizationForm from "./views/ProfileOrganizationForm/ProfileOrganizationForm";
+import Submissions from "./views/OrganizationDashboard/Submissions/Submissions";
+import ModuleSelection from "./views/ProfileDashboard/AddModule/ModuleSelection";
+import ServerSettings from "./views/ProfileDashboard/ServerSettings/ServerSettings";
 
 /**
  * Handles the routing mechanism in the application
@@ -50,85 +46,73 @@ function App() {
 	if (user !== null ? isAuthenticated : false) {
 		router = (
 			<React.Fragment>
-				{/*Organization*/}
+				{/* <Route path="/organization" element={<OrganizationDashboardRoute />}>
+					<Route path="submissions/:organizationName" element={Submissions} />
+					<Route path="project-requests/:organizationName" element={ProjectRequests} />
+					<Route path="submit-project/:organizationName" element={SubmitProject}/>
+					<Route path="dashboard/:organizationName" element={OrganizationDashboard}/>
+					<Route path=":organization/overview/:projectName" element={OrgProjectOverview} />
+					<Route path="applicants/:organizationName" element={Applicants} />
+					<Route path="members/:organizationName" element={Members}/>
+					<Route path="rolecontrol/:organizationName" element={RoleControl} />
+				</Route> */}
 
-				<OrganizationDashboardRoute path="/organization/submissions/:organizationName" component={Submissions} />
-				<OrganizationDashboardRoute path="/organization/project-requests/:organizationName" component={ProjectRequests} />
-				{/*<OrganizationDashboardRoute path="/organization/create-project/:organizationName" component={NewOrgProject} />*/}
-				<OrganizationDashboardRoute path="/organization/submit-project/:organizationName" component={SubmitProject}/>
-				<OrganizationDashboardRoute path="/organization/dashboard/:organizationName" component={OrganizationDashboard}/>
-				<OrganizationDashboardRoute path="/organization/:organization/overview/:projectName" component={OrgProjectOverview} />
-				<OrganizationDashboardRoute path="/organization/applicants/:organizationName" component={Applicants} />
-				<OrganizationDashboardRoute path="/organization/members/:organizationName" component={Members}/>
-				{/*<OrganizationDashboardRoute path="/organization/pre-submission/:organizationName" component={OrgPersonalProject*/}
-				{/*<OrganizationDashboardRoute path="/organization/pre-submission-overview/:organizationName/:projectName" component={PreSubmissionOverview} />*/}
-				<OrganizationDashboardRoute path="/organization/rolecontrol/:organizationName" component={RoleControl} />
-				<ProfileDashboardRoute exact path="/profile/organization/add/" component={NewOrganization}/>
+				{/* <Route path="/profile" element={<ProfileDashboardRoute />}>
+					<Route exact path="organization/add/" element={NewOrganization}/>
+					<Route exact path="servers" element={Servers} />
+					<Route exact path="servers/add" element={NewServer} />
+					<Route exact path="servers/overview/:serverName" element={ServerOverview} />
+					<Route path="servers/overview/:serverName/settings" element={ServerSettings} />
+					<Route exact path="projects" element={Projects} />
+					<Route exact path="projects/new" element={NewProject} />
+					<Route exact path="projects/add-module" element={ModuleSelection} />
+					<Route exact path="projects/overview/:projectName" element={ProjectOverview} />
+					<Route path="projects/overview/:projectName/settings" element={ProjectSettings} />
+					<Route path="organizations" element={Organizations} />
+					<Route path="settings" element={Settings} />
+					<Route exact path="" element={Dashboard} />
+				</Route> */}
 
-				{/*Servers*/}
-				<ProfileDashboardRoute exact path="/profile/servers" component={Servers} />
-				<ProfileDashboardRoute exact path="/profile/servers/add" component={NewServer} />
-				<ProfileDashboardRoute exact path="/profile/servers/overview/:serverName" component={ServerOverview} />
-				<ProfileDashboardRoute path="/profile/servers/overview/:serverName/settings" component={ServerSettings} />
+				{/* <Route path="/public" element={<PublicLazyRoute />}>
+					<Route path="organization/:organizationName/membership" element={ProfileOrganizationForm} />
+					<Route exact path="organization/:organizationName" element={ProfileOrganizationOverview} />
+					<Route path="account/:username/project/:projectName" element={ProfileProjectOverview} />
+					<Route exact path="account/:username" element={ProfilePage} />
+					<Route path="search" element={SearchResult} />
+				</Route> */}
 
-
-				{/*Projects*/}
-				<ProfileDashboardRoute exact path="/profile/projects" component={Projects} />
-				<ProfileDashboardRoute exact path="/profile/projects/new" component={NewProject} />
-				<ProfileDashboardRoute exact path="/profile/projects/add-module" component={ModuleSelection} />
-				<ProfileDashboardRoute exact path="/profile/projects/overview/:projectName" component={ProjectOverview} />
-				<ProfileDashboardRoute path="/profile/projects/overview/:projectName/settings" component={ProjectSettings} />
-
-				<ProfileDashboardRoute path="/profile/organizations" component={Organizations} />
-				<ProfileDashboardRoute path="/profile/settings" component={Settings} />
-				<ProfileDashboardRoute exact path="/profile" component={Dashboard} />
-
-				{/*Public views, no sign-in required*/}
-				<PublicLazyRoute path="/organization/:organizationName/membership" component={ProfileOrganizationForm} />
-				<PublicLazyRoute exact path="/organization/:organizationName" component={ProfileOrganizationOverview} />
-				<PublicLazyRoute path="/account/:username/project/:projectName" component={ProfileProjectOverview} />
-				{/* <PublicLazyRoute path="/registrationConfirmation" component={Verification} /> */}
-				<PublicLazyRoute exact path="/account/:username" component={ProfilePage} />
-				<PublicLazyRoute path="/search" component={SearchResult} />
-
-				<Route
+				{/* <Route
 					path="/signin"
 					render={() => (
 						<Suspense fallback={<div />}>
 							<Navigate to={"/profile/projects"} />
 						</Suspense>
 					)}
-				/>
+				/> */}
 				{/* This route is on the bottom of the list */}
 				<Route
 					exact
 					path="/"
-					render={() => (
-						<Suspense fallback={<div />}>
-							<Home />
-						</Suspense>
-					)}
+					element={<Home />}
 				/>
 			</React.Fragment>
 		);
 	} else {
 		router = (
 			<React.Fragment>
-				<PublicLazyRoute exact path="/organization/:organization" component={ProfileOrganizationOverview} />
-				<PublicLazyRoute path="/account/:username/project/:project" component={ProfileProjectOverview} />
-				{/* <PublicLazyRoute path="/registrationConfirmation" component={Verification} /> */}
-				<PublicLazyRoute exact path="/account/:username" component={ProfilePage} />
-				<PublicLazyRoute path="/search" component={SearchResult} />
-				{/* <Route path="/login/callback" component={LoginCallback} /> */}
-				{/* This route is on the bottom of the list */}
+				{/*Public views, no sign-in required*/}
+				{/* <Route path="/public" element={<PublicLazyRoute />}>
+					<Route path="organization/:organizationName/membership" element={ProfileOrganizationForm} />
+					<Route exact path="organization/:organizationName" element={ProfileOrganizationOverview} />
+					<Route path="account/:username/project/:projectName" element={ProfileProjectOverview} />
+					<Route exact path="account/:username" element={ProfilePage} />
+					<Route path="search" element={SearchResult} />
+				</Route> */}
+
 				<Route
 					exact
 					path="/"
-					render={() => (
-						<Suspense fallback={<div />}>
-							<Home />
-						</Suspense>
-					)}
+					element={<Home />}
 				/>
 			</React.Fragment>
 		);
