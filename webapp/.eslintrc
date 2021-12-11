@@ -6,7 +6,7 @@
       "jsx": true
     }
   },
-  "extends": ["eslint:recommended", "prettier"],
+  "extends": ["eslint:recommended", "plugin:jest/recommended", "prettier"],
   "rules": {
     // Jest
     "jest/no-disabled-tests": "warn",

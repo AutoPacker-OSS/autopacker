@@ -78,6 +78,8 @@
     "emailjs-com": "^3.2.0",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-jest": "^25.3.0",
+    "eslint-plugin-react": "^7.27.1",
     "jest": "^27.4.4",
     "prettier": "^2.5.1"
   },
