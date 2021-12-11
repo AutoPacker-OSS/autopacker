@@ -1,6 +1,5 @@
 import { Card, Col, Layout, Menu, PageHeader, Row } from "antd";
 import React, { useEffect } from "react";
-import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import GeneralSetting from "./components/General/GeneralSetting";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
@@ -12,24 +11,23 @@ function ProjectSettings() {
 
 	const { Content } = Layout;
 
-	const { authState } = useOktaAuth();
 
 	useEffect(() => {
 		let projectId = sessionStorage.getItem("selectedProjectId");
 
-		axios({
-			method: "get",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/project-overview/" +
-				projectId,
-			headers: {
-				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			},
-		}).then(function (response) {
-			setProject(response.data);
-		});
+		// axios({
+		// 	method: "get",
+		// 	url:
+		// 		process.env.REACT_APP_APPLICATION_URL +
+		// 		process.env.REACT_APP_API +
+		// 		"/project-overview/" +
+		// 		projectId,
+		// 	headers: {
+		// 		Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 	},
+		// }).then(function (response) {
+		// 	setProject(response.data);
+		// });
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

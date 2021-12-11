@@ -1,7 +1,7 @@
 import { Button, Form, Input, Layout, PageHeader, Tooltip, Typography, Spin } from "antd";
 import React, {useContext} from "react";
 import { useDispatch } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { Navigate  } from "react-router-dom";
 import {createAlert, selectMenuOption} from "../../../store/actions/generalActions";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
@@ -171,7 +171,7 @@ function NewServer() {
 					minHeight: 280,
 				}}
 			>
-				{redirect ? <Redirect to="/profile/servers" /> : <div />}
+				{redirect ? <Navigate to="/profile/servers" /> : <div />}
 				<Form {...formItemLayout}>
 					<Form.Item
 						name="serverTitle"

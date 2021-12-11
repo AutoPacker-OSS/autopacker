@@ -1,8 +1,8 @@
 import {Button, Layout, Menu} from "antd";
 import {ApartmentOutlined, DesktopOutlined, FolderOutlined, HddOutlined} from "@ant-design/icons";
-import React, {Suspense, useContext} from "react";
+import React, {Suspense, useContext, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {NavLink, Redirect, Route} from "react-router-dom";
+import {NavLink, Route, useNavigate } from "react-router-dom";
 import Identicon from "../../assets/image/download.png";
 import ProfileAlert from "../../components/CustomAlerts/ProfileAlert";
 import Navbar from "../../components/Navbar/Navbar";
@@ -141,20 +141,24 @@ function ProfileDashboardLayout({children}) {
  */
 function ProfileDashboardRoute({component: Component, ...rest}) {
 	const { isAuthenticated } = useAuth0();
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (!isAuthenticated) {
+			navigate.push('/')
+		}
+	}, [])
+
 	return (
 		<Route
 			{...rest}
-			render={(props) =>
-				isAuthenticated === true ? (
-					<ProfileDashboardLayout>
-						<Suspense fallback={<div/>}>
-							<Component {...props} />
-						</Suspense>
-					</ProfileDashboardLayout>
-				) : (
-					<Redirect to={"/"}/>
-				)
-			}
+			render={(props) => (
+				<ProfileDashboardLayout>
+					<Suspense fallback={<div/>}>
+						<Component {...props} />
+					</Suspense>
+				</ProfileDashboardLayout>
+			)}
 		/>
 	);
 }

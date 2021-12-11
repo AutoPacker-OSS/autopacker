@@ -1,7 +1,6 @@
 import { Col, Row, Spin } from "antd";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import {useOktaAuth} from "@okta/okta-react";
 import { LoadingOutlined } from "@ant-design/icons";
 
 function Building(props) {
@@ -10,8 +9,6 @@ function Building(props) {
 
 	// Get value from props
 	const { setupInfo } = props.values;
-
-	const { authState } = useOktaAuth();
 
 	const projectName = sessionStorage.getItem("selectedProjectName");
 

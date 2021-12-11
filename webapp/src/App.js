@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 // Import custom route
 import PublicLazyRoute from "./routes/PublicLazyRoute/PublicLazyRoute";
@@ -11,7 +11,6 @@ import OrganizationDashboardRoute from "./routes/OrganizationDashboard/Organizat
 const Home = React.lazy(() => import("./views/Home/Home"));
 const Dashboard = React.lazy(() => import("./views/ProfileDashboard/Dashboard/Dashboard"));
 const Projects = React.lazy(() => import("./views/ProfileDashboard/Projects/Projects"));
-const RedirectProfileHome = React.lazy(() => import("./components/Redirects/RedirectProfileHome"));
 const ProjectOverview = React.lazy(() => import("./views/ProfileDashboard/ProjectOverview/ProjectOverview"));
 const OrgProjectOverview = React.lazy(() => import("./views/OrganizationDashboard/OrgProjectOverview/OrgProjectOverview"));
 const Servers = React.lazy(() => import("./views/ProfileDashboard/Servers/Servers"));
@@ -96,7 +95,7 @@ function App() {
 					path="/signin"
 					render={() => (
 						<Suspense fallback={<div />}>
-							<RedirectProfileHome />
+							<Navigate to={"/profile/projects"} />
 						</Suspense>
 					)}
 				/>
@@ -137,7 +136,7 @@ function App() {
 
 	return (
 		<div>
-			<Switch>{router}</Switch>
+			<Routes>{router}</Routes>
 		</div>
 	);
 }

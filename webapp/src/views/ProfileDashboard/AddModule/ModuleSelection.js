@@ -1,6 +1,6 @@
 import { Card, Col, Row, PageHeader, Typography, Layout } from "antd";
 import React, { useEffect } from "react";
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 // Import styles
 import "./ModuleStyle.scss";
@@ -75,7 +75,7 @@ function ModuleSelection() {
 			>
 				<Paragraph>Add module(s) to an existing project</Paragraph>
 			</PageHeader>
-			{projectName === null ? <Redirect to="/profile/projects" /> : <div />}
+			{projectName === null ? <Navigate to="/profile/projects" /> : <div />}
 			{/* Can add the Content thingy to route to be common, but might want to do something about the breadcrumb thingy */}
 			<Content
 				style={{

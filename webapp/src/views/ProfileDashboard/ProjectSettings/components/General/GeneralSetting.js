@@ -1,9 +1,8 @@
 import React, {useContext} from "react";
 import { useDispatch } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { Typography, Button, Input, Divider, Modal } from "antd";
 import { createAlert } from "../../../../../store/actions/generalActions";
-import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import {useApi} from "../../../../../hooks/useApi";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -62,7 +61,7 @@ function GeneralSetting(props) {
 
 	return (
 		<div>
-			{redirect ? <Redirect to="/profile/projects" /> : <div />}
+			{redirect ? <Navigate to="/profile/projects" /> : <div />}
 			<Title style={{ color: "red" }} level={2}>
 				Delete Project
 				<Divider style={{ marginTop: 10 }} />

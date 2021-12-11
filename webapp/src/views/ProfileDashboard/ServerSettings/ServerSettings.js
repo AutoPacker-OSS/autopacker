@@ -1,6 +1,5 @@
 import { Card, Col, Layout, Menu, PageHeader, Row } from "antd";
 import React, { useEffect } from "react";
-import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 
 import GeneralSetting from "./components/General/GeneralSetting";
@@ -11,26 +10,24 @@ function ServerSettings() {
 	const [activeOption, setActiveOption] = React.useState(1);
 	const [server, setServer] = React.useState({});
 
-	const { authState } = useOktaAuth();
-
 	const { Content } = Layout;
 
 	useEffect(() => {
 		let serverId = sessionStorage.getItem("selectedServer");
 
-		axios({
-			method: "get",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/server/server-overview/" +
-				serverId,
-			headers: {
-				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			},
-		}).then(function (response) {
-			setServer(response.data);
-		});
+		// axios({
+		// 	method: "get",
+		// 	url:
+		// 		process.env.REACT_APP_APPLICATION_URL +
+		// 		process.env.REACT_APP_API +
+		// 		"/server/server-overview/" +
+		// 		serverId,
+		// 	headers: {
+		// 		Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 	},
+		// }).then(function (response) {
+		// 	setServer(response.data);
+		// });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

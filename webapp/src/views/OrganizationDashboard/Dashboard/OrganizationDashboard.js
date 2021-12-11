@@ -1,13 +1,12 @@
 import { Card, Col, Input, Layout, PageHeader, Row, Tag, Typography } from "antd";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import {Redirect, useParams} from "react-router-dom";
+import {Navigate, useParams} from "react-router-dom";
 import axios from "axios";
 import Moment from 'moment';
 // Import custom hooks
 import useDebounce from "./../../../hooks/useDebounce";
 import {format} from "date-fns";
-import {useOktaAuth} from "@okta/okta-react";
 // Import helper methods
 
 function OrganizationDashboard() {
@@ -21,7 +20,6 @@ function OrganizationDashboard() {
 
 	const debouncedSearchTerm = useDebounce(search, 500);
 
-	const { authState } = useOktaAuth();
 
 	const { organizationName } = useParams();
 
@@ -31,66 +29,66 @@ function OrganizationDashboard() {
 	const { Search } = Input;
 	const { Meta } = Card;
 
-	useEffect(() => {
-		setSelectedCard(null);
+	// useEffect(() => {
+	// 	setSelectedCard(null);
 
-		axios({
-			method: "get",
-			url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/" + organizationName,
-			headers: {
-				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			},
-		}).then(function (response) {
-			setOrganization(response.data);
-		});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	// 	axios({
+	// 		method: "get",
+	// 		url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/" + organizationName,
+	// 		headers: {
+	// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+	// 		},
+	// 	}).then(function (response) {
+	// 		setOrganization(response.data);
+	// 	});
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, []);
 
 	// Inspired from https://dev.to/gabe_ragland/debouncing-with-react-hooks-jci
-	useEffect(
-		() => {
-			// Make sure we have a value (user has entered something in input)
-			if (debouncedSearchTerm) {
-				// Fire off our API call
-				axios({
-					method: "get",
-					url:
-						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_API +
-						"/organization/" +
-						organizationName +
-						"/projects/search?q=" +
-						search,
-					headers: {
-						Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-					},
-				}).then(function (response) {
-					setProjects(response.data);
-				});
-			} else {
-				axios({
-					method: "get",
-					url:
-						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_API +
-						"/organization/" +
-						organizationName +
-						"/projects",
-					headers: {
-						Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-					},
-				}).then(function (response) {
-					setProjects(response.data);
-				});
-			}
-		},
-		// This is the useEffect input array
-		// Our useEffect function will only execute if this value changes ...
-		// ... and thanks to our hook it will only change if the original ...
-		// value (searchTerm) hasn't changed for more than 500ms.
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[debouncedSearchTerm]
-	);
+	// useEffect(
+	// 	() => {
+	// 		// Make sure we have a value (user has entered something in input)
+	// 		if (debouncedSearchTerm) {
+	// 			// Fire off our API call
+	// 			axios({
+	// 				method: "get",
+	// 				url:
+	// 					process.env.REACT_APP_APPLICATION_URL +
+	// 					process.env.REACT_APP_API +
+	// 					"/organization/" +
+	// 					organizationName +
+	// 					"/projects/search?q=" +
+	// 					search,
+	// 				headers: {
+	// 					Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+	// 				},
+	// 			}).then(function (response) {
+	// 				setProjects(response.data);
+	// 			});
+	// 		} else {
+	// 			axios({
+	// 				method: "get",
+	// 				url:
+	// 					process.env.REACT_APP_APPLICATION_URL +
+	// 					process.env.REACT_APP_API +
+	// 					"/organization/" +
+	// 					organizationName +
+	// 					"/projects",
+	// 				headers: {
+	// 					Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+	// 				},
+	// 			}).then(function (response) {
+	// 				setProjects(response.data);
+	// 			});
+	// 		}
+	// 	},
+	// 	// This is the useEffect input array
+	// 	// Our useEffect function will only execute if this value changes ...
+	// 	// ... and thanks to our hook it will only change if the original ...
+	// 	// value (searchTerm) hasn't changed for more than 500ms.
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// 	[debouncedSearchTerm]
+	// );
 
 	const routes = [
 		{
@@ -106,7 +104,7 @@ function OrganizationDashboard() {
 
 	return (
 		<div style={{ width: "100%" }}>
-			{organizationName == null ? <Redirect to="/profile/organizations" /> : <div />}
+			{organizationName == null ? <Navigate to="/profile/organizations" /> : <div />}
 			<PageHeader
 				style={{
 					border: "1px solid rgb(235, 237, 240)",
@@ -136,7 +134,7 @@ function OrganizationDashboard() {
 						<Col xs={24} lg={8} xl={6} key={project.id}>
 							{/* Redirects user when a project card has been selected */}
 							 {selectedCard !== null ? (
-								<Redirect to={"/organization/" + organizationName + "/overview/" + selectedCard} />
+								<Navigate to={"/organization/" + organizationName + "/overview/" + selectedCard} />
 							) : (
 								<div />
 							)}

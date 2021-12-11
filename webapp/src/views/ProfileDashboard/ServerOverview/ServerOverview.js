@@ -17,7 +17,6 @@ import {
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 
 import { createAlert } from "../../../store/actions/generalActions";
@@ -61,8 +60,6 @@ function ServerOverview() {
 	const [numbSelected, setNumbSelected] = React.useState(0);
 	const [checkedProjects, setCheckedProjects] = React.useState([]);
 
-	const { authState } = useOktaAuth();
-
 	const dispatch = useDispatch();
 
 	// Get antd sub components
@@ -75,110 +72,110 @@ function ServerOverview() {
 
 		let serverId = sessionStorage.getItem("selectedServer");
 
-		axios({
-			method: "get",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/server/server-overview/" +
-				serverId,
-			headers: {
-				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			},
-		}).then(function (response) {
-			setServer(response.data);
-			// TODO iff response contains some projects, fetch them from file system api
-			if (response.data.projectIds !== "") {
-				let list = [];
-				axios({
-					method: "get",
-					url:
-						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_API +
-						"/projectsForServer/"+
-						serverId,
-					headers: {
-						Authorization:
-							authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-					},
-				}).then((resp) => {
-					setUserProjects(resp.data);
-					console.log(resp.data)
-					let listContainingServerProjectsAndLoadingState = [];
+		// axios({
+		// 	method: "get",
+		// 	url:
+		// 		process.env.REACT_APP_APPLICATION_URL +
+		// 		process.env.REACT_APP_API +
+		// 		"/server/server-overview/" +
+		// 		serverId,
+		// 	headers: {
+		// 		Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 	},
+		// }).then(function (response) {
+		// 	setServer(response.data);
+		// 	// TODO iff response contains some projects, fetch them from file system api
+		// 	if (response.data.projectIds !== "") {
+		// 		let list = [];
+		// 		axios({
+		// 			method: "get",
+		// 			url:
+		// 				process.env.REACT_APP_APPLICATION_URL +
+		// 				process.env.REACT_APP_API +
+		// 				"/projectsForServer/"+
+		// 				serverId,
+		// 			headers: {
+		// 				Authorization:
+		// 					authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 			},
+		// 		}).then((resp) => {
+		// 			setUserProjects(resp.data);
+		// 			console.log(resp.data)
+		// 			let listContainingServerProjectsAndLoadingState = [];
 
-					resp.data.forEach((project) => {
-						response.data.projectIds.split(",").forEach((projectId) => {
-							// eslint-disable-next-line eqeqeq
-							if (projectId == project.id) {
-								list.push(project);
-								listContainingServerProjectsAndLoadingState.push({
-									id: project.id,
-									loading: false,
-								});
-							}
-						});
-					});
-					if (list.length <= 0) {
-						setServerProjects(null);
-						setDeployingProjects(null);
-					} else {
-						setServerProjects(list);
-						setDeployingProjects(listContainingServerProjectsAndLoadingState);
-					}
-				});
-			}
-		});
+		// 			resp.data.forEach((project) => {
+		// 				response.data.projectIds.split(",").forEach((projectId) => {
+		// 					// eslint-disable-next-line eqeqeq
+		// 					if (projectId == project.id) {
+		// 						list.push(project);
+		// 						listContainingServerProjectsAndLoadingState.push({
+		// 							id: project.id,
+		// 							loading: false,
+		// 						});
+		// 					}
+		// 				});
+		// 			});
+		// 			if (list.length <= 0) {
+		// 				setServerProjects(null);
+		// 				setDeployingProjects(null);
+		// 			} else {
+		// 				setServerProjects(list);
+		// 				setDeployingProjects(listContainingServerProjectsAndLoadingState);
+		// 			}
+		// 		});
+		// 	}
+		// });
 
 		// TODO Might want to take this last part into own method as it might not be relevant for the user all the time
-		axios({
-			method: "get",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/projects",
-			headers: {
-				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			},
-		}).then(function (response) {
-			setUserProjects(response.data);
-			console.log(response.data);
-			let list = [];
-			response.data.forEach((project) => {
-				list.push({ id: project.id, checked: false });
-			});
-			setCheckedProjects(list);
-		});
+		// axios({
+		// 	method: "get",
+		// 	url:
+		// 		process.env.REACT_APP_APPLICATION_URL +
+		// 		process.env.REACT_APP_API +
+		// 		"/projects",
+		// 	headers: {
+		// 		Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 	},
+		// }).then(function (response) {
+		// 	setUserProjects(response.data);
+		// 	console.log(response.data);
+		// 	let list = [];
+		// 	response.data.forEach((project) => {
+		// 		list.push({ id: project.id, checked: false });
+		// 	});
+		// 	setCheckedProjects(list);
+		// });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [refreshList]);
 
 	const updateServerProjects = (projectIds) => {
-		axios({
-			method: "post",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/server/add-project",
-			headers: {
-				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			},
-			data: {
-				server_id: server.serverId,
-				project_ids: projectIds,
-			},
-		})
-			.then(() => {
-				window.location.reload();
-			})
-			.catch(() => {
-				dispatch(
-					createAlert(
-						"Project not added",
-						"Couldn't add the project(s) to the server",
-						"error",
-						true
-					)
-				);
-			});
+		// axios({
+		// 	method: "post",
+		// 	url:
+		// 		process.env.REACT_APP_APPLICATION_URL +
+		// 		process.env.REACT_APP_API +
+		// 		"/server/add-project",
+		// 	headers: {
+		// 		Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 	},
+		// 	data: {
+		// 		server_id: server.serverId,
+		// 		project_ids: projectIds,
+		// 	},
+		// })
+		// 	.then(() => {
+		// 		window.location.reload();
+		// 	})
+		// 	.catch(() => {
+		// 		dispatch(
+		// 			createAlert(
+		// 				"Project not added",
+		// 				"Couldn't add the project(s) to the server",
+		// 				"error",
+		// 				true
+		// 			)
+		// 		);
+		// 	});
 	};
 
 	const toggleCheckedProject = (projectId) => {
@@ -231,89 +228,89 @@ function ServerOverview() {
 		toggleLoadingState(projectToDeploy.projectId);
 		setDeployProjectModalOpen(false);
 
-		axios({
-			method: "post",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/server/deployProject/",
-			data: {
-				serverId: server.serverId,
-				projectName: projectToDeploy.projectName,
-				password: serverPassword,
-			},
-			headers: {
-				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			},
-		})
-			.then(function (response) {
-				setDeployFinished(true);
-				dispatch(
-					createAlert(
-						"Project successfully deployed",
-						"You can view your project at this address: " + server.ip,
-						"success",
-						true
-					)
-				);
-				toggleLoadingState(projectToDeploy.projectId);
-				setServerPassword("");
-			})
-			.catch(() => {
-				dispatch(
-					createAlert(
-						"Failed to deploy project",
-						"Something went wrong while deploying the project. Submit a issue on GitHub for assistance.",
-						"error",
-						true
-					)
-				);
-				setServerPassword("");
-			});
+		// axios({
+		// 	method: "post",
+		// 	url:
+		// 		process.env.REACT_APP_APPLICATION_URL +
+		// 		process.env.REACT_APP_API +
+		// 		"/server/deployProject/",
+		// 	data: {
+		// 		serverId: server.serverId,
+		// 		projectName: projectToDeploy.projectName,
+		// 		password: serverPassword,
+		// 	},
+		// 	headers: {
+		// 		Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 	},
+		// })
+		// 	.then(function (response) {
+		// 		setDeployFinished(true);
+		// 		dispatch(
+		// 			createAlert(
+		// 				"Project successfully deployed",
+		// 				"You can view your project at this address: " + server.ip,
+		// 				"success",
+		// 				true
+		// 			)
+		// 		);
+		// 		toggleLoadingState(projectToDeploy.projectId);
+		// 		setServerPassword("");
+		// 	})
+		// 	.catch(() => {
+		// 		dispatch(
+		// 			createAlert(
+		// 				"Failed to deploy project",
+		// 				"Something went wrong while deploying the project. Submit a issue on GitHub for assistance.",
+		// 				"error",
+		// 				true
+		// 			)
+		// 		);
+		// 		setServerPassword("");
+		// 	});
 	};
 
 	const installEssentials = () => {
 		setInstallationModalOpen(false);
 		setInstallationLoading(true);
 
-		axios({
-			method: "post",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/server/init/",
-			data: {
-				serverId: server.serverId,
-				password: serverPassword,
-			},
-			headers: {
-				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			},
-		})
-			.then(function (response) {
-				dispatch(
-					createAlert(
-						"Successfully installed essentials",
-						"We have disabled the firewall and installed docker and docker-compose.",
-						"success",
-						true
-					)
-				);
-				setInstallationLoading(false);
-				setServerPassword("");
-			})
-			.catch((error) => {
-				dispatch(
-					createAlert(
-						"Failed to install essentials",
-						"Something went wrong while installing server essential software.",
-						"error",
-						true
-					)
-				);
-				setInstallationLoading(false);
-				setServerPassword("");
-			});
+		// axios({
+		// 	method: "post",
+		// 	url:
+		// 		process.env.REACT_APP_APPLICATION_URL +
+		// 		process.env.REACT_APP_API +
+		// 		"/server/init/",
+		// 	data: {
+		// 		serverId: server.serverId,
+		// 		password: serverPassword,
+		// 	},
+		// 	headers: {
+		// 		Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 	},
+		// })
+		// 	.then(function (response) {
+		// 		dispatch(
+		// 			createAlert(
+		// 				"Successfully installed essentials",
+		// 				"We have disabled the firewall and installed docker and docker-compose.",
+		// 				"success",
+		// 				true
+		// 			)
+		// 		);
+		// 		setInstallationLoading(false);
+		// 		setServerPassword("");
+		// 	})
+		// 	.catch((error) => {
+		// 		dispatch(
+		// 			createAlert(
+		// 				"Failed to install essentials",
+		// 				"Something went wrong while installing server essential software.",
+		// 				"error",
+		// 				true
+		// 			)
+		// 		);
+		// 		setInstallationLoading(false);
+		// 		setServerPassword("");
+		// 	});
 	};
 
 	const routes = [
@@ -404,50 +401,50 @@ function ServerOverview() {
 	};
 
 	const deleteModal = () => {
-		axios({
-			method: "post",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/server/remove-project",
-			headers: {
-				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			},
-			data: {
-				server_id: server.serverId,
-				project_id: projectToDeleteSelected.id,
-				project_name: projectToDeleteSelected.name,
-				password: serverPassword,
-			},
-		})
-			.then(() => {
-				/* dispatch(
-					createAlert(
-						"Project successfully deleted",
-						"You have successfully deleted the project: " +
-							projectToDeleteSelected.name,
-						"success",
-						true
-					)
-				); */
-				closeDeleteModal();
-				setServerPassword("");
-				window.location.reload();
-			})
-			.catch(() => {
-				dispatch(
-					createAlert(
-						"Failed to delete project",
-						"Failed to delete the project: " +
-						projectToDeleteSelected.name +
-						". Please write an issue on GitHub if this is unresolved",
-						"error",
-						true
-					)
-				);
-				closeDeleteModal();
-				setServerPassword("");
-			});
+		// axios({
+		// 	method: "post",
+		// 	url:
+		// 		process.env.REACT_APP_APPLICATION_URL +
+		// 		process.env.REACT_APP_API +
+		// 		"/server/remove-project",
+		// 	headers: {
+		// 		Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+		// 	},
+		// 	data: {
+		// 		server_id: server.serverId,
+		// 		project_id: projectToDeleteSelected.id,
+		// 		project_name: projectToDeleteSelected.name,
+		// 		password: serverPassword,
+		// 	},
+		// })
+		// 	.then(() => {
+		// 		/* dispatch(
+		// 			createAlert(
+		// 				"Project successfully deleted",
+		// 				"You have successfully deleted the project: " +
+		// 					projectToDeleteSelected.name,
+		// 				"success",
+		// 				true
+		// 			)
+		// 		); */
+		// 		closeDeleteModal();
+		// 		setServerPassword("");
+		// 		window.location.reload();
+		// 	})
+		// 	.catch(() => {
+		// 		dispatch(
+		// 			createAlert(
+		// 				"Failed to delete project",
+		// 				"Failed to delete the project: " +
+		// 				projectToDeleteSelected.name +
+		// 				". Please write an issue on GitHub if this is unresolved",
+		// 				"error",
+		// 				true
+		// 			)
+		// 		);
+		// 		closeDeleteModal();
+		// 		setServerPassword("");
+		// 	});
 	};
 
 	return (

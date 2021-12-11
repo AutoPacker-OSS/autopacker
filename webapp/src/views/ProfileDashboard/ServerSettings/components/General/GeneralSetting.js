@@ -1,6 +1,6 @@
 import React, {useContext} from "react";
 import { useDispatch } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { Typography, Button, Input, Divider, Modal } from "antd";
 import { createAlert } from "../../../../../store/actions/generalActions";
 import axios from "axios";
@@ -55,7 +55,7 @@ function GeneralSetting(props) {
 
 	return (
 		<div>
-			{redirect ? <Redirect to="/profile/servers" /> : <div />}
+			{redirect ? <Navigate to="/profile/servers" /> : <div />}
 			<Title style={{ color: "red" }} level={2}>
 				Delete Server
 				<Divider style={{ marginTop: 10 }} />

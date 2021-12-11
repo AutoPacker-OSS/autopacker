@@ -1,7 +1,6 @@
 import {Avatar, Button, Card, Col, Empty, Layout, Modal, PageHeader, Popover, Radio, Row, Tag, Typography} from "antd";
 import React, { useEffect } from "react";
-import {Link, Redirect, useParams} from "react-router-dom";
-import {useOktaAuth} from "@okta/okta-react";
+import {Link, Navigate , useParams} from "react-router-dom";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
 import {GlobalOutlined, PlayCircleOutlined, SettingOutlined} from "@ant-design/icons";
@@ -31,41 +30,39 @@ function OrgProjectOverview() {
 	const { Meta } = Card;
 	const dispatch = useDispatch();
 
-	const { authState } = useOktaAuth();
-
 	const { organizationName } = useParams();
 	const projectId = sessionStorage.getItem("selectedProjectId");
 
-	useEffect(() => {
-		setSelectedModule(null);
-		axios({
-			method: "get",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/organization/" +
-				organizationName +
-				"/overview/" +
-				projectId,
-			headers: {
-				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			},
-		}).then(function (response) {
-			console.log("DATA:", response.data);
-			setProject(response.data);
-			setProjectModules(response.data.modules);
-			if (response.data.tags) {
-				setTags(response.data.tags.split(","));
-			} else {
-				setTags([]);
-			}
-			if (response.data.links) {
-				setLinks(response.data.links.split(","));
-			} else {
-				setLinks([]);
-			}
-		});
-	}, [authState.accessToken, organizationName, projectId]);
+	// useEffect(() => {
+	// 	setSelectedModule(null);
+	// 	axios({
+	// 		method: "get",
+	// 		url:
+	// 			process.env.REACT_APP_APPLICATION_URL +
+	// 			process.env.REACT_APP_API +
+	// 			"/organization/" +
+	// 			organizationName +
+	// 			"/overview/" +
+	// 			projectId,
+	// 		headers: {
+	// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+	// 		},
+	// 	}).then(function (response) {
+	// 		console.log("DATA:", response.data);
+	// 		setProject(response.data);
+	// 		setProjectModules(response.data.modules);
+	// 		if (response.data.tags) {
+	// 			setTags(response.data.tags.split(","));
+	// 		} else {
+	// 			setTags([]);
+	// 		}
+	// 		if (response.data.links) {
+	// 			setLinks(response.data.links.split(","));
+	// 		} else {
+	// 			setLinks([]);
+	// 		}
+	// 	});
+	// }, [authState.accessToken, organizationName, projectId]);
 
 
 	const routes = [
@@ -97,58 +94,58 @@ function OrgProjectOverview() {
 		</div>
 	);
 
-	const updateServerProjects = (server) => {
-		let projectIds = "";
-		projectIds += project.id;
-		console.log(projectIds)
-		axios({
-			method: "post",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/server/add-project",
-			headers: {
-				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-			},
-			data: {
-				server_id: server.serverId,
-				project_ids: projectIds,
-			},
-		})
-			.then(() => {
-				window.location.reload();
-			})
-			.catch(() => {
-				dispatch(
-					createAlert(
-						"Project not added",
-						"Couldn't add the project(s) to the server",
-						"error",
-						true
-					)
-				);
-			});
-	};
+	// const updateServerProjects = (server) => {
+	// 	let projectIds = "";
+	// 	projectIds += project.id;
+	// 	console.log(projectIds)
+	// 	axios({
+	// 		method: "post",
+	// 		url:
+	// 			process.env.REACT_APP_APPLICATION_URL +
+	// 			process.env.REACT_APP_API +
+	// 			"/server/add-project",
+	// 		headers: {
+	// 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+	// 		},
+	// 		data: {
+	// 			server_id: server.serverId,
+	// 			project_ids: projectIds,
+	// 		},
+	// 	})
+	// 		.then(() => {
+	// 			window.location.reload();
+	// 		})
+	// 		.catch(() => {
+	// 			dispatch(
+	// 				createAlert(
+	// 					"Project not added",
+	// 					"Couldn't add the project(s) to the server",
+	// 					"error",
+	// 					true
+	// 				)
+	// 			);
+	// 		});
+	// };
 
-	const getServers = () => {
-				axios({
-					method: "get",
-					url:
-						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_API +
-						"/server",
-					headers: {
-						Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-					},
-				}).then(function (response) {
-					setServers(response.data);
-					console.log(response.data)
-				});
-		}
+	// const getServers = () => {
+	// 			axios({
+	// 				method: "get",
+	// 				url:
+	// 					process.env.REACT_APP_APPLICATION_URL +
+	// 					process.env.REACT_APP_API +
+	// 					"/server",
+	// 				headers: {
+	// 					Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+	// 				},
+	// 			}).then(function (response) {
+	// 				setServers(response.data);
+	// 				console.log(response.data)
+	// 			});
+	// 	}
 
 
 	const openServerModal = () => {
-		getServers();
+		// getServers();
 		setServerModal(true);
 	};
 
@@ -180,7 +177,7 @@ function OrgProjectOverview() {
 
 	return (
 		<div style={{ width: "100%", height: "auto" }}>
-			{project.id === null ? <Redirect to="/organization/dashboard" /> : <div />}
+			{project.id === null ? <Navigate to="/organization/dashboard" /> : <div />}
 			<PageHeader
 				style={{
 					border: "1px solid rgb(235, 237, 240)",
@@ -347,10 +344,8 @@ function OrgProjectOverview() {
 						centered
 						visible={serverModal}
 						onOk={() => {
-							updateServerProjects(selectedServer);
+							// updateServerProjects(selectedServer);
 							setServerModal(false);
-
-
 						}}
 						onCancel={() => {
 							setSelectedServer(null);

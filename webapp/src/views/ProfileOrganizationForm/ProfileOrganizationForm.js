@@ -1,7 +1,7 @@
 import { Button, Col, Form, Input, message, PageHeader, Row, Select, Tooltip, Typography } from "antd";
 import axios from "axios";
 import React, {useContext, useEffect} from "react";
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import NTNU from "../../assets/image/ntnu.png";
 import { axiosRequest } from "../../util/axiosRequest";
 import { QuestionCircleOutlined } from "@ant-design/icons";
@@ -76,7 +76,7 @@ function ProfileOrganizationForm() {
 
 	return (
 		<React.Fragment>
-			{redirect ? <Redirect to={"/organization/" + organization.name} /> : <div />}
+			{redirect ? <Navigate to={"/organization/" + organization.name} /> : <div />}
 			{/* Content */}
 			<Row style={{
 				borderTop: "1px solid rgb(235, 237, 240)",
