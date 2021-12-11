@@ -37,10 +37,16 @@
     "build": "env-cmd -f dev.env react-scripts build",
     "build:staging": "env-cmd -f stage.env react-scripts build",
     "build:local": "env-cmd -f local.env react-scripts build",
-    "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "test": "jest --watchAll",
+    "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
+    "check-types": "tsc",
+    "prettier": "prettier --ignore-path .gitignore \"**/*.+(js|json|ts|tsx|css|html)\"",
+    "format": "yarn prettier -- --write",
+    "check-format": "yarn prettier -- --list-different",
+    "validate": "yarn check-types && yarn check-format && yarn lint"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -60,13 +66,20 @@
   "description": "The web application for the AutoPacker platform.",
   "main": "index.js",
   "devDependencies": {
+    "@babel/preset-typescript": "^7.16.0",
     "@storybook/addon-actions": "^6.4.9",
     "@storybook/addon-essentials": "^6.4.9",
     "@storybook/addon-links": "^6.4.9",
     "@storybook/node-logger": "^6.4.9",
     "@storybook/preset-create-react-app": "^3.2.0",
     "@storybook/react": "^6.4.9",
-    "emailjs-com": "^3.2.0"
+    "@typescript-eslint/eslint-plugin": "^5.6.0",
+    "@typescript-eslint/parser": "^5.6.0",
+    "emailjs-com": "^3.2.0",
+    "eslint": "^8.4.1",
+    "eslint-config-prettier": "^8.3.0",
+    "jest": "^27.4.4",
+    "prettier": "^2.5.1"
   },
   "repository": {
     "type": "git",

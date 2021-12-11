@@ -65,8 +65,7 @@ function OrganizationDashboardLayout({ children }) {
                 ),
               );
             });
-        }}
-      >
+        }}>
         Click here to resend
       </Button>
     </div>
@@ -80,7 +79,7 @@ function OrganizationDashboardLayout({ children }) {
   }, []);
 
   if (organizationName == null) {
-		return <Navigate to="/profile/organizations" />
+    return <Navigate to="/profile/organizations" />;
   } else {
     return (
       <Layout>
@@ -93,15 +92,13 @@ function OrganizationDashboardLayout({ children }) {
             style={{ background: '#fff', padding: 0 }}
             collapsible
             collapsed={collapsed}
-            onCollapse={() => setCollapsed(!collapsed)}
-          >
+            onCollapse={() => setCollapsed(!collapsed)}>
             <Menu
               theme="dark"
               mode="inline"
               openKeys={openedSubMenus}
               // Called when a menu item is clicked
-              style={{ height: '100%', borderRight: 0 }}
-            >
+              style={{ height: '100%', borderRight: 0 }}>
               <div style={{ textAlign: 'center' }}>
                 {/* // TODO Need to change NTNU to use image of organization later on */}
                 <img style={{ backgroundColor: 'white' }} className="identicon" src={NTNU} alt="identicon" />
@@ -117,8 +114,7 @@ function OrganizationDashboardLayout({ children }) {
                       {menuItem.icon}
                       {collapsed ? null : menuItem.text}
                     </span>
-                  }
-                >
+                  }>
                   {/* Submenu items */}
                   {menuItem.items !== null
                     ? menuItem.items.map((childItem) => {
@@ -142,8 +138,7 @@ function OrganizationDashboardLayout({ children }) {
                             activeClassName="ant-menu-item-selected"
                             to={childItem.to}
                             className="ant-menu-item ant-menu-item-only-child"
-                            style={{ paddingLeft: 48 }}
-                          >
+                            style={{ paddingLeft: 48 }}>
                             {childItem.text}
                           </NavLink>
                         );
@@ -170,10 +165,12 @@ function OrganizationOutlet({ component: Component, ...rest }) {
   const { isAuthenticated } = useAuth0();
 
   return isAuthenticated ? (
-		<OrganizationDashboardLayout>
-			<Outlet />
-		</OrganizationDashboardLayout>
-  ) : <Navigate to="" />;
+    <OrganizationDashboardLayout>
+      <Outlet />
+    </OrganizationDashboardLayout>
+  ) : (
+    <Navigate to="" />
+  );
 }
 
 export default OrganizationOutlet;

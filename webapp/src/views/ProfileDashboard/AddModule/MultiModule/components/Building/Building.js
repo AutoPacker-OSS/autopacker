@@ -1,20 +1,20 @@
-import { Col, Icon, Row, Spin } from "antd";
-import React, { useEffect } from "react";
+import { Col, Icon, Row, Spin } from 'antd';
+import React, { useEffect } from 'react';
 
 function Building() {
-	// Get methods from props
-	//const { nextStep, setUploadSuccess } = props.methods;
+  // Get methods from props
+  //const { nextStep, setUploadSuccess } = props.methods;
 
-	// Get value from props
-	//const { setupInfo, file } = props.values;
+  // Get value from props
+  //const { setupInfo, file } = props.values;
 
-	// Redux state
-	//const username = useSelector((state) => state.auth.username);
-	//const projectName = useSelector((state) => state.general.selectedProjectName);
+  // Redux state
+  //const username = useSelector((state) => state.auth.username);
+  //const projectName = useSelector((state) => state.general.selectedProjectName);
 
-	useEffect(() => {
-		// TODO Undo when this section is finished
-		/* const url =
+  useEffect(() => {
+    // TODO Undo when this section is finished
+    /* const url =
 			process.env.REACT_APP_APPLICATION_URL +
 			process.env.REACT_APP_API +
 			"/projects/" +
@@ -42,8 +42,8 @@ function Building() {
 				nextStep();
 				setUploadSuccess(false);
 			}); */
-		// TODO Make it work with axios
-		/* axiosRequest(
+    // TODO Make it work with axios
+    /* axiosRequest(
 			"post",
 			url,
 			{
@@ -59,26 +59,26 @@ function Building() {
 				
 			}
 		); */
-	}, []);
+  }, []);
 
-	return (
-		<div>
-			<Row>
-				<Col xs={24}>
-					<Spin
-						style={{
-							width: "100%",
-							marginLeft: "auto",
-							marginRight: "auto",
-							marginTop: 30,
-							marginBottom: 30,
-						}}
-						indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />}
-					/>
-				</Col>
-			</Row>
-		</div>
-	);
+  return (
+    <div>
+      <Row>
+        <Col xs={24}>
+          <Spin
+            style={{
+              width: '100%',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              marginTop: 30,
+              marginBottom: 30,
+            }}
+            indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />}
+          />
+        </Col>
+      </Row>
+    </div>
+  );
 }
 
 export default Building;

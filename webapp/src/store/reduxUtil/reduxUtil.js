@@ -1,6 +1,6 @@
 export const updateState = (oldState, updatedState) => {
-	return {
-		...oldState,
-		...updatedState
-	};
+  return {
+    ...oldState,
+    ...updatedState,
+  };
 };
