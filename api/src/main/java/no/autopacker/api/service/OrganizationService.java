@@ -9,8 +9,6 @@ import no.autopacker.api.repository.organization.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -25,7 +23,6 @@ public class OrganizationService {
     private final ProjectRepository projectRepository;
     private final MemberRepository memberRepository;
     private final UserRepository userRepository;
-    private final JavaMailSender javaMailSender;
 
     @Autowired
     public OrganizationService(ProjectApplicationRepository projectApplicationRepository,
@@ -33,15 +30,13 @@ public class OrganizationService {
                                OrganizationRepository organizationRepository,
                                ProjectRepository projectRepository,
                                MemberRepository memberRepository,
-                               UserRepository userRepository,
-                               JavaMailSender javaMailSender) {
+                               UserRepository userRepository) {
         this.projectApplicationRepository = projectApplicationRepository;
         this.memberApplicationRepository = memberApplicationRepository;
         this.organizationRepository = organizationRepository;
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
         this.userRepository = userRepository;
-        this.javaMailSender = javaMailSender;
     }
 
     /*------------------------------
@@ -107,7 +102,6 @@ public class OrganizationService {
             if (!memberApplication.isAccepted()) {
                 String emailText = getMemberApplicationResponseText(username, memberApplication.getRole(), organization.getName(), accept);
                 String decision = accept ? "accepted" : "declined";
-                sendEmail("Organization membership " + decision, user.getEmail(), emailText);
 
                 if (accept) {
                     organization.addMemberWithRole(user, memberApplication.getRole());
@@ -126,15 +120,6 @@ public class OrganizationService {
         } else {
             return new ResponseEntity<>("Member application doesn't exist?", HttpStatus.BAD_REQUEST);
         }
-    }
-
-    private void sendEmail(String subject, String recipientEmail, String text) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setFrom("AutoPacker");
-        simpleMailMessage.setSubject(subject);
-        simpleMailMessage.setTo(recipientEmail);
-        simpleMailMessage.setText(text);
-        this.javaMailSender.send(simpleMailMessage);
     }
 
     /**
@@ -190,7 +175,6 @@ public class OrganizationService {
         String decision = accept ? "accepted" : "declined";
         String emailText = getProjectApplicationResponseText(user.getUsername(), project.getName(),
                 organization.getName(), comment, accept);
-        sendEmail("Organization project request " + decision, user.getEmail(), emailText);
 
         return new ResponseEntity<>("Project request " + decision, HttpStatus.OK);
     }
