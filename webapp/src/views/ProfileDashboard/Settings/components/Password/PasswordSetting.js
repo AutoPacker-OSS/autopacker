@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { Typography, Divider, Form, Button, Input } from "antd";
 import { createAlert } from "../../../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 
 function PasswordSetting() {
@@ -18,7 +18,7 @@ function PasswordSetting() {
 	// Import sub components from antd
 	const { Title } = Typography;
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const dispatch = useDispatch();
 
@@ -62,7 +62,7 @@ function PasswordSetting() {
 				method: "post",
 				url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/auth/changePassword",
 				headers: {
-					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+					Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 				},
 				data: {
 					oldPassword: oldPassword,

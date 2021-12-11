@@ -14,6 +14,7 @@ public interface UserService {
     List<User> findAllUsers();
 
     ResponseEntity<String> createNewUser(User user, String password, Locale locale);
+    User findOrCreateUser(User user, Locale locale);
 
     // TODO THIS LOGIC HAS TO BE CHANGED AS THE PASSWORD IS NOW HANDLED BY THE KEYCLOAK SERVER
     //ResponseEntity<String> changePassword(String oldPassword, String newPassword, String confirmPassword);

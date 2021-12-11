@@ -1,7 +1,7 @@
 import { Button, Card, Col, Empty, Layout, Modal, PageHeader, Row, Tag, Typography } from "antd";
 import React, { useEffect } from "react";
 import {Link, Redirect, useParams} from "react-router-dom";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
 import { GlobalOutlined, SettingOutlined } from "@ant-design/icons";
@@ -33,7 +33,7 @@ function PreSubmissionOverview() {
 	const { Meta } = Card;
 	const dispatch = useDispatch();
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const { organizationName } = useParams();
 	const projectId = sessionStorage.getItem("selectedProjectId");
@@ -50,7 +50,7 @@ function PreSubmissionOverview() {
 				"/projectId/" +
 				projectId,
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 		}).then(function (response) {
 			setProject(response.data);
@@ -102,7 +102,7 @@ function PreSubmissionOverview() {
 				url: process.env.REACT_APP_APPLICATION_URL +
 					process.env.REACT_APP_API + "/organization/submitProject",
 				headers: {
-					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+					Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 				},
 				data: {
 					organizationName: organizationName,
@@ -132,7 +132,7 @@ function PreSubmissionOverview() {
 						url: process.env.REACT_APP_APPLICATION_URL +
 							process.env.REACT_APP_API + "/organization/submitted",
 						headers: {
-							Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+							Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 						},
 						data: {
 							organizationName:organizationName,

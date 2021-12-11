@@ -29,7 +29,6 @@ import org.springframework.web.context.request.WebRequest;
  */
 @RestController
 @RequestMapping(value = "api/auth")
-@CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserService userService;
@@ -137,7 +136,6 @@ public class UserController {
             return new ResponseEntity<>("Something went wrong while parsing users", HttpStatus.BAD_REQUEST);
         }
     }
-
 
     @GetMapping(value = "/search")
     public ResponseEntity<String> searchUsers(@RequestParam("q") String query) {

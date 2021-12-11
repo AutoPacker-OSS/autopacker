@@ -1,7 +1,7 @@
 import { Layout, PageHeader, Table, Typography } from "antd";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import {useParams} from "react-router-dom";
 
@@ -11,7 +11,7 @@ function Members() {
 
 	const { organizationName } = useParams();
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	// Import sub components from antd
 	const { Paragraph } = Typography;
@@ -27,7 +27,7 @@ function Members() {
 				organizationName +
 				"/members",
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 		}).then(function (response) {
 			let arr = [];

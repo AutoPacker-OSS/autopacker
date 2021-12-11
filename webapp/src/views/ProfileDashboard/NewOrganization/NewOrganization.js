@@ -1,12 +1,13 @@
 import {Button, Form, Input, Layout, PageHeader, Tooltip, Typography, Spin, Radio} from "antd";
-import React from "react";
+import React, {useContext} from "react";
 import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { createAlert } from "../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
 import { QuestionCircleOutlined, LoadingOutlined } from "@ant-design/icons";
+import {useApi} from "../../../hooks/useApi";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function NewOrganization() {
     // State
@@ -23,14 +24,13 @@ function NewOrganization() {
     const [orgNameValidStatus, setOrgNameValidStatus] = React.useState("");
     const [nameHelpText, setNameHelpText] = React.useState("");
 
-
-
     // Get antd sub components
     const { Paragraph } = Typography;
     const { Content } = Layout;
     const { TextArea } = Input;
 
-    const [keycloak] = useKeycloak();
+    const {get, post} = useApi();
+    const { user, isAuthenticated, isLoading } = useAuth0();
 
     const dispatch = useDispatch();
 
@@ -60,40 +60,28 @@ function NewOrganization() {
         },
     ];
 
-
-
     const handleSubmit = (event) => {
         event.preventDefault();
         setLoading(true);
-        if (keycloak.idTokenParsed.email_verified) {
-            axios({
-                method: "post",
-                url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/new-organization",
-                headers: {
-                    Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-                },
-                data: {
-                    organizationName: orgName,
-                    orgDesc: orgDesc,
-                    url: url,
-                    isPublic: isPublic,
-                    username: keycloak.idTokenParsed.preferred_username,
-
-                },
-
+        if (user.email_verified) {
+            post(`/organization/new-organization`, {
+                organizationName: orgName,
+                orgDesc: orgDesc,
+                url: url,
+                isPublic: isPublic,
+                username: user.username,
+            }).then(() => {
+                dispatch(
+                    createAlert(
+                        "Organization Added",
+                        "Organization has been successfully added.",
+                        "success",
+                        true
+                    )
+                );
+                setLoading(false);
+                setRedirect(true);
             })
-                .then(() => {
-                    dispatch(
-                        createAlert(
-                            "Organization Added",
-                            "Organization has been successfully added.",
-                            "success",
-                            true
-                        )
-                    );
-                    setLoading(false);
-                    setRedirect(true);
-                })
                 .catch(() => {
                     dispatch(
                         createAlert(
@@ -135,7 +123,6 @@ function NewOrganization() {
         }
         setOrgName(value);
     };
-
 
     return (
         <div style={{ width: "100%" }}>

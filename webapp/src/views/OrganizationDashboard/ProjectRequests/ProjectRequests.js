@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { PageHeader, Typography, Layout, Button, Collapse, Descriptions, Row, Col, Tag, Modal, Input } from "antd";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 // Identicon
 import { createAlert } from "../../../store/actions/generalActions";
@@ -18,7 +18,7 @@ function ProjectRequests() {
 	const [declineComment, setDeclineComment] = React.useState("");
 	const [refreshList, setRefreshList] = React.useState(false);
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	// Modal info state
 	const [selectedProjectRequest, setSelectedProjectRequest] = React.useState(null);
@@ -42,7 +42,7 @@ function ProjectRequests() {
 				organizationName +
 				"/project-applications",
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 		}).then(function (response) {
 			console.log("DATA:", response.data);
@@ -61,7 +61,7 @@ function ProjectRequests() {
 			method: "post",
 			url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/acceptProjectRequest",
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 			data: {
 				organizationName: organizationName,
@@ -104,7 +104,7 @@ function ProjectRequests() {
 			url:
 				process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/declineProjectRequest",
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 			data: {
 				organizationName: organizationName,

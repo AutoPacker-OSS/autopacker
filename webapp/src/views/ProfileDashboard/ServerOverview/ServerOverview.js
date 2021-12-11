@@ -17,7 +17,7 @@ import {
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 
 import { createAlert } from "../../../store/actions/generalActions";
@@ -61,7 +61,7 @@ function ServerOverview() {
 	const [numbSelected, setNumbSelected] = React.useState(0);
 	const [checkedProjects, setCheckedProjects] = React.useState([]);
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	const dispatch = useDispatch();
 
@@ -83,7 +83,7 @@ function ServerOverview() {
 				"/server/server-overview/" +
 				serverId,
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 		}).then(function (response) {
 			setServer(response.data);
@@ -99,7 +99,7 @@ function ServerOverview() {
 						serverId,
 					headers: {
 						Authorization:
-							keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+							authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 					},
 				}).then((resp) => {
 					setUserProjects(resp.data);
@@ -137,7 +137,7 @@ function ServerOverview() {
 				process.env.REACT_APP_API +
 				"/projects",
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 		}).then(function (response) {
 			setUserProjects(response.data);
@@ -159,7 +159,7 @@ function ServerOverview() {
 				process.env.REACT_APP_API +
 				"/server/add-project",
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 			data: {
 				server_id: server.serverId,
@@ -243,7 +243,7 @@ function ServerOverview() {
 				password: serverPassword,
 			},
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 		})
 			.then(function (response) {
@@ -287,7 +287,7 @@ function ServerOverview() {
 				password: serverPassword,
 			},
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 		})
 			.then(function (response) {
@@ -411,7 +411,7 @@ function ServerOverview() {
 				process.env.REACT_APP_API +
 				"/server/remove-project",
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 			data: {
 				server_id: server.serverId,

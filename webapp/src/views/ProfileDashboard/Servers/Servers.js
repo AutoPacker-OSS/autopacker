@@ -1,7 +1,7 @@
 import { Button, Col, Input, Layout, PageHeader, Row, Typography } from "antd";
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 // Import custom hooks
 import useDebounce from "./../../../hooks/useDebounce";
@@ -9,13 +9,15 @@ import useDebounce from "./../../../hooks/useDebounce";
 // Import custom components
 import ServerRow from "./components/ServerRow";
 import {breadcrumbItemRender} from "../../../util/breadcrumbItemRender";
+import {useApi} from "../../../hooks/useApi";
 
 function Servers() {
 	// State
 	const [search, setSearch] = React.useState("");
 	const [servers, setServers] = React.useState([]);
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
+	const {get} = useApi();
 
 	const debouncedSearchTerm = useDebounce(search, 500);
 
@@ -39,45 +41,18 @@ function Servers() {
 		}
 	});
 
-	// Inspired from https://dev.to/gabe_ragland/debouncing-with-react-hooks-jci
 	useEffect(
 		() => {
 			// Make sure we have a value (user has entered something in input)
 			if (debouncedSearchTerm) {
 				// Fire off our API call
-				axios({
-					method: "get",
-					url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/server/" +
-					search,
-					headers: {
-						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-					},
-				}).then(function (response) {
-					setServers(response.data);
-				});
+				get(`/server/${search}`)
+					.then(resp => setServers(resp));
 			} else {
-				axios({
-					method: "get",
-					url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/server",
-					headers: {
-						Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-					},
-				}).then(function (response) {
-					setServers(response.data);
-				});
+				get(`/server`)
+					.then(resp => setServers(resp));
 			}
 		},
-		// This is the useEffect input array
-		// Our useEffect function will only execute if this value changes ...
-		// ... and thanks to our hook it will only change if the original ...
-		// value (searchTerm) hasn't changed for more than 500ms.
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[debouncedSearchTerm]
 	);
 

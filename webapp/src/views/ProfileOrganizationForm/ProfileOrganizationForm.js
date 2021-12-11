@@ -1,11 +1,12 @@
 import { Button, Col, Form, Input, message, PageHeader, Row, Select, Tooltip, Typography } from "antd";
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, {useContext, useEffect} from "react";
 import { Redirect } from "react-router-dom";
 import NTNU from "../../assets/image/ntnu.png";
-import { useKeycloak } from "@react-keycloak/web";
 import { axiosRequest } from "../../util/axiosRequest";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import {useApi} from "../../hooks/useApi";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function ProfileOrganizationForm() {
 	// Form state
@@ -14,7 +15,8 @@ function ProfileOrganizationForm() {
 	const [role, setRole] = React.useState("");
 	const [comment, setComment] = React.useState("");
 
-	const [keycloak] = useKeycloak();
+	const { user, isAuthenticated, isLoading } = useAuth0();
+	const {get} = useApi();
 
 	// State
 	const [organization, setOrganization] = React.useState({});
@@ -52,13 +54,12 @@ function ProfileOrganizationForm() {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-
-		const url = process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/requestMembership";
+		const url = "/organization/requestMembership";
 
 		axios.post(url,
 			{
 				organizationName: organization.name,
-				username: keycloak.idTokenParsed.preferred_username,
+				username: user.username,
 				name: name,
 				email: email,
 				role: role,
@@ -71,7 +72,6 @@ function ProfileOrganizationForm() {
 			message.error("Member already exist or you have already sent an application");
 			console.error(error);
 		});
-
 	};
 
 	return (
@@ -118,7 +118,7 @@ function ProfileOrganizationForm() {
 								{...formItemLayout}
 								style={{ marginTop: 20 }}
 								initialValues={{
-									["username"]: keycloak.idTokenParsed.preferred_username,
+									["username"]: user.username,
 								}}
 							>
 								<Form.Item
@@ -241,7 +241,7 @@ function ProfileOrganizationForm() {
 								<div style={{ width: "100%", textAlign: "center" }} onClick={(e) => handleSubmit(e)}>
 									<Button
 										disabled={
-											keycloak.idTokenParsed.preferred_username.length <= 0 ||
+											user.username.length <= 0 ||
 											name.length <= 0 ||
 											email.length <= 0 ||
 											role.length <= 0

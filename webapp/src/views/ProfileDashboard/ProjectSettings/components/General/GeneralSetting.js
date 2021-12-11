@@ -1,10 +1,12 @@
-import React from "react";
+import React, {useContext} from "react";
 import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { Typography, Button, Input, Divider, Modal } from "antd";
 import { createAlert } from "../../../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
+import {useApi} from "../../../../../hooks/useApi";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function GeneralSetting(props) {
 	// State
@@ -16,7 +18,8 @@ function GeneralSetting(props) {
 	const owner = props.project.owner;
 	const projectName = props.project.name;
 
-	const [keycloak] = useKeycloak();
+	const { user, isAuthenticated, isLoading } = useAuth0();
+	const {get, _delete} = useApi();
 
 	const dispatch = useDispatch();
 
@@ -30,36 +33,21 @@ function GeneralSetting(props) {
 
 	function sendRequest() {
 		setModalVisible(false);
-		if (keycloak.idTokenParsed.email_verified) {
-			axios({
-				method: "delete",
-				url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/projects/" +
-					owner.username +
-					"/" +
-					projectName,
-				headers: {
-					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-				},
-				data: {
-					username: owner.username,
-					projectName: projectName,
-				},
-			})
-				.then(() => {
-					dispatch(
-						createAlert(
-							"Project successfully deleted",
-							projectName + " has successfully been deleted.",
-							"success",
-							true
-						)
-					);
-					setRedirect(true);
-				})
-				.catch(() => {
+		if (user.email_verified) {
+			_delete(`/projects/${owner.username}/${projectName}`, {
+				username: owner.username,
+				projectName: projectName,
+			}).then(() => {
+				dispatch(
+					createAlert(
+						"Project successfully deleted",
+						projectName + " has successfully been deleted.",
+						"success",
+						true
+					)
+				);
+				setRedirect(true);
+			}).catch(() => {
 					dispatch(
 						createAlert(
 							"Project deletion failed",

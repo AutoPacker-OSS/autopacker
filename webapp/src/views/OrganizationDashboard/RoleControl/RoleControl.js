@@ -1,11 +1,12 @@
 import {Layout, PageHeader, Table, Typography, Select, Modal, Button} from "antd";
 
-import React, { useEffect } from "react";
-import { useKeycloak } from "@react-keycloak/web";
+import React, {useContext, useEffect} from "react";
 import axios from "axios";
 import {createAlert} from "../../../store/actions/generalActions";
 import {useDispatch} from "react-redux";
 import {useParams} from "react-router-dom";
+import {useApi} from "../../../hooks/useApi";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function RoleControl() {
     // State
@@ -17,11 +18,11 @@ function RoleControl() {
     const [deleteModal, setDeleteModal] = React.useState(false);
     const [roleModal, setRoleModal] = React.useState(false);
 
-
-    const [user, setUser] = React.useState("");
+    const [orgUser, setUser] = React.useState("");
     const [newRole, setNewRole] = React.useState("");
 
-    const [keycloak] = useKeycloak();
+    const {get, post} = useApi();
+    const { user, isAuthenticated, isLoading } = useAuth0();
 
     // Import sub components from antd
     const { Paragraph } = Typography;
@@ -29,52 +30,30 @@ function RoleControl() {
 
     const dispatch = useDispatch();
 
-
     useEffect(() => {
-        axios({
-            method: "get",
-            url:
-                process.env.REACT_APP_APPLICATION_URL +
-                process.env.REACT_APP_API +
-                "/organization/" +
-                organizationName +
-                "/members",
-            headers: {
-                Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-            },
-        }).then(function (response) {
-            let arr = [];
-            response.data.forEach((member) => {
-                arr.push({
-                    key: member.id,
-                    username: member.username,
-                    role: member.role,
+        get(`/organization/${organizationName}/members`)
+            .then(resp => {
+                let arr = [];
+                resp.data.forEach((member) => {
+                    arr.push({
+                        key: member.id,
+                        username: member.username,
+                        role: member.role,
+                    });
                 });
+                setMembers(arr);
             });
-            setMembers(arr);
-        });
-    }, [keycloak.token, organizationName, reload]);
+    }, [user, organizationName, reload]);
 
     const handleChangeRole = (event) => {
         event.preventDefault();
         turnOffModal(false);
-        if (keycloak.idTokenParsed.email_verified) {
-            axios({
-                method: "post",
-                url:
-                    process.env.REACT_APP_APPLICATION_URL +
-                    process.env.REACT_APP_API +
-                    "/organization/changeRole",
-                headers: {
-                    Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-                },
-                data: {
-                    organizationName: organizationName,
-                    username: user,
-                    role: newRole
-                },
-            })
-                .then(function () {
+        if (user.email_verified) {
+            post(`/organization/changeRole`, {
+                organizationName: organizationName,
+                username:orgUser,
+                role: newRole
+            }).then(() => {
                     dispatch(
                         createAlert(
                             "Role Request Submitted",
@@ -84,8 +63,7 @@ function RoleControl() {
                         )
                     );
                     setReload(!reload);
-                })
-                .catch(() => {
+                }).catch(() => {
                     dispatch(
                         createAlert(
                             "Role Request Failed",
@@ -110,43 +88,30 @@ function RoleControl() {
     const handleUserDeletion = (event) => {
         event.preventDefault();
         turnOffModal(false);
-        if (keycloak.idTokenParsed.email_verified) {
-            axios({
-                method: "post",
-                url:
-                    process.env.REACT_APP_APPLICATION_URL +
-                    process.env.REACT_APP_API +
-                    "/organization/deleteMember",
-                headers: {
-                    Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-                },
-                data: {
-                    organizationName: organizationName,
-                    username: user
-
-                },
-            })
-                .then(function () {
-                    dispatch(
-                        createAlert(
-                            "Role Request Submitted",
-                            "You have successfully submitted the deletion.",
-                            "success",
-                            true
-                        )
-                    );
-                    setReload(!reload);
-                })
-                .catch(() => {
-                    dispatch(
-                        createAlert(
-                            "Deletion Request Failed",
-                            "Something went wrong while trying to submit the deletion changes. Try again later.",
-                            "error",
-                            true
-                        )
-                    );
-                });
+        if (user.email_verified) {
+            post(`/organization/deleteMember`, {
+                organizationName: organizationName,
+               orgUsername:orgUser
+            }).then(() => {
+                dispatch(
+                    createAlert(
+                        "Role Request Submitted",
+                        "You have successfully submitted the deletion.",
+                        "success",
+                        true
+                    )
+                );
+                setReload(!reload);
+            }).catch(() => {
+                dispatch(
+                    createAlert(
+                        "Deletion Request Failed",
+                        "Something went wrong while trying to submit the deletion changes. Try again later.",
+                        "error",
+                        true
+                    )
+                );
+            });
         } else {
             dispatch(
                 createAlert(
@@ -158,6 +123,7 @@ function RoleControl() {
             );
         }
     };
+
     const routes = [
         {
             path: "organization/dashboard",
@@ -169,15 +135,14 @@ function RoleControl() {
         },
     ];
 
-
     const { Option } = Select;
-    function changeRoleModal(value, user, role) {
+    function changeRoleModal(value,orgUser, role) {
         setUser(user);
         setNewRole(role)
         setRoleModal(value);
     }
 
-    function deleteMemberModal(value, user){
+    function deleteMemberModal(value,orgUser){
         setDeleteModal(value);
         setUser(user);
     }
@@ -229,8 +194,6 @@ function RoleControl() {
         }
     ];
 
-
-
     return (
         <div style={{ width: "100%" }}>
             <PageHeader
@@ -243,7 +206,6 @@ function RoleControl() {
             >
                 <Paragraph>Table containing all the members affiliated with the organization in some way.</Paragraph>
             </PageHeader>
-            {}
             <Content
                 style={{
                     margin: "24px 16px",

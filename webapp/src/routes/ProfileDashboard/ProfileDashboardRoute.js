@@ -1,18 +1,19 @@
 import {Button, Layout, Menu} from "antd";
 import {ApartmentOutlined, DesktopOutlined, FolderOutlined, HddOutlined} from "@ant-design/icons";
-import React, {Suspense} from "react";
+import React, {Suspense, useContext} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {NavLink, Redirect, Route} from "react-router-dom";
 import Identicon from "../../assets/image/download.png";
 import ProfileAlert from "../../components/CustomAlerts/ProfileAlert";
 import Navbar from "../../components/Navbar/Navbar";
-import {useKeycloak} from "@react-keycloak/web";
 import { menus } from "./menu";
 // Import custom components
 import {createAlert} from "../../store/actions/generalActions";
 import axios from "axios";
 // Import styles
 import "./ProfileDashboardStyle.scss";
+import {useApi} from "../../hooks/useApi";
+import { useAuth0 } from "@auth0/auth0-react";
 
 /**
  * The default layout for a profile dashboard route
@@ -20,7 +21,8 @@ import "./ProfileDashboardStyle.scss";
 function ProfileDashboardLayout({children}) {
 	const [collapsed, setCollapsed] = React.useState(false);
 
-	const [keycloak] = useKeycloak();
+	const { user, isAuthenticated, isLoading } = useAuth0();
+	const {get} = useApi();
 
 	// Get antd sub components
 	const {Sider, Content} = Layout;
@@ -37,33 +39,34 @@ function ProfileDashboardLayout({children}) {
 				style={{padding: 0}}
 				type="link"
 				onClick={() => {
-					const url =
-						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_API +
-						"/auth/resendVerificationToken";
-
-					axios
-						.get(url)
-						.then(() => {
-							dispatch(
-								createAlert(
-									"New verification token sent",
-									"Successfully sent a new verification token. Please check your inbox for a new verification email.",
-									"success",
-									true
-								)
-							);
-						})
-						.catch(() => {
-							dispatch(
-								createAlert(
-									"Request failed",
-									"Could not request a new verification token. Try again later or contact support here: contact@autopacker.no",
-									"error",
-									true
-								)
-							);
-						});
+					// TODO NOT SURE IF THIS IS USED ANYMORE AS WE ARE USING EXTERNAL IDP
+					// const url =
+					// 	process.env.REACT_APP_APPLICATION_URL +
+					// 	process.env.REACT_APP_API +
+					// 	"/auth/resendVerificationToken";
+					//
+					// axios
+					// 	.get(url)
+					// 	.then(() => {
+					// 		dispatch(
+					// 			createAlert(
+					// 				"New verification token sent",
+					// 				"Successfully sent a new verification token. Please check your inbox for a new verification email.",
+					// 				"success",
+					// 				true
+					// 			)
+					// 		);
+					// 	})
+					// 	.catch(() => {
+					// 		dispatch(
+					// 			createAlert(
+					// 				"Request failed",
+					// 				"Could not request a new verification token. Try again later or contact support here: contact@autopacker.no",
+					// 				"error",
+					// 				true
+					// 			)
+					// 		);
+					// 	});
 				}}
 			>
 				Click here to resend
@@ -72,7 +75,7 @@ function ProfileDashboardLayout({children}) {
 	);
 
 	React.useEffect(() => {
-		if (keycloak.idTokenParsed.email_verified === false) {
+		if (user.email_verified === false) {
 			dispatch(createAlert("Please verify your email address", text, "warning", true));
 		}
 	}, []);
@@ -110,15 +113,16 @@ function ProfileDashboardLayout({children}) {
 						))}
 
 						{/* Monitor */}
-						{keycloak.realmAccess.roles.includes("ADMIN") ? (
-							<div className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 24}}>
-								<a href="https://stage.autopacker.no/monitor/" target="_blank" rel="noopener noreferrer"
-								   id="sidebar-monitor-link">
-									<DesktopOutlined/>
-									{collapsed ? <div/> : "Monitor"}
-								</a>
-							</div>
-						) : null}
+						{/*TODO FIX THIS AFTER CHANGING ROLE MANAGEMENT TO THE API*/}
+						{/*{keycloak.realmAccess.roles.includes("ADMIN") ? (*/}
+						{/*	<div className="ant-menu-item ant-menu-item-only-child" style={{paddingLeft: 24}}>*/}
+						{/*		<a href="https://stage.autopacker.no/monitor/" target="_blank" rel="noopener noreferrer"*/}
+						{/*		   id="sidebar-monitor-link">*/}
+						{/*			<DesktopOutlined/>*/}
+						{/*			{collapsed ? <div/> : "Monitor"}*/}
+						{/*		</a>*/}
+						{/*	</div>*/}
+						{/*) : null}*/}
 					</ul>
 				</Sider>
 				<Content>
@@ -136,12 +140,12 @@ function ProfileDashboardLayout({children}) {
  * The route itself that is used for the profile dashboard related routes
  */
 function ProfileDashboardRoute({component: Component, ...rest}) {
-	const [keycloak] = useKeycloak();
+	const { isAuthenticated } = useAuth0();
 	return (
 		<Route
 			{...rest}
 			render={(props) =>
-				keycloak.authenticated === true ? (
+				isAuthenticated === true ? (
 					<ProfileDashboardLayout>
 						<Suspense fallback={<div/>}>
 							<Component {...props} />

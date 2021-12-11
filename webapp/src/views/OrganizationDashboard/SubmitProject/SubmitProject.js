@@ -11,15 +11,16 @@ import {
 	Tooltip,
 	Typography,
 } from "antd";
-import React, { useEffect } from "react";
+import React, {useContext, useEffect} from "react";
 import { useDispatch} from "react-redux";
 import {Redirect, useParams} from "react-router-dom";
 import { createAlert, selectMenuOption } from "../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
+import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 
 
 import { QuestionCircleOutlined, UploadOutlined } from "@ant-design/icons";
+import {useApi} from "../../../hooks/useApi";
 
 // TODO - refactor. A lot of code duplicated from NewOrgProject.js?
 function SubmitProject(props) {
@@ -44,69 +45,47 @@ function SubmitProject(props) {
 	const { Content } = Layout;
 	const { Paragraph, Text } = Typography;
 
-	const [keycloak] = useKeycloak();
+	const {get, post} = useApi();
 
 	const { organizationName } = useParams();
 	const dispatch = useDispatch();
+	const { user, isAuthenticated, isLoading } = useAuth0();
 
 	useEffect(() => {
-		axios({
-			method: "get",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/projects",
-			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-			},
-		}).then(function (response) {
-			setProjects(response.data);
-			console.log(response.data)
-		});
-	}, [keycloak.token]);
-	
+		get(`/projects`)
+			.then(resp => {
+				setProjects(resp.data);
+			});
+	}, [user]);
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-
-		if (keycloak.idTokenParsed.email_verified) {
-			axios({
-				method: "post",
-				url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/organization/submitProject",
-				headers: {
-					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-				},
-				data: {
-					organizationName: organizationName,
-					projectId: actualProject.id,
-					comment: comment,
-				},
-			})
-				.then(function () {
-					dispatch(
-						createAlert(
-							"Project Request Submitted",
-							"You have successfully submitted a project. You will receive a notification on email when the request has been handled.",
-							"success",
-							true
-						)
-					);
-					dispatch(selectMenuOption("9"));
-					setRedirect(true);
-				})
-				.catch(() => {
-					dispatch(
-						createAlert(
-							"Project Request Failed",
-							"Something went wrong while trying to submit the project. There might be an existing project with the specified name",
-							"error",
-							true
-						)
-					);
-				});
+		if (user.email_verified) {
+			post(`/organization/submitProject`, {
+				organizationName: organizationName,
+				projectId: actualProject.id,
+				comment: comment,
+			}).then(function () {
+				dispatch(
+					createAlert(
+						"Project Request Submitted",
+						"You have successfully submitted a project. You will receive a notification on email when the request has been handled.",
+						"success",
+						true
+					)
+				);
+				dispatch(selectMenuOption("9"));
+				setRedirect(true);
+			}).catch(() => {
+				dispatch(
+					createAlert(
+						"Project Request Failed",
+						"Something went wrong while trying to submit the project. There might be an existing project with the specified name",
+						"error",
+						true
+					)
+				);
+			});
 		} else {
 			dispatch(
 				createAlert(
@@ -140,8 +119,6 @@ function SubmitProject(props) {
 			breadcrumbName: "Submit Project",
 		},
 	];
-
-
 
 	return (
 		<div style={{ width: "100%" }}>

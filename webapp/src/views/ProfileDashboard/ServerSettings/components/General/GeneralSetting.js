@@ -1,10 +1,11 @@
-import React from "react";
+import React, {useContext} from "react";
 import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { Typography, Button, Input, Divider, Modal } from "antd";
 import { createAlert } from "../../../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
+import {useApi} from "../../../../../hooks/useApi";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function GeneralSetting(props) {
 	// State
@@ -12,7 +13,8 @@ function GeneralSetting(props) {
 	const [verifiedDelete, setVerifiedDelete] = React.useState(false);
 	const [redirect, setRedirect] = React.useState(false);
 
-	const [keycloak] = useKeycloak();
+	const { user, isAuthenticated, isLoading } = useAuth0();
+	const {get, _delete} = useApi();
 
 	const { Title, Text } = Typography;
 	const server = props.server;
@@ -30,20 +32,8 @@ function GeneralSetting(props) {
 
 	function sendRequest() {
 		setModalVisible(false);
-		if (keycloak.idTokenParsed.email_verified) {
-			axios({
-				method: "delete",
-				url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/server/delete/" +
-					server.owner +
-					"/" +
-					server.serverId,
-				headers: {
-					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-				},
-			})
+		if (user.email_verified) {
+			_delete(`/server/delete/${server.owner}/${server.serverId}`)
 				.then(() => {
 					dispatch(
 						createAlert(

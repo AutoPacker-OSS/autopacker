@@ -6,21 +6,19 @@ import no.autopacker.api.entity.Server;
 import no.autopacker.api.entity.User;
 import no.autopacker.api.entity.fdapi.Module;
 import no.autopacker.api.entity.fdapi.Project;
-import no.autopacker.api.entity.organization.Organization;
+import no.autopacker.api.interfaces.UserService;
 import no.autopacker.api.repository.ServerRepository;
 import no.autopacker.api.repository.UserRepository;
 import no.autopacker.api.repository.fdapi.ModuleRepository;
 import no.autopacker.api.repository.fdapi.MongoDb;
 import no.autopacker.api.repository.fdapi.ProjectRepository;
-import no.autopacker.api.repository.organization.OrganizationRepository;
 import no.autopacker.api.service.fdapi.BuilderService;
-import no.autopacker.api.interfaces.UserService;
 import no.autopacker.api.utils.fdapi.Utils;
 import org.apache.commons.io.FileUtils;
 import org.bson.Document;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,16 +27,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static no.autopacker.api.security.AuthConstants.ROLE_ADMIN;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "api")
 public class ProjectController {
@@ -340,7 +334,7 @@ public class ProjectController {
 
     @GetMapping(value = "/project-overview/{username}/{projectName}")
     public ResponseEntity<String> getProjectOverview(@PathVariable("username") String username,
-                                                    @PathVariable("projectName") String projectName) {
+                                                     @PathVariable("projectName") String projectName) {
         User user = this.userRepository.findByUsername(username);
         Project project = this.projectRepo.findByOwnerAndName(user, projectName);
         if (project != null) {
@@ -389,8 +383,10 @@ public class ProjectController {
             for (String s : projectIds.split(",")) {
                 ps = Long.parseLong(s);
                 Project p = projectRepo.findProjectById(ps);
-                if(p != null){ projects.add(p);}
+                if (p != null) {
+                    projects.add(p);
                 }
+            }
             try {
                 return ResponseEntity.ok(this.objectMapper.writeValueAsString(projects));
             } catch (JsonProcessingException e) {

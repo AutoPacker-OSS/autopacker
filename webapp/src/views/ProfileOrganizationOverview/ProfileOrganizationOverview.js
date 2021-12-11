@@ -12,12 +12,13 @@ import {
 	Typography,
 } from "antd";
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, {useContext, useEffect} from "react";
 import {Link, useParams} from "react-router-dom";
 import NTNU from "../../assets/image/ntnu.png";
-import { useKeycloak } from "@react-keycloak/web";
 // Import custom hooks
 import useDebounce from "./../../hooks/useDebounce";
+import {useApi} from "../../hooks/useApi";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function ProfileOrganizationOverview() {
 	// State
@@ -30,7 +31,8 @@ function ProfileOrganizationOverview() {
 	const [minNumbProjects, setMinNumbProjects] = React.useState(0);
 	const [maxNumbProjects, setMaxNumbProjects] = React.useState(10);
 
-	const [keycloak] = useKeycloak();
+	const { user, isAuthenticated, isLoading } = useAuth0();
+	const {get} = useApi();
 
 	// Import sub components from antd
 	const { Title, Text, Paragraph } = Typography;
@@ -43,37 +45,21 @@ function ProfileOrganizationOverview() {
 
 	useEffect(() => {
 		if (organizationName) {
-			clearSessionStorage()
-			const projectsUrl =
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/organization/" +
-				organizationName;
+			sessionStorage.removeItem("isMember");
+			get(`/organization/${organizationName}`)
+				.then(resp => setOrganization(resp));
 
-			axios.get(projectsUrl).then((response) => {
-				setOrganization(response.data);
-			});
-
-			if (keycloak.authenticated) {
+			if (isAuthenticated) {
 				// First checking if the value isMemberOfOrganization is available in session, if not do a request.
-				axios
-					.get(
-						process.env.REACT_APP_APPLICATION_URL +
-						process.env.REACT_APP_API +
-						"/organization/" +
-						organizationName +
-						"/" +
-						keycloak.idTokenParsed.preferred_username +
-						"/isMember"
-					)
-					.then((response) => {
-						sessionStorage.setItem("isMember", response.data);
-						setIsMember(response.data);
+				get(`/organization/${organizationName}/${user.username}/isMember`)
+					.then(resp => {
+						sessionStorage.setItem("isMember", resp.data);
+						setIsMember(resp.data);
 					})
 					.catch(() => {
 						// Set default to true to hide the request membership button
 						setIsMember(true);
-					});
+					})
 			}
 		}
 
@@ -90,49 +76,21 @@ function ProfileOrganizationOverview() {
 		}
 	};
 
-	// Inspired from https://dev.to/gabe_ragland/debouncing-with-react-hooks-jci
 	useEffect(
 		() => {
 			// Make sure we have a value (user has entered something in input)
 			if (debouncedSearchTerm) {
-				const projectsUrl =
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/organization/" +
-					organization.name +
-					"/projects/search?q=" +
-					search;
-
-				axios.get(projectsUrl).then((response) => {
-					setProjects(response.data);
-				});
+				get(`/organization/${organization.name}/projects/search?q=${search}`)
+					.then(resp => setProjects(resp));
 			} else {
 				const organizationName = sessionStorage.getItem("selectedPublicOrganization");
 
-				const projectsUrl =
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/organization/" +
-					organizationName +
-					"/projects";
-
-				axios.get(projectsUrl).then((response) => {
-					console.log("RESPONSE DATA:", response.data);
-					setProjects(response.data);
-				});
+				get(`/organization/${organizationName}/projects`)
+					.then(resp => setProjects(resp));
 			}
 		},
-		// This is the useEffect input array
-		// Our useEffect function will only execute if this value changes ...
-		// ... and thanks to our hook it will only change if the original ...
-		// value (searchTerm) hasn't changed for more than 500ms.
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[debouncedSearchTerm]
 	);
-
-	const clearSessionStorage = () => {
-		sessionStorage.removeItem("isMember")
-	}
 
 	return (
 		<React.Fragment>
@@ -170,9 +128,9 @@ function ProfileOrganizationOverview() {
 								title={organization.name}
 								onBack={() => window.history.back()}
 								extra={[
-									keycloak.authenticated ? (
-										keycloak.idTokenParsed.email_verified && !isMember ? (
-											<Button key="application" onClick={() => clearSessionStorage()}>
+									isAuthenticated ? (
+										user?.email_verified && !isMember ? (
+											<Button key="application" onClick={() => sessionStorage.removeItem("isMember")}>
 												<Link
 													to={
 														"/organization/" +

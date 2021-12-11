@@ -1,13 +1,14 @@
 package no.autopacker.api.service;
 
+import javax.security.sasl.AuthenticationException;
+import lombok.SneakyThrows;
 import no.autopacker.api.entity.User;
 import no.autopacker.api.repository.UserRepository;
 import no.autopacker.api.interfaces.UserService;
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,17 +34,11 @@ public class UserServiceImpl implements UserService {
     // Password must be eight characters or longer
     private static final String VALID_PATTERN = "((?=.*[a-z])(?=.*\\d)(?=.*[A-Z]).{8,40})";
 
-    // Services
-    private final KeycloakServiceImpl keycloakService;
-
     // Repositories
     private final UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(
-            KeycloakServiceImpl keycloakService,
-            UserRepository userRepository) {
-        this.keycloakService = keycloakService;
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -64,13 +59,14 @@ public class UserServiceImpl implements UserService {
             if (userFound == null) {
                 if (validatePassword(password)) {
                     // Add user to keycloak
-                    String userId = this.keycloakService.createNewUser(user, password);
+                    // TODO THIS HAS CHANGED DUE TO CHANGING OF IDP FROM KEYCLOAK TO OKTA
+//                    String userId = this.keycloakService.createNewUser(user, password);
 
                     // Update user id with the GUID received from keycloak registration
-                    user.setId(userId);
+//                    user.setId(userId);
 
                     // Lastly add the user meta to user table
-                    this.userRepository.save(user);
+//                    this.userRepository.save(user);
 
                     return ResponseEntity.ok().build();
                 } else {
@@ -82,6 +78,25 @@ public class UserServiceImpl implements UserService {
         } else {
             return new ResponseEntity<>("Username is already taken", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @SneakyThrows
+    @Override
+    public User findOrCreateUser(User user, Locale locale) {
+        User dbUser;
+
+        // search in db for user
+        dbUser = user.getUsername() != null ? this.userRepository.findByUsername(user.getUsername()) : null;
+        dbUser = dbUser == null && user.getEmail() != null ? this.userRepository.findByEmailIgnoreCase(user.getEmail()) : null;
+
+        if (dbUser != null) return dbUser;
+
+        // create user if it doesnt exist
+        if (user.getUsername() == null || user.getEmail() == null) {
+            throw new AuthenticationException("User is missing email or username.");
+        }
+
+        return this.userRepository.save(user);
     }
 
     @Override
@@ -202,16 +217,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getAuthenticatedUser() {
-        KeycloakPrincipal<RefreshableKeycloakSecurityContext> authenticatedUser =
-                (KeycloakPrincipal<RefreshableKeycloakSecurityContext>) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
+        Authentication authenticatedUser = SecurityContextHolder.getContext().getAuthentication();
         User user = null;
-        if (authenticatedUser != null) {
-            String username = authenticatedUser.getKeycloakSecurityContext().getToken().getPreferredUsername();
-            if (username != null) {
-                user = this.userRepository.findByUsername(username);
-            }
+
+        if (authenticatedUser == null) return null;
+
+        String username = authenticatedUser.getName();
+
+        // TODO email is not preset [i <3 php]
+        // auth0 identity is too long
+        if (username.contains("auth0|")) {
+            username = username.replaceAll("auth0\\|", "");
         }
-        return user;
+
+        // identity does not have email yet
+        String email = username + "@auth0.oauth";
+
+        return this.findOrCreateUser(new User(username, email), Locale.getDefault());
     }
 }

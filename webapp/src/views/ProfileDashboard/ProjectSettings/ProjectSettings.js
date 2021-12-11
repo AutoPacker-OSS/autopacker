@@ -1,6 +1,6 @@
 import { Card, Col, Layout, Menu, PageHeader, Row } from "antd";
 import React, { useEffect } from "react";
-import { useKeycloak } from "@react-keycloak/web";
+import {useOktaAuth} from "@okta/okta-react";
 import axios from "axios";
 import GeneralSetting from "./components/General/GeneralSetting";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
@@ -12,7 +12,7 @@ function ProjectSettings() {
 
 	const { Content } = Layout;
 
-	const [keycloak] = useKeycloak();
+	const { authState } = useOktaAuth();
 
 	useEffect(() => {
 		let projectId = sessionStorage.getItem("selectedProjectId");
@@ -25,7 +25,7 @@ function ProjectSettings() {
 				"/project-overview/" +
 				projectId,
 			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
+				Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
 			},
 		}).then(function (response) {
 			setProject(response.data);

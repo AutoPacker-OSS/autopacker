@@ -10,14 +10,15 @@ import {
 	Tag,
 	Typography,
 } from "antd";
-import React, { useEffect } from "react";
+import React, {useContext, useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createAlert } from "../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
+import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 
 import RequestEditForm from "./components/RequestEditForm/RequestEditForm";
 import {useParams} from "react-router-dom";
+import {useApi} from "../../../hooks/useApi";
 
 function Submissions() {
 	// State
@@ -34,30 +35,16 @@ function Submissions() {
 	const { Content } = Layout;
 	const { Panel } = Collapse;
 
-	const [keycloak] = useKeycloak();
-
+	const { user, isAuthenticated, isLoading } = useAuth0();
 	const { organizationName } = useParams();
+	const {get, _delete} = useApi();
 
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (organizationName) {
-			axios({
-				method: "get",
-				url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/organization/" +
-					organizationName +
-					"/project-applications/" +
-					keycloak.idTokenParsed.preferred_username,
-				headers: {
-					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-				},
-			}).then(function (response) {
-				console.log("DATA:", response.data);
-				setRequests(response.data);
-			});
+			get(`/server/${organizationName}/project-applications/${user.username}`)
+				.then(resp => setRequests(resp));
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [organizationName, refreshList]);
@@ -78,20 +65,7 @@ function Submissions() {
 	];
 
 	const deleteRequest = (applicationId) => {
-		// TODO Change method to DELETE and equivalent on general-api backend service
-		axios({
-			method: "delete",
-			url:
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/organization/" +
-				organizationName +
-				"/delete-project-application/" +
-				applicationId,
-			headers: {
-				Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-			},
-		})
+		_delete(`/server/${organizationName}/delete-project-application/${applicationId}`)
 			.then(() => {
 				dispatch(
 					createAlert(
@@ -103,18 +77,17 @@ function Submissions() {
 				);
 				toggleRefresh();
 				setOpenDeleteModal(false);
-			})
-			.catch(() => {
-				dispatch(
-					createAlert(
-						"Request Deletion Failed",
-						"Failed to delete the project request",
-						"error",
-						true
-					)
-				);
-				setOpenDeleteModal(false);
-			});
+			}).catch(() => {
+			dispatch(
+				createAlert(
+					"Request Deletion Failed",
+					"Failed to delete the project request",
+					"error",
+					true
+				)
+			);
+			setOpenDeleteModal(false);
+		});
 	};
 
 	return (

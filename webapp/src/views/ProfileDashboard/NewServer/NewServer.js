@@ -1,12 +1,13 @@
 import { Button, Form, Input, Layout, PageHeader, Tooltip, Typography, Spin } from "antd";
-import React from "react";
+import React, {useContext} from "react";
 import { useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { createAlert } from "../../../store/actions/generalActions";
-import { useKeycloak } from "@react-keycloak/web";
+import {createAlert, selectMenuOption} from "../../../store/actions/generalActions";
 import axios from "axios";
 import { breadcrumbItemRender } from "../../../util/breadcrumbItemRender";
 import { QuestionCircleOutlined, LoadingOutlined } from "@ant-design/icons";
+import {useApi} from "../../../hooks/useApi";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function NewServer() {
 	// State
@@ -34,7 +35,8 @@ function NewServer() {
 	const { Content } = Layout;
 	const { TextArea } = Input;
 
-	const [keycloak] = useKeycloak();
+	const {get, post} = useApi();
+	const { user, isAuthenticated, isLoading } = useAuth0();
 
 	const dispatch = useDispatch();
 
@@ -67,37 +69,25 @@ function NewServer() {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		setLoading(true);
-		if (keycloak.idTokenParsed.email_verified) {
-			axios({
-				method: "post",
-				url:
-					process.env.REACT_APP_APPLICATION_URL +
-					process.env.REACT_APP_API +
-					"/server/new-server",
-				headers: {
-					Authorization: keycloak.token !== null ? `Bearer ${keycloak.token}` : undefined,
-				},
-				data: {
-					title: title,
-					desc: desc,
-					ip: ip,
-					username: username,
-					ssh: sshKey,
-				},
-			})
-				.then(() => {
-					dispatch(
-						createAlert(
-							"Server Added",
-							"Server has been successfully added. You can now add projects you wish to deploy to the server",
-							"success",
-							true
-						)
-					);
-					setLoading(false);
-					setRedirect(true);
-				})
-				.catch(() => {
+		if (user.email_verified) {
+			post(`/server/new-server`, {
+				title: title,
+				desc: desc,
+				ip: ip,
+				username: username,
+				ssh: sshKey,
+			}).then(() => {
+				dispatch(
+					createAlert(
+						"Server Added",
+						"Server has been successfully added. You can now add projects you wish to deploy to the server",
+						"success",
+						true
+					)
+				);
+				setLoading(false);
+				setRedirect(true);
+			}).catch(() => {
 					dispatch(
 						createAlert(
 							"Failed to add server",
@@ -159,8 +149,6 @@ function NewServer() {
 		}
 		setIp(ipAdress);
 	};
-
-
 
 	return (
 		<div style={{ width: "100%" }}>
