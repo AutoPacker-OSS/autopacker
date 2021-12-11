@@ -83,11 +83,16 @@ public class UserServiceImpl implements UserService {
     @SneakyThrows
     @Override
     public User findOrCreateUser(User user, Locale locale) {
-        User dbUser;
+        User dbUser = null;
 
         // search in db for user
-        dbUser = user.getUsername() != null ? this.userRepository.findByUsername(user.getUsername()) : null;
-        dbUser = dbUser == null && user.getEmail() != null ? this.userRepository.findByEmailIgnoreCase(user.getEmail()) : null;
+        if (user.getUsername() != null) {
+            dbUser = this.userRepository.findByUsername(user.getUsername());
+        }
+
+        if (dbUser == null && user.getEmail() != null) {
+            dbUser = this.userRepository.findByEmailIgnoreCase(user.getEmail());
+        }
 
         if (dbUser != null) return dbUser;
 
