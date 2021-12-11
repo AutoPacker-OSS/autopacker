@@ -2,9 +2,9 @@ import React, { Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 // Import custom route
-import PublicLazyRoute from "./routes/PublicLazyRoute/PublicLazyRoute";
-import ProfileDashboardRoute from "./routes/ProfileDashboard/ProfileDashboardRoute";
-import OrganizationDashboardRoute from "./routes/OrganizationDashboard/OrganizationDashboardRoute";
+import PublicOutlet from "./routes/PublicOutlet/PublicOutlet";
+import ProfileOutlet from "./routes/ProfileOutlet/ProfileOutlet";
+import OrganizationOutlet from "./routes/OrganizationOutlet/OrganizationOutlet";
 // Custom alert
 
 // Lazy Loading Views setup (only loaded when needed)
@@ -46,81 +46,83 @@ function App() {
 	if (user !== null ? isAuthenticated : false) {
 		router = (
 			<React.Fragment>
-				{/* <Route path="/organization" element={<OrganizationDashboardRoute />}>
-					<Route path="submissions/:organizationName" element={Submissions} />
-					<Route path="project-requests/:organizationName" element={ProjectRequests} />
-					<Route path="submit-project/:organizationName" element={SubmitProject}/>
-					<Route path="dashboard/:organizationName" element={OrganizationDashboard}/>
-					<Route path=":organization/overview/:projectName" element={OrgProjectOverview} />
-					<Route path="applicants/:organizationName" element={Applicants} />
-					<Route path="members/:organizationName" element={Members}/>
-					<Route path="rolecontrol/:organizationName" element={RoleControl} />
-				</Route> */}
-
-				{/* <Route path="/profile" element={<ProfileDashboardRoute />}>
-					<Route exact path="organization/add/" element={NewOrganization}/>
-					<Route exact path="servers" element={Servers} />
-					<Route exact path="servers/add" element={NewServer} />
-					<Route exact path="servers/overview/:serverName" element={ServerOverview} />
-					<Route path="servers/overview/:serverName/settings" element={ServerSettings} />
-					<Route exact path="projects" element={Projects} />
-					<Route exact path="projects/new" element={NewProject} />
-					<Route exact path="projects/add-module" element={ModuleSelection} />
-					<Route exact path="projects/overview/:projectName" element={ProjectOverview} />
-					<Route path="projects/overview/:projectName/settings" element={ProjectSettings} />
-					<Route path="organizations" element={Organizations} />
-					<Route path="settings" element={Settings} />
-					<Route exact path="" element={Dashboard} />
-				</Route> */}
-
-				{/* <Route path="/public" element={<PublicLazyRoute />}>
-					<Route path="organization/:organizationName/membership" element={ProfileOrganizationForm} />
-					<Route exact path="organization/:organizationName" element={ProfileOrganizationOverview} />
-					<Route path="account/:username/project/:projectName" element={ProfileProjectOverview} />
-					<Route exact path="account/:username" element={ProfilePage} />
-					<Route path="search" element={SearchResult} />
-				</Route> */}
-
-				{/* <Route
+				<Route
 					path="/signin"
 					render={() => (
 						<Suspense fallback={<div />}>
 							<Navigate to={"/profile/projects"} />
 						</Suspense>
 					)}
-				/> */}
+				/>
 				{/* This route is on the bottom of the list */}
 				<Route
 					exact
 					path="/"
 					element={<Home />}
 				/>
+
+				<Route path="/organization" element={<OrganizationOutlet />}>
+					<Route path="submissions/:organizationName" element={<Submissions />} />
+					<Route path="project-requests/:organizationName" element={<ProjectRequests />} />
+					<Route path="submit-project/:organizationName" element={<SubmitProject />}/>
+					<Route path="dashboard/:organizationName" element={<OrganizationDashboard />}/>
+					<Route path=":organization/overview/:projectName" element={<OrgProjectOverview />} />
+					<Route path="applicants/:organizationName" element={<Applicants />} />
+					<Route path="members/:organizationName" element={<Members />}/>
+					<Route path="rolecontrol/:organizationName" element={<RoleControl />} />
+				</Route>
+
+				<Route path="/profile" element={<ProfileOutlet />}>
+					<Route exact path="organization/add/" element={<NewOrganization />}/>
+					<Route exact path="servers" element={<Servers />} />
+					<Route exact path="servers/add" element={<NewServer />} />
+					<Route exact path="servers/overview/:serverName" element={<ServerOverview />} />
+					<Route path="servers/overview/:serverName/settings" element={<ServerSettings />} />
+					<Route exact path="projects" element={<Projects />} />
+					<Route exact path="projects/new" element={<NewProject/>} />
+					<Route exact path="projects/add-module" element={<ModuleSelection />} />
+					<Route exact path="projects/overview/:projectName" element={<ProjectOverview />} />
+					<Route path="projects/overview/:projectName/settings" element={<ProjectSettings />} />
+					<Route path="organizations" element={<Organizations />} />
+					<Route path="settings" element={<Settings />} />
+					<Route exact path="" element={<Dashboard />} />
+				</Route>
+
+				<Route path="/" element={<PublicOutlet />}>
+					<Route path="organization/:organizationName/membership" element={<ProfileOrganizationForm />} />
+					<Route exact path="organization/:organizationName" element={<ProfileOrganizationOverview />} />
+					<Route path="account/:username/project/:projectName" element={<ProfileProjectOverview />} />
+					<Route exact path="account/:username" element={<ProfilePage />} />
+					<Route path="search" element={<SearchResult />} />
+				</Route>
 			</React.Fragment>
 		);
 	} else {
 		router = (
 			<React.Fragment>
-				{/*Public views, no sign-in required*/}
-				{/* <Route path="/public" element={<PublicLazyRoute />}>
-					<Route path="organization/:organizationName/membership" element={ProfileOrganizationForm} />
-					<Route exact path="organization/:organizationName" element={ProfileOrganizationOverview} />
-					<Route path="account/:username/project/:projectName" element={ProfileProjectOverview} />
-					<Route exact path="account/:username" element={ProfilePage} />
-					<Route path="search" element={SearchResult} />
-				</Route> */}
-
 				<Route
 					exact
 					path="/"
 					element={<Home />}
 				/>
+
+				{/*Public views, no sign-in required*/}
+				<Route path="/" element={<PublicOutlet />}>
+					<Route path="organization/:organizationName/membership" element={<ProfileOrganizationForm />} />
+					<Route exact path="organization/:organizationName" element={<ProfileOrganizationOverview />} />
+					<Route path="account/:username/project/:projectName" element={<ProfileProjectOverview />} />
+					<Route exact path="account/:username" element={<ProfilePage />} />
+					<Route path="search" element={<SearchResult />} />
+				</Route>
 			</React.Fragment>
 		);
 	}
 
 	return (
 		<div>
-			<Routes>{router}</Routes>
+			<Routes>
+				{router}
+			</Routes>
 		</div>
 	);
 }

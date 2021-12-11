@@ -63,7 +63,7 @@ function Navbar() {
 									}}
 								/>
 								<Typography.Text style={{marginLeft: 10}}>
-									{user?.email}
+									{user.email}
 								</Typography.Text>
 							</div>
 						}
@@ -102,7 +102,7 @@ function Navbar() {
 			) : (
 				<Menu mode="horizontal" style={{lineHeight: "64px", float: "right"}}>
 					<Menu.Item>
-						<div id="sign-in-link" onClick={() => loginWithRedirect()}>Sign in</div>;
+						<div id="sign-in-link" onClick={() => loginWithRedirect()}>Sign in</div>
 						{/*<LoginBtn/>*/}
 					</Menu.Item>
 				</Menu>
