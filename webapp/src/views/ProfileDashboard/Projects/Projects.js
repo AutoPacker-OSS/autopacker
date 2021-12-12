@@ -1,14 +1,14 @@
+import { GlobalOutlined } from '@ant-design/icons';
+import { useAuth0 } from '@auth0/auth0-react';
 import { Button, Card, Col, Input, Layout, PageHeader, Row, Tag, Typography } from 'antd';
-import React, { useContext, useEffect } from 'react';
-import { Link, useHistory, Navigate } from 'react-router-dom';
 import { format } from 'date-fns';
-// Import custom hooks
-import useDebounce from './../../../hooks/useDebounce';
+import React, { useEffect } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+import { useApi } from '../../../hooks/useApi';
 // Import helper methods
 import { breadcrumbItemRender } from '../../../util/breadcrumbItemRender';
-import { GlobalOutlined } from '@ant-design/icons';
-import { useApi } from '../../../hooks/useApi';
-import { useAuth0 } from '@auth0/auth0-react';
+// Import custom hooks
+import useDebounce from './../../../hooks/useDebounce';
 
 function Projects() {
   // State
@@ -18,7 +18,7 @@ function Projects() {
 
   const debouncedSearchTerm = useDebounce(search, 500);
 
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user } = useAuth0();
   const { get } = useApi();
 
   //Button width/height size initial state

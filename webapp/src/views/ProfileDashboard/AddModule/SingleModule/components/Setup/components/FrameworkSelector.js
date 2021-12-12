@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import { Select } from 'antd';
 
-const LanguageSelector = forwardRef((props, ref) => {
+const LanguageSelector = forwardRef((props) => {
   // Extract values and methods from props
   const { supportedFrameworks, selectedLanguage, selectedVersion } = props.values;
   const { handleChange } = props;

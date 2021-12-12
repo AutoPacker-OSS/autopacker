@@ -1,11 +1,11 @@
 import { Button, Col, Collapse, Descriptions, Input, Layout, Modal, PageHeader, Row, Typography } from 'antd';
+import axios from 'axios';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import axios from 'axios';
+import { useParams } from 'react-router-dom';
 // Identicon
 import Identicon from '../../../assets/image/download.png';
 import { createAlert } from '../../../store/actions/generalActions';
-import { useParams } from 'react-router-dom';
 
 function Applicants() {
   // State
@@ -13,7 +13,6 @@ function Applicants() {
   const [acceptModalOpen, setAcceptModalOpen] = React.useState(false);
   const [declineModalOpen, setDeclineModalOpen] = React.useState(false);
   const [declineComment, setDeclineComment] = React.useState('');
-  const [refreshList, setRefreshList] = React.useState(false);
   const [reload, setReload] = React.useState(false);
 
   // Modal info state
@@ -31,25 +30,24 @@ function Applicants() {
   const { Panel } = Collapse;
   const { TextArea } = Input;
 
-  // useEffect(() => {
-  // 	axios({
-  // 		method: "get",
-  // 		url:
-  // 			process.env.REACT_APP_APPLICATION_URL +
-  // 			process.env.REACT_APP_API +
-  // 			"/organization/" +
-  // 			organizationName +
-  // 			"/member-applications",
-  // 		headers: {
-  // 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-  // 		},
-  // 	}).then(function (response) {
-  // 		console.log("APPLICANTS:", response.data);
-  // 		setApplicants(response.data);
-  // 	});
+  useEffect(() => {
+  	axios({
+  		method: "get",
+  		url:
+  			process.env.REACT_APP_APPLICATION_URL +
+  			process.env.REACT_APP_API +
+  			"/organization/" +
+  			organizationName +
+  			"/member-applications",
+  		headers: {
+  			// Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+  		},
+  	}).then(function (response) {
+  		console.log("APPLICANTS:", response.data);
+  		setApplicants(response.data);
+  	});
 
-  // 	// eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [reload]);
+  }, [reload]);
 
   const routes = [
     {
@@ -62,75 +60,75 @@ function Applicants() {
     },
   ];
 
-  // const acceptRequest = (username) => {
-  // 	axios({
-  // 		method: "post",
-  // 		url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/acceptMemberRequest",
-  // 		headers: {
-  // 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-  // 		},
-  // 		data: {
-  // 			organizationName: organizationName,
-  // 			username: username,
-  // 		},
-  // 	})
-  // 		.then(() => {
-  // 			dispatch(createAlert("Member accepted", username + "'s member application have been accepted", "success", true));
-  // 			setRefreshList(true);
-  // 			setAcceptModalOpen(false);
-  // 			setReload(!reload);
-  // 		})
-  // 		.catch(() => {
-  // 			dispatch(
-  // 				createAlert(
-  // 					"Member accepting failed",
-  // 					"Couldn't accept the member application for the given user, " + username,
-  // 					"error",
-  // 					true
-  // 				)
-  // 			);
-  // 			setAcceptModalOpen(false);
-  // 		});
-  // };
+  const acceptRequest = (username) => {
+  	axios({
+  		method: "post",
+  		url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/acceptMemberRequest",
+  		headers: {
+  			// Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+  		},
+  		data: {
+  			organizationName: organizationName,
+  			username: username,
+  		},
+  	})
+  		.then(() => {
+  			dispatch(createAlert("Member accepted", username + "'s member application have been accepted", "success", true));
+  			// setRefreshList(true);
+  			setAcceptModalOpen(false);
+  			setReload(!reload);
+  		})
+  		.catch(() => {
+  			dispatch(
+  				createAlert(
+  					"Member accepting failed",
+  					"Couldn't accept the member application for the given user, " + username,
+  					"error",
+  					true
+  				)
+  			);
+  			setAcceptModalOpen(false);
+  		});
+  };
 
-  // const declineRequest = (username) => {
-  // 	axios({
-  // 		method: "post",
-  // 		url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/declineMemberRequest",
-  // 		headers: {
-  // 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-  // 		},
-  // 		data: {
-  // 			organizationName: organizationName,
-  // 			username: username,
-  // 			comment: declineComment,
-  // 		},
-  // 	})
-  // 		.then(() => {
-  // 			dispatch(
-  // 				createAlert(
-  // 					"Member application declined",
-  // 					username + "'s member application have been declined",
-  // 					"success",
-  // 					true
-  // 				)
-  // 			);
-  // 			setRefreshList(true);
-  // 			setDeclineModalOpen(false);
-  // 			setReload(!reload);
-  // 		})
-  // 		.catch(() => {
-  // 			dispatch(
-  // 				createAlert(
-  // 					"Member rejection failed",
-  // 					"Couldn't reject the member application for the given user, " + username,
-  // 					"error",
-  // 					true
-  // 				)
-  // 			);
-  // 			setDeclineModalOpen(false);
-  // 		});
-  // };
+  const declineRequest = (username) => {
+  	axios({
+  		method: "post",
+  		url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/declineMemberRequest",
+  		headers: {
+  			// Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+  		},
+  		data: {
+  			organizationName: organizationName,
+  			username: username,
+  			comment: declineComment,
+  		},
+  	})
+  		.then(() => {
+  			dispatch(
+  				createAlert(
+  					"Member application declined",
+  					username + "'s member application have been declined",
+  					"success",
+  					true
+  				)
+  			);
+  			// setRefreshList(true);
+  			setDeclineModalOpen(false);
+  			setReload(!reload);
+  		})
+  		.catch(() => {
+  			dispatch(
+  				createAlert(
+  					"Member rejection failed",
+  					"Couldn't reject the member application for the given user, " + username,
+  					"error",
+  					true
+  				)
+  			);
+  			setDeclineModalOpen(false);
+  		});
+  };
 
   const openAcceptModal = (applicantUsername, applicantName, applicantRole) => {
     setSelectedApplicantUsername(applicantUsername);
@@ -213,7 +211,7 @@ function Applicants() {
             title={'Accept request from ' + selectedApplicantName + '?'}
             centered
             visible={acceptModalOpen}
-            // onOk={() => acceptRequest(selectedApplicantUsername)}
+            onOk={() => acceptRequest(selectedApplicantUsername)}
             onCancel={() => setAcceptModalOpen(false)}>
             <p>
               By accepting this applicant. <b>{selectedApplicantName}</b> will be added to the organization with the
@@ -225,7 +223,7 @@ function Applicants() {
             title={'Decline request from ' + selectedApplicantName + '?'}
             centered
             visible={declineModalOpen}
-            // onOk={() => declineRequest(selectedApplicantUsername)}
+            onOk={() => declineRequest(selectedApplicantUsername)}
             onCancel={() => setDeclineModalOpen(false)}>
             <p>
               By declining the request, the applicant will be notified. You can add a comment which will be sent with

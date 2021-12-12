@@ -1,13 +1,12 @@
-import { Button, Col, Collapse, Descriptions, Layout, Modal, PageHeader, Row, Tag, Typography } from 'antd';
-import React, { useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { createAlert } from '../../../store/actions/generalActions';
 import { useAuth0 } from '@auth0/auth0-react';
-import axios from 'axios';
-
-import RequestEditForm from './components/RequestEditForm/RequestEditForm';
+import { Button, Col, Collapse, Descriptions, Layout, Modal, PageHeader, Row, Tag, Typography } from 'antd';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useApi } from '../../../hooks/useApi';
+import { createAlert } from '../../../store/actions/generalActions';
+import RequestEditForm from './components/RequestEditForm/RequestEditForm';
+
 
 function Submissions() {
   // State
@@ -24,7 +23,7 @@ function Submissions() {
   const { Content } = Layout;
   const { Panel } = Collapse;
 
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user } = useAuth0();
   const { organizationName } = useParams();
   const { get, _delete } = useApi();
 
@@ -34,7 +33,6 @@ function Submissions() {
     if (organizationName) {
       get(`/server/${organizationName}/project-applications/${user.username}`).then((resp) => setRequests(resp));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [organizationName, refreshList]);
 
   const toggleRefresh = () => {

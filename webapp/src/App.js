@@ -40,7 +40,7 @@ import ServerSettings from './views/ProfileDashboard/ServerSettings/ServerSettin
  * Handles the routing mechanism in the application
  */
 function App() {
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user, isAuthenticated } = useAuth0();
 
   let router = null;
   if (user !== null ? isAuthenticated : false) {

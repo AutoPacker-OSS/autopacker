@@ -1,7 +1,6 @@
 import { Layout, PageHeader, Table, Typography } from 'antd';
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import axios from 'axios';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 function Members() {
@@ -14,33 +13,31 @@ function Members() {
   const { Paragraph } = Typography;
   const { Content } = Layout;
 
-  // useEffect(() => {
-  // 	axios({
-  // 		method: "get",
-  // 		url:
-  // 			process.env.REACT_APP_APPLICATION_URL +
-  // 			process.env.REACT_APP_API +
-  // 			"/organization/" +
-  // 			organizationName +
-  // 			"/members",
-  // 		headers: {
-  // 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-  // 		},
-  // 	}).then(function (response) {
-  // 		let arr = [];
-  // 		let memberNr = 0;
-  // 		response.data.forEach((member) => {
-  // 			arr.push({
-  // 				key: ++memberNr,
-  // 				username: member.username,
-  // 				role: member.role,
-  // 			});
-  // 		});
-  // 		setMembers(arr);
-  // 	});
-
-  // 	// eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  useEffect(() => {
+  	axios({
+  		method: "get",
+  		url:
+  			process.env.REACT_APP_APPLICATION_URL +
+  			process.env.REACT_APP_API +
+  			"/organization/" +
+  			organizationName +
+  			"/members",
+  		headers: {
+  			// Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+  		},
+  	}).then(function (response) {
+  		let arr = [];
+  		let memberNr = 0;
+  		response.data.forEach((member) => {
+  			arr.push({
+  				key: ++memberNr,
+  				username: member.username,
+  				role: member.role,
+  			});
+  		});
+  		setMembers(arr);
+  	});
+  }, []);
 
   const routes = [
     {

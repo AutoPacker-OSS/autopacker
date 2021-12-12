@@ -1,16 +1,16 @@
 // Ant Design imports
-import { Button, Col, Row, Typography, Form, Spin, Card, Input, message } from 'antd';
-import { UserOutlined, MailOutlined, LockOutlined } from '@ant-design/icons';
+import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Form, Input, message, Row, Spin, Typography } from 'antd';
+import axios from 'axios';
 import React, { useEffect } from 'react';
-// Import styles
-import './BannerStyle.scss';
+import { connect } from 'react-redux';
 // custom alert
 import { createAlert } from '../../store/actions/generalActions';
-import { deleteCookie, getCookie } from '../../util/cookieService';
-import { connect } from 'react-redux';
-import axios from 'axios';
+import { deleteCookie } from '../../util/cookieService';
 // Import custom hooks
 import useDebounce from './../../hooks/useDebounce';
+// Import styles
+import './BannerStyle.scss';
 
 // TODO This class should use the banner animation stuff
 
@@ -18,12 +18,11 @@ import useDebounce from './../../hooks/useDebounce';
  * Represents the banner that is presented once user
  * visits the homepage
  */
-function Banner({ onRegistrationSuccess, onAuth }) {
+function Banner({ onRegistrationSuccess }) {
   // State
   const [username, setUsername] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [registrationSuccess, setRegistrationSuccess] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   // Validation
   const [validUsername, setValidUsername] = React.useState('');
@@ -51,11 +50,11 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 
           axios
             .get(url)
-            .then((response) => {
+            .then(() => {
               setValidUsername('success');
               setUsernameHelpText('');
             })
-            .catch((err) => {
+            .catch(() => {
               setValidUsername('error');
               setUsernameHelpText('Username already taken.');
             });
@@ -90,11 +89,11 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 
           axios
             .get(url)
-            .then((response) => {
+            .then(() => {
               setValidEmail('success');
               setEmailHelpText('');
             })
-            .catch((err) => {
+            .catch(() => {
               setValidEmail('error');
               setEmailHelpText('Email already in use.');
             });
@@ -127,7 +126,7 @@ function Banner({ onRegistrationSuccess, onAuth }) {
 
           axios
             .get(url)
-            .then((response) => {
+            .then(() => {
               onRegistrationSuccess(
                 'New verification token sent',
                 'Successfully sent a new verification token. Please check your inbox for a new verification email.',
@@ -135,7 +134,7 @@ function Banner({ onRegistrationSuccess, onAuth }) {
                 true,
               );
             })
-            .catch((error) => {
+            .catch(() => {
               onRegistrationSuccess(
                 'Request failed',
                 'Could not request a new verification token. Try again later or contact support here: contact@autopacker.no',
@@ -150,6 +149,7 @@ function Banner({ onRegistrationSuccess, onAuth }) {
   );
 
   const handleSubmit = (event) => {
+    console.debug(text);
     event.preventDefault();
     deleteCookie('Authorization');
     if (username.trim().length === 0) {

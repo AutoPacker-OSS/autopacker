@@ -35,7 +35,6 @@ function ProfilePage() {
     }
   };
 
-  // Inspired from https://dev.to/gabe_ragland/debouncing-with-react-hooks-jci
   useEffect(
     () => {
       // Make sure we have a value (user has entered something in input)
@@ -60,11 +59,6 @@ function ProfilePage() {
         });
       }
     },
-    // This is the useEffect input array
-    // Our useEffect function will only execute if this value changes ...
-    // ... and thanks to our hook it will only change if the original ...
-    // value (searchTerm) hasn't changed for more than 500ms.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [debouncedSearchTerm],
   );
 

@@ -1,12 +1,10 @@
 import { Card, Col, Input, Layout, PageHeader, Row, Tag, Typography } from 'antd';
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { Navigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Moment from 'moment';
+import React, { useEffect } from 'react';
+import { Navigate, useParams } from 'react-router-dom';
 // Import custom hooks
 import useDebounce from './../../../hooks/useDebounce';
-import { format } from 'date-fns';
 // Import helper methods
 
 function OrganizationDashboard() {
@@ -27,66 +25,59 @@ function OrganizationDashboard() {
   const { Search } = Input;
   const { Meta } = Card;
 
-  // useEffect(() => {
-  // 	setSelectedCard(null);
+  useEffect(() => {
+  	setSelectedCard(null);
 
-  // 	axios({
-  // 		method: "get",
-  // 		url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/" + organizationName,
-  // 		headers: {
-  // 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-  // 		},
-  // 	}).then(function (response) {
-  // 		setOrganization(response.data);
-  // 	});
-  // 	// eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  	axios({
+  		method: "get",
+  		url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/" + organizationName,
+  		headers: {
+  			// Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+  		},
+  	}).then(function (response) {
+  		setOrganization(response.data);
+  	});
+  }, []);
 
-  // Inspired from https://dev.to/gabe_ragland/debouncing-with-react-hooks-jci
-  // useEffect(
-  // 	() => {
-  // 		// Make sure we have a value (user has entered something in input)
-  // 		if (debouncedSearchTerm) {
-  // 			// Fire off our API call
-  // 			axios({
-  // 				method: "get",
-  // 				url:
-  // 					process.env.REACT_APP_APPLICATION_URL +
-  // 					process.env.REACT_APP_API +
-  // 					"/organization/" +
-  // 					organizationName +
-  // 					"/projects/search?q=" +
-  // 					search,
-  // 				headers: {
-  // 					Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-  // 				},
-  // 			}).then(function (response) {
-  // 				setProjects(response.data);
-  // 			});
-  // 		} else {
-  // 			axios({
-  // 				method: "get",
-  // 				url:
-  // 					process.env.REACT_APP_APPLICATION_URL +
-  // 					process.env.REACT_APP_API +
-  // 					"/organization/" +
-  // 					organizationName +
-  // 					"/projects",
-  // 				headers: {
-  // 					Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-  // 				},
-  // 			}).then(function (response) {
-  // 				setProjects(response.data);
-  // 			});
-  // 		}
-  // 	},
-  // 	// This is the useEffect input array
-  // 	// Our useEffect function will only execute if this value changes ...
-  // 	// ... and thanks to our hook it will only change if the original ...
-  // 	// value (searchTerm) hasn't changed for more than 500ms.
-  // 	// eslint-disable-next-line react-hooks/exhaustive-deps
-  // 	[debouncedSearchTerm]
-  // );
+  useEffect(
+  	() => {
+  		// Make sure we have a value (user has entered something in input)
+  		if (debouncedSearchTerm) {
+  			// Fire off our API call
+  			axios({
+  				method: "get",
+  				url:
+  					process.env.REACT_APP_APPLICATION_URL +
+  					process.env.REACT_APP_API +
+  					"/organization/" +
+  					organizationName +
+  					"/projects/search?q=" +
+  					search,
+  				headers: {
+  					// Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+  				},
+  			}).then(function (response) {
+  				setProjects(response.data);
+  			});
+  		} else {
+  			axios({
+  				method: "get",
+  				url:
+  					process.env.REACT_APP_APPLICATION_URL +
+  					process.env.REACT_APP_API +
+  					"/organization/" +
+  					organizationName +
+  					"/projects",
+  				headers: {
+  					// Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+  				},
+  			}).then(function (response) {
+  				setProjects(response.data);
+  			});
+  		}
+  	},
+  	[debouncedSearchTerm]
+  );
 
   const routes = [
     {

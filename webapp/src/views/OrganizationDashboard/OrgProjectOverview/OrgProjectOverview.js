@@ -1,3 +1,4 @@
+import { GlobalOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import {
   Avatar,
   Button,
@@ -11,16 +12,15 @@ import {
   Radio,
   Row,
   Tag,
-  Typography,
+  Typography
 } from 'antd';
-import React, { useEffect } from 'react';
-import { Link, Navigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { breadcrumbItemRender } from '../../../util/breadcrumbItemRender';
-import { GlobalOutlined, PlayCircleOutlined, SettingOutlined } from '@ant-design/icons';
 import Moment from 'moment';
-import { createAlert } from '../../../store/actions/generalActions';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { Link, Navigate, useParams } from 'react-router-dom';
+import { createAlert } from '../../../store/actions/generalActions';
+import { breadcrumbItemRender } from '../../../util/breadcrumbItemRender';
 
 function OrgProjectOverview() {
   // State
@@ -30,7 +30,7 @@ function OrgProjectOverview() {
   const [links, setLinks] = React.useState([]);
 
   const [selectedModule, setSelectedModule] = React.useState(null);
-  const [servers, setServers] = React.useState([]);
+  const [servers] = React.useState([]);
   const [selectedServer, setSelectedServer] = React.useState([]);
   const [selectedRadio, setSelectedRadio] = React.useState(null);
 
@@ -47,36 +47,40 @@ function OrgProjectOverview() {
   const { organizationName } = useParams();
   const projectId = sessionStorage.getItem('selectedProjectId');
 
-  // useEffect(() => {
-  // 	setSelectedModule(null);
-  // 	axios({
-  // 		method: "get",
-  // 		url:
-  // 			process.env.REACT_APP_APPLICATION_URL +
-  // 			process.env.REACT_APP_API +
-  // 			"/organization/" +
-  // 			organizationName +
-  // 			"/overview/" +
-  // 			projectId,
-  // 		headers: {
-  // 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-  // 		},
-  // 	}).then(function (response) {
-  // 		console.log("DATA:", response.data);
-  // 		setProject(response.data);
-  // 		setProjectModules(response.data.modules);
-  // 		if (response.data.tags) {
-  // 			setTags(response.data.tags.split(","));
-  // 		} else {
-  // 			setTags([]);
-  // 		}
-  // 		if (response.data.links) {
-  // 			setLinks(response.data.links.split(","));
-  // 		} else {
-  // 			setLinks([]);
-  // 		}
-  // 	});
-  // }, [authState.accessToken, organizationName, projectId]);
+  useEffect(() => {
+  	setSelectedModule(null);
+  	axios({
+  		method: "get",
+  		url:
+  			process.env.REACT_APP_APPLICATION_URL +
+  			process.env.REACT_APP_API +
+  			"/organization/" +
+  			organizationName +
+  			"/overview/" +
+  			projectId,
+  		headers: {
+  			// Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+  		},
+  	}).then(function (response) {
+  		console.log("DATA:", response.data);
+  		setProject(response.data);
+  		setProjectModules(response.data.modules);
+  		if (response.data.tags) {
+  			setTags(response.data.tags.split(","));
+  		} else {
+  			setTags([]);
+  		}
+  		if (response.data.links) {
+  			setLinks(response.data.links.split(","));
+  		} else {
+  			setLinks([]);
+  		}
+  	});
+
+    if (selectedServer) {
+      console.debug("TODO: Remove")
+    }
+  }, [organizationName, projectId]);
 
   const routes = [
     {
@@ -107,54 +111,38 @@ function OrgProjectOverview() {
     </div>
   );
 
-  // const updateServerProjects = (server) => {
-  // 	let projectIds = "";
-  // 	projectIds += project.id;
-  // 	console.log(projectIds)
-  // 	axios({
-  // 		method: "post",
-  // 		url:
-  // 			process.env.REACT_APP_APPLICATION_URL +
-  // 			process.env.REACT_APP_API +
-  // 			"/server/add-project",
-  // 		headers: {
-  // 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-  // 		},
-  // 		data: {
-  // 			server_id: server.serverId,
-  // 			project_ids: projectIds,
-  // 		},
-  // 	})
-  // 		.then(() => {
-  // 			window.location.reload();
-  // 		})
-  // 		.catch(() => {
-  // 			dispatch(
-  // 				createAlert(
-  // 					"Project not added",
-  // 					"Couldn't add the project(s) to the server",
-  // 					"error",
-  // 					true
-  // 				)
-  // 			);
-  // 		});
-  // };
-
-  // const getServers = () => {
-  // 			axios({
-  // 				method: "get",
-  // 				url:
-  // 					process.env.REACT_APP_APPLICATION_URL +
-  // 					process.env.REACT_APP_API +
-  // 					"/server",
-  // 				headers: {
-  // 					Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-  // 				},
-  // 			}).then(function (response) {
-  // 				setServers(response.data);
-  // 				console.log(response.data)
-  // 			});
-  // 	}
+  const updateServerProjects = (server) => {
+  	let projectIds = "";
+  	projectIds += project.id;
+  	console.log(projectIds)
+  	axios({
+  		method: "post",
+  		url:
+  			process.env.REACT_APP_APPLICATION_URL +
+  			process.env.REACT_APP_API +
+  			"/server/add-project",
+  		headers: {
+  			// Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+  		},
+  		data: {
+  			server_id: server.serverId,
+  			project_ids: projectIds,
+  		},
+  	})
+  		.then(() => {
+  			window.location.reload();
+  		})
+  		.catch(() => {
+  			dispatch(
+  				createAlert(
+  					"Project not added",
+  					"Couldn't add the project(s) to the server",
+  					"error",
+  					true
+  				)
+  			);
+  		});
+  };
 
   const openServerModal = () => {
     // getServers();
@@ -341,7 +329,7 @@ function OrgProjectOverview() {
           centered
           visible={serverModal}
           onOk={() => {
-            // updateServerProjects(selectedServer);
+            updateServerProjects(selectedServer);
             setServerModal(false);
           }}
           onCancel={() => {

@@ -1,14 +1,13 @@
 import { Button, Col, Input, Layout, PageHeader, Row, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { useApi } from '../../../hooks/useApi';
+import { breadcrumbItemRender } from '../../../util/breadcrumbItemRender';
 // Import custom hooks
 import useDebounce from './../../../hooks/useDebounce';
 // Import helper methods
 // Import custom components
 import ServerRow from './components/ServerRow';
-import { breadcrumbItemRender } from '../../../util/breadcrumbItemRender';
-import { useApi } from '../../../hooks/useApi';
 
 function Servers() {
   // State

@@ -1,19 +1,16 @@
-import { Layout, Menu, Button } from 'antd';
-import React, { Suspense, useEffect } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
+import { Button, Layout, Menu } from 'antd';
+import axios from 'axios';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, NavLink, Navigate, Route, useNavigate, Outlet } from 'react-router-dom';
+import { Navigate, NavLink, Outlet } from 'react-router-dom';
 import NTNU from '../../assets/image/ntnu.png';
 import ProfileAlert from '../../components/CustomAlerts/ProfileAlert';
 import Navbar from '../../components/Navbar/Navbar';
-import { createAlert } from '../../store/actions/generalActions';
-import { getMenu } from './menu';
-import axios from 'axios';
-// Import custom components
-import { selectMenuOption, toggleSubMenuOption } from '../../store/actions/generalActions';
+import { createAlert, toggleSubMenuOption } from '../../store/actions/generalActions';
 // Import styles
 import '../RouteOutlet.scss';
-import { FolderOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
-import { useAuth0 } from '@auth0/auth0-react';
+import { getMenu } from './menu';
 
 /**
  * The default layout for a organization dashboard route
@@ -25,11 +22,9 @@ function OrganizationDashboardLayout({ children }) {
   const { Sider, Content } = Layout;
   const { SubMenu } = Menu;
 
-  const { user, isAuthenticated, isLoading } = useAuth0();
-
   // Get state from redux store
   const organizationName = sessionStorage.getItem('selectedOrganizationName');
-  const selectedMenuItem = useSelector((state) => state.general.selectedMenuOption);
+  // const selectedMenuItem = useSelector((state) => state.general.selectedMenuOption);
   const openedSubMenus = useSelector((state) => state.general.openedSubMenus);
   const dispatch = useDispatch();
 
@@ -72,7 +67,7 @@ function OrganizationDashboardLayout({ children }) {
   );
 
   React.useEffect(() => {
-    // TODO FIX THIS
+    console.debug(text);
     // if (keycloak.idTokenParsed.email_verified === false) {
     // 	dispatch(createAlert("Please verify your email address", text, "warning", true));
     // }
@@ -161,7 +156,7 @@ function OrganizationDashboardLayout({ children }) {
 /**
  * The route itself that is used for the profile dashboard related routes
  */
-function OrganizationOutlet({ component: Component, ...rest }) {
+function OrganizationOutlet() {
   const { isAuthenticated } = useAuth0();
 
   return isAuthenticated ? (

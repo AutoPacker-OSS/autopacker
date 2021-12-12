@@ -1,15 +1,14 @@
+import { PlayCircleOutlined } from '@ant-design/icons';
 import { Avatar, Card, Typography } from 'antd';
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { PlayCircleOutlined } from '@ant-design/icons';
 
 function ServerRow(props) {
   // Import sub components from antd
   const { Text, Paragraph } = Typography;
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   let statusIcon = { type: 'play-circle', color: 'green' };
   let actions = '';

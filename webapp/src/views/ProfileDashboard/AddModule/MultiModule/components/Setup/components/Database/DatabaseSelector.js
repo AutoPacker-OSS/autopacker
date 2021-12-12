@@ -1,7 +1,7 @@
 import { Select } from 'antd';
 import React, { forwardRef } from 'react';
 
-const ToolSelector = forwardRef((props, ref) => {
+const ToolSelector = forwardRef((props) => {
   // Extract values and methods from props
   const { supportedDatabases, database, version } = props.values;
   const { handleChange } = props.methods;

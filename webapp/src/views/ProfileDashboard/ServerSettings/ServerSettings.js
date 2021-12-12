@@ -1,9 +1,9 @@
 import { Card, Col, Layout, Menu, PageHeader, Row } from 'antd';
-import React, { useEffect } from 'react';
 import axios from 'axios';
-
-import GeneralSetting from './components/General/GeneralSetting';
+import React, { useEffect } from 'react';
 import { breadcrumbItemRender } from '../../../util/breadcrumbItemRender';
+import GeneralSetting from './components/General/GeneralSetting';
+
 
 function ServerSettings() {
   // State
@@ -15,20 +15,19 @@ function ServerSettings() {
   useEffect(() => {
     let serverId = sessionStorage.getItem('selectedServer');
 
-    // axios({
-    // 	method: "get",
-    // 	url:
-    // 		process.env.REACT_APP_APPLICATION_URL +
-    // 		process.env.REACT_APP_API +
-    // 		"/server/server-overview/" +
-    // 		serverId,
-    // 	headers: {
-    // 		Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-    // 	},
-    // }).then(function (response) {
-    // 	setServer(response.data);
-    // });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    axios({
+    	method: "get",
+    	url:
+    		process.env.REACT_APP_APPLICATION_URL +
+    		process.env.REACT_APP_API +
+    		"/server/server-overview/" +
+    		serverId,
+    	headers: {
+    		// Authorization: authState.accessToken !== null ? `Bearer ${/* Token goes */ ""}` : undefined,
+    	},
+    }).then(function (response) {
+    	setServer(response.data);
+    });
   }, []);
 
   const routes = [

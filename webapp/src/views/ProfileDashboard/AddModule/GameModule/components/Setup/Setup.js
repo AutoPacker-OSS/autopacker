@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { Button, Form, Input, Radio, Typography, Select } from 'antd';
 // Import custom components
 import { RightOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Select, Typography } from 'antd';
+import React, { useEffect } from 'react';
 
 function Setup(props) {
   // State (This needs to be returned to parent when clicking next)
@@ -16,10 +16,6 @@ function Setup(props) {
   const [selectedGame, setSelectedGame] = React.useState(null);
   const [selectedGameServer, setSelectedGameServer] = React.useState(null);
   const [selectedServerVersion, setSelectedServerVersion] = React.useState(null);
-
-  // Selections
-  const [frameworkTouched, setFrameworkTouched] = React.useState(false);
-  const [isFramework, setIsFramework] = React.useState(false);
 
   // validation
   const [validName, setValidName] = React.useState(false);
@@ -106,6 +102,10 @@ function Setup(props) {
     // Add dummy list to state on mount
     setSupportedGames(supportedGames);
     setVanillaMinecraftServers(supportedVanillaServers);
+
+    if (vanillaMinecraftServers) {
+      console.debug("TODO")
+    }
   }, []);
 
   const formItemLayout = {

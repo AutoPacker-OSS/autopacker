@@ -14,21 +14,19 @@ function ProjectSettings() {
   useEffect(() => {
     let projectId = sessionStorage.getItem('selectedProjectId');
 
-    // axios({
-    // 	method: "get",
-    // 	url:
-    // 		process.env.REACT_APP_APPLICATION_URL +
-    // 		process.env.REACT_APP_API +
-    // 		"/project-overview/" +
-    // 		projectId,
-    // 	headers: {
-    // 		Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-    // 	},
-    // }).then(function (response) {
-    // 	setProject(response.data);
-    // });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    axios({
+    	method: "get",
+    	url:
+    		process.env.REACT_APP_APPLICATION_URL +
+    		process.env.REACT_APP_API +
+    		"/project-overview/" +
+    		projectId,
+    	headers: {
+    		// Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+    	},
+    }).then(function (response) {
+    	setProject(response.data);
+    });
   }, []);
 
   const routes = [

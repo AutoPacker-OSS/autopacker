@@ -1,13 +1,10 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import { Button, Card, Col, Input, Layout, PageHeader, Row, Typography } from 'antd';
-import React, { useContext, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-// Import redux actions
-import axios from 'axios';
+import { useApi } from '../../../hooks/useApi';
 // Import custom hooks
 import useDebounce from './../../../hooks/useDebounce';
-import { useApi } from '../../../hooks/useApi';
-import { useAuth0 } from '@auth0/auth0-react';
 
 function Organizations() {
   // State
@@ -15,7 +12,7 @@ function Organizations() {
   const [organizations, setOrganizations] = React.useState([]);
   const [selectedCard, setSelectedCard] = React.useState(null);
 
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user } = useAuth0();
   const { get } = useApi();
 
   const debouncedSearchTerm = useDebounce(search, 500);

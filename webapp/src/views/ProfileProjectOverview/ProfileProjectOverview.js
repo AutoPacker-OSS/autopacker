@@ -10,7 +10,7 @@ function ProfileProjectOverview() {
   const [project, setProject] = React.useState();
   const [tags, setTags] = React.useState([]);
   // Import sub components from antd
-  const { Title, Paragraph, Text } = Typography;
+  const { Paragraph, Text } = Typography;
 
   // Pagination state for modules
   const [minNumbModules, setMinNumbModules] = React.useState(0);
@@ -91,7 +91,8 @@ function ProfileProjectOverview() {
                     <GlobalOutlined style={{ marginLeft: 20 }} />
                     {project.private ? ' Private' : ' Public'}
                   </div>
-                }>
+                }
+              >
                 <Paragraph>{project.description}</Paragraph>
                 <Paragraph style={{ color: 'blue' }}>
                   {project.website !== '' ? (

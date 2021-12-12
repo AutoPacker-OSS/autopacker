@@ -1,19 +1,16 @@
-import { Button, Layout, Menu } from 'antd';
-import { ApartmentOutlined, DesktopOutlined, FolderOutlined, HddOutlined } from '@ant-design/icons';
-import React, { Suspense, useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, NavLink, Outlet, Route, useNavigate } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+import { Button, Layout } from 'antd';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { Navigate, NavLink, Outlet } from 'react-router-dom';
 import Identicon from '../../assets/image/download.png';
 import ProfileAlert from '../../components/CustomAlerts/ProfileAlert';
 import Navbar from '../../components/Navbar/Navbar';
-import { menus } from './menu';
 // Import custom components
 import { createAlert } from '../../store/actions/generalActions';
-import axios from 'axios';
 // Import styles
 import '../RouteOutlet.scss';
-import { useApi } from '../../hooks/useApi';
-import { useAuth0 } from '@auth0/auth0-react';
+import { menus } from './menu';
 
 /**
  * The default layout for a profile dashboard route
@@ -21,15 +18,14 @@ import { useAuth0 } from '@auth0/auth0-react';
 function ProfileDashboardLayout({ children }) {
   const [collapsed, setCollapsed] = React.useState(false);
 
-  const { user, isAuthenticated, isLoading } = useAuth0();
-  const { get } = useApi();
+  const { user } = useAuth0();
 
   // Get antd sub components
   const { Sider, Content } = Layout;
 
   // TODO - refactor - code duplicate in OrganizationDashboardRoute
   // Get state from redux store
-  const selectedMenuItem = useSelector((state) => state.general.selectedMenuOption);
+  // const selectedMenuItem = useSelector((state) => state.general.selectedMenuOption);
   const dispatch = useDispatch();
 
   const text = (
@@ -38,36 +34,7 @@ function ProfileDashboardLayout({ children }) {
       <Button
         style={{ padding: 0 }}
         type="link"
-        onClick={() => {
-          // TODO NOT SURE IF THIS IS USED ANYMORE AS WE ARE USING EXTERNAL IDP
-          // const url =
-          // 	process.env.REACT_APP_APPLICATION_URL +
-          // 	process.env.REACT_APP_API +
-          // 	"/auth/resendVerificationToken";
-          //
-          // axios
-          // 	.get(url)
-          // 	.then(() => {
-          // 		dispatch(
-          // 			createAlert(
-          // 				"New verification token sent",
-          // 				"Successfully sent a new verification token. Please check your inbox for a new verification email.",
-          // 				"success",
-          // 				true
-          // 			)
-          // 		);
-          // 	})
-          // 	.catch(() => {
-          // 		dispatch(
-          // 			createAlert(
-          // 				"Request failed",
-          // 				"Could not request a new verification token. Try again later or contact support here: contact@autopacker.no",
-          // 				"error",
-          // 				true
-          // 			)
-          // 		);
-          // 	});
-        }}>
+        onClick={() => {alert("Ups")}}>
         Click here to resend
       </Button>
     </div>
@@ -139,7 +106,7 @@ function ProfileDashboardLayout({ children }) {
 /**
  * The route itself that is used for the profile dashboard related routes
  */
-function ProfileOutlet({ component: Component, ...rest }) {
+function ProfileOutlet() {
   const { isAuthenticated } = useAuth0();
 
   return isAuthenticated ? (

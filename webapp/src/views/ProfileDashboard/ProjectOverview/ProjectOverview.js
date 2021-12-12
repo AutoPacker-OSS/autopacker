@@ -1,16 +1,12 @@
-import { Button, Card, Col, Empty, Layout, Modal, PageHeader, Row, Tag, Typography } from 'antd';
-import React, { useContext, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Link, Navigate } from 'react-router-dom';
-import axios from 'axios';
-
-import { createAlert } from '../../../store/actions/generalActions';
-import { breadcrumbItemRender } from '../../../util/breadcrumbItemRender';
-import { GlobalOutlined, PlusCircleOutlined, SettingOutlined, GitlabOutlined, DeleteOutlined } from '@ant-design/icons';
-import { format } from 'date-fns';
-import Moment from 'moment';
-import { useApi } from '../../../hooks/useApi';
+import { DeleteOutlined, GitlabOutlined, GlobalOutlined, PlusCircleOutlined, SettingOutlined } from '@ant-design/icons';
 import { useAuth0 } from '@auth0/auth0-react';
+import { Button, Card, Col, Empty, Layout, Modal, PageHeader, Row, Tag, Typography } from 'antd';
+import Moment from 'moment';
+import React, { useEffect } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+import { useApi } from '../../../hooks/useApi';
+import { breadcrumbItemRender } from '../../../util/breadcrumbItemRender';
+
 
 function ProjectOverview() {
   // State
@@ -22,19 +18,17 @@ function ProjectOverview() {
   const [selectedModule, setSelectedModule] = React.useState(null);
   const [moduleToDeleteSelected, setModuleToDeleteSelected] = React.useState(null);
 
-  const [refreshList, setRefreshList] = React.useState(false);
+  const [refreshList] = React.useState(false);
 
   // Get antd sub components
   const { Paragraph } = Typography;
   const { Content } = Layout;
   const { Meta } = Card;
 
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user } = useAuth0();
   const { get } = useApi();
 
   const projectName = sessionStorage.getItem('selectedProjectName');
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     setSelectedModule(null);
@@ -47,7 +41,6 @@ function ProjectOverview() {
       }
       setProjectModules(resp.data.modules);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshList]);
 
   const routes = [

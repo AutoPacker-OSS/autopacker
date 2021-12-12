@@ -1,8 +1,5 @@
+import { Button, Divider, Form, Input, Typography } from 'antd';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { Typography, Divider, Form, Button, Input } from 'antd';
-import { createAlert } from '../../../../../store/actions/generalActions';
-import axios from 'axios';
 
 function PasswordSetting() {
   // State
@@ -16,8 +13,6 @@ function PasswordSetting() {
 
   // Import sub components from antd
   const { Title } = Typography;
-
-  const dispatch = useDispatch();
 
   const validatePassword = (value) => {
     setNewPassword(value);

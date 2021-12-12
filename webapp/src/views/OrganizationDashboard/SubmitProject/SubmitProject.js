@@ -1,16 +1,15 @@
+import { QuestionCircleOutlined, UploadOutlined } from '@ant-design/icons';
+import { useAuth0 } from '@auth0/auth0-react';
 import { Avatar, Button, Card, Form, Input, Layout, Modal, PageHeader, Radio, Tooltip, Typography } from 'antd';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Navigate, useParams } from 'react-router-dom';
-import { createAlert, selectMenuOption } from '../../../store/actions/generalActions';
-import { useAuth0 } from '@auth0/auth0-react';
-import axios from 'axios';
-
-import { QuestionCircleOutlined, UploadOutlined } from '@ant-design/icons';
 import { useApi } from '../../../hooks/useApi';
+import { createAlert, selectMenuOption } from '../../../store/actions/generalActions';
+
 
 // TODO - refactor. A lot of code duplicated from NewOrgProject.js?
-function SubmitProject(props) {
+function SubmitProject() {
   // Form state
   const [actualProject, setActualProject] = React.useState('');
   const [comment, setComment] = React.useState('');
@@ -35,7 +34,7 @@ function SubmitProject(props) {
 
   const { organizationName } = useParams();
   const dispatch = useDispatch();
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user } = useAuth0();
 
   useEffect(() => {
     get(`/projects`).then((resp) => {

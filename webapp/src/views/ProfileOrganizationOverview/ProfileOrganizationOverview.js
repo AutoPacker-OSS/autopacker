@@ -1,12 +1,11 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import { Avatar, Button, Col, Divider, Input, PageHeader, Pagination, Row, Tabs, Tag, Typography } from 'antd';
-import axios from 'axios';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import NTNU from '../../assets/image/ntnu.png';
+import { useApi } from '../../hooks/useApi';
 // Import custom hooks
 import useDebounce from './../../hooks/useDebounce';
-import { useApi } from '../../hooks/useApi';
-import { useAuth0 } from '@auth0/auth0-react';
 
 function ProfileOrganizationOverview() {
   // State
@@ -19,7 +18,7 @@ function ProfileOrganizationOverview() {
   const [minNumbProjects, setMinNumbProjects] = React.useState(0);
   const [maxNumbProjects, setMaxNumbProjects] = React.useState(10);
 
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user, isAuthenticated } = useAuth0();
   const { get } = useApi();
 
   // Import sub components from antd
@@ -50,7 +49,6 @@ function ProfileOrganizationOverview() {
       }
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [organizationName]);
 
   const handleProjectsPaginationChange = (value) => {

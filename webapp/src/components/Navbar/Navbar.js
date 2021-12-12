@@ -1,10 +1,10 @@
-import { Avatar, Input, Layout, Menu, Typography } from 'antd';
-import React, { useContext, useEffect } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { ApartmentOutlined, FolderOutlined, HddOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
 import { useAuth0 } from '@auth0/auth0-react';
+import { Avatar, Input, Layout, Menu, Typography } from 'antd';
+import React, { useEffect } from 'react';
+import { Link, Navigate } from 'react-router-dom';
 // Import styles
 import './NavbarStyle.scss';
-import { ApartmentOutlined, FolderOutlined, HddOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
 
 /**
  * Represents the navigation bar at the top of the homepage

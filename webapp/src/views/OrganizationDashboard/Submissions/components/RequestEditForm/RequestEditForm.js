@@ -48,7 +48,6 @@ function RequestEditForm(props) {
       setLinks([]);
     }
     setComment(request.comment);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const removeTag = (removedTag) => {
@@ -68,49 +67,49 @@ function RequestEditForm(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    // axios({
-    // 	method: "post",
-    // 	url:
-    // 		process.env.REACT_APP_APPLICATION_URL +
-    // 		process.env.REACT_APP_API +
-    // 		"/organization/updateProjectSubmission",
-    // 	headers: {
-    // 		Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-    // 	},
-    // 	data: {
-    // 		organizationName: organizationName,
-    // 		projectName: projectName,
-    // 		desc: desc,
-    // 		links: links,
-    // 		tags: tags,
-    // 		comment: comment,
-    // 		projectId: request.project.id,
-    // 	},
-    // })
-    // 	.then(() => {
-    // 		dispatch(
-    // 			createAlert(
-    // 				"Project request updated",
-    // 				"You have successfully updated the project information. You will receive a notification on email when the request has been handled.",
-    // 				"success",
-    // 				true
-    // 			)
-    // 		);
-    // 		toggleRefresh();
-    // 		setOpenEditModal(false);
-    // 	})
-    // 	.catch(() => {
-    // 		dispatch(
-    // 			createAlert(
-    // 				"Project request update failed",
-    // 				"Something went wrong while trying to update the project. Contact organization admin.",
-    // 				"error",
-    // 				true
-    // 			)
-    // 		);
-    // 		toggleRefresh();
-    // 		setOpenEditModal(false);
-    // 	});
+    axios({
+    	method: "post",
+    	url:
+    		process.env.REACT_APP_APPLICATION_URL +
+    		process.env.REACT_APP_API +
+    		"/organization/updateProjectSubmission",
+    	headers: {
+    		// Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+    	},
+    	data: {
+    		organizationName: organizationName,
+    		projectName: projectName,
+    		desc: desc,
+    		links: links,
+    		tags: tags,
+    		comment: comment,
+    		projectId: request.project.id,
+    	},
+    })
+    	.then(() => {
+    		dispatch(
+    			createAlert(
+    				"Project request updated",
+    				"You have successfully updated the project information. You will receive a notification on email when the request has been handled.",
+    				"success",
+    				true
+    			)
+    		);
+    		toggleRefresh();
+    		setOpenEditModal(false);
+    	})
+    	.catch(() => {
+    		dispatch(
+    			createAlert(
+    				"Project request update failed",
+    				"Something went wrong while trying to update the project. Contact organization admin.",
+    				"error",
+    				true
+    			)
+    		);
+    		toggleRefresh();
+    		setOpenEditModal(false);
+    	});
   };
 
   const formItemLayout = {

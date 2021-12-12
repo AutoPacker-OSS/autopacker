@@ -1,13 +1,12 @@
-import { Button, Form, Input, Layout, PageHeader, Tooltip, Typography, Spin, Radio } from 'antd';
-import React, { useContext } from 'react';
+import { LoadingOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { useAuth0 } from '@auth0/auth0-react';
+import { Button, Form, Input, Layout, PageHeader, Radio, Spin, Tooltip, Typography } from 'antd';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-import { createAlert } from '../../../store/actions/generalActions';
-import axios from 'axios';
-import { breadcrumbItemRender } from '../../../util/breadcrumbItemRender';
-import { QuestionCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useApi } from '../../../hooks/useApi';
-import { useAuth0 } from '@auth0/auth0-react';
+import { createAlert } from '../../../store/actions/generalActions';
+import { breadcrumbItemRender } from '../../../util/breadcrumbItemRender';
 
 function NewOrganization() {
   // State
@@ -29,8 +28,8 @@ function NewOrganization() {
   const { Content } = Layout;
   const { TextArea } = Input;
 
-  const { get, post } = useApi();
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { post } = useApi();
+  const { user } = useAuth0();
 
   const dispatch = useDispatch();
 

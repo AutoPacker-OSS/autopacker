@@ -1,12 +1,11 @@
-import { Layout, PageHeader, Table, Typography, Select, Modal, Button } from 'antd';
-
-import React, { useContext, useEffect } from 'react';
-import axios from 'axios';
-import { createAlert } from '../../../store/actions/generalActions';
+import { useAuth0 } from '@auth0/auth0-react';
+import { Button, Layout, Modal, PageHeader, Select, Table, Typography } from 'antd';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useApi } from '../../../hooks/useApi';
-import { useAuth0 } from '@auth0/auth0-react';
+import { createAlert } from '../../../store/actions/generalActions';
+
 
 function RoleControl() {
   // State
@@ -22,7 +21,7 @@ function RoleControl() {
   const [newRole, setNewRole] = React.useState('');
 
   const { get, post } = useApi();
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user } = useAuth0();
 
   // Import sub components from antd
   const { Paragraph } = Typography;
@@ -135,7 +134,7 @@ function RoleControl() {
     setRoleModal(value);
   }
 
-  function deleteMemberModal(value, orgUser) {
+  function deleteMemberModal(value) {
     setDeleteModal(value);
     setUser(user);
   }

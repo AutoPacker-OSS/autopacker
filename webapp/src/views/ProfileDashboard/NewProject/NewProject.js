@@ -1,14 +1,13 @@
+import { QuestionCircleOutlined } from '@ant-design/icons';
+import { useAuth0 } from '@auth0/auth0-react';
 import { Button, Form, Input, Layout, PageHeader, Radio, Tag, Tooltip, Typography } from 'antd';
 import { TweenOneGroup } from 'rc-tween-one';
-import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-import { createAlert } from '../../../store/actions/generalActions';
-import axios from 'axios';
-import { breadcrumbItemRender } from '../../../util/breadcrumbItemRender';
-import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useApi } from '../../../hooks/useApi';
-import { useAuth0 } from '@auth0/auth0-react';
+import { createAlert } from '../../../store/actions/generalActions';
+import { breadcrumbItemRender } from '../../../util/breadcrumbItemRender';
 
 function NewProject() {
   const [newProjectName, setProjectName] = React.useState('');
@@ -20,7 +19,6 @@ function NewProject() {
   // const [newLicence, setLicence] = React.useState("");
   // const [initREADME, setInitREADME] = React.useState(false);
   // Conditional state
-  const [radioChecked, setRadioChecked] = React.useState(false);
   const [redirect, setRedirect] = React.useState(false);
 
   // validation
@@ -33,8 +31,8 @@ function NewProject() {
   const { Content } = Layout;
   const { Paragraph } = Typography;
 
-  const { get, post } = useApi();
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { post } = useApi();
+  const { user } = useAuth0();
 
   const dispatch = useDispatch();
 
@@ -296,7 +294,6 @@ function NewProject() {
                 disabled
                 value="yes"
                 onChange={() => {
-                  setRadioChecked(true);
                   setPrivate(true);
                 }}>
                 Yes
@@ -304,7 +301,6 @@ function NewProject() {
               <Radio
                 value="no"
                 onChange={() => {
-                  setRadioChecked(true);
                   setPrivate(false);
                 }}>
                 No

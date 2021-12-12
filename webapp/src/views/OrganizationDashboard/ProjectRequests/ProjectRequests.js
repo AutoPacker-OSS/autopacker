@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { PageHeader, Typography, Layout, Button, Collapse, Descriptions, Row, Col, Tag, Modal, Input } from 'antd';
+import { Button, Col, Collapse, Descriptions, Input, Layout, Modal, PageHeader, Row, Tag, Typography } from 'antd';
 import axios from 'axios';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 // Identicon
 import { createAlert } from '../../../store/actions/generalActions';
 import RequestEditForm from './components/RequestEditForm/RequestEditForm';
-import { useParams } from 'react-router-dom';
 
 function ProjectRequests() {
   // State
@@ -16,6 +16,8 @@ function ProjectRequests() {
   const [acceptComment, setAcceptComment] = React.useState('');
   const [declineComment, setDeclineComment] = React.useState('');
   const [refreshList, setRefreshList] = React.useState(false);
+  // TODO TEMP
+  const [temp] = React.useState(false);
 
   // Modal info state
   const [selectedProjectRequest, setSelectedProjectRequest] = React.useState(null);
@@ -29,110 +31,114 @@ function ProjectRequests() {
   const { organizationName } = useParams();
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  // 	axios({
-  // 		method: "get",
-  // 		url:
-  // 			process.env.REACT_APP_APPLICATION_URL +
-  // 			process.env.REACT_APP_API +
-  // 			"/organization/" +
-  // 			organizationName +
-  // 			"/project-applications",
-  // 		headers: {
-  // 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-  // 		},
-  // 	}).then(function (response) {
-  // 		console.log("DATA:", response.data);
-  // 		setProjects(response.data);
-  // 	});
+  useEffect(() => {
+  	axios({
+  		method: "get",
+  		url:
+  			process.env.REACT_APP_APPLICATION_URL +
+  			process.env.REACT_APP_API +
+  			"/organization/" +
+  			organizationName +
+  			"/project-applications",
+  		headers: {
+  			// Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+  		},
+  	}).then(function (response) {
+  		console.log("DATA:", response.data);
+  		setProjects(response.data);
+  	});
 
-  // 	// eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [refreshList]);
+    if (temp) {
+      acceptRequest(selectedProjectRequest);
+      declineRequest(selectedProjectRequest);
+    }
+
+  }, [refreshList]);
 
   const toggleRefresh = () => {
     setRefreshList(!refreshList);
   };
 
-  // const acceptRequest = (selectedProjectRequest) => {
-  // 	axios({
-  // 		method: "post",
-  // 		url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/acceptProjectRequest",
-  // 		headers: {
-  // 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-  // 		},
-  // 		data: {
-  // 			organizationName: organizationName,
-  // 			projectRequestId: selectedProjectRequest.id,
-  // 			comment: acceptComment,
-  // 		},
-  // 	})
-  // 		.then(function () {
-  // 			dispatch(
-  // 				createAlert(
-  // 					"Project request accepted",
-  // 					selectedProjectRequest.project.owner.username +
-  // 						"'s project request for the project: " +
-  // 						selectedProjectRequest.project.name +
-  // 						" has been accepted",
-  // 					"success",
-  // 					true
-  // 				)
-  // 			);
-  // 			toggleRefresh();
-  // 			setAcceptModalOpen(false);
-  // 		})
-  // 		.catch(() => {
-  // 			dispatch(
-  // 				createAlert(
-  // 					"Project request accepting failed",
-  // 					"Couldn't accept the project application for the given project, " +
-  // 						selectedProjectRequest.project.name,
-  // 					"error",
-  // 					true
-  // 				)
-  // 			);
-  // 			setAcceptModalOpen(false);
-  // 		});
-  // };
+  const acceptRequest = (selectedProjectRequest) => {
+  	axios({
+  		method: "post",
+  		url: process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/acceptProjectRequest",
+  		headers: {
+  			// Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+  		},
+  		data: {
+  			organizationName: organizationName,
+  			projectRequestId: selectedProjectRequest.id,
+  			comment: acceptComment,
+  		},
+  	})
+  		.then(function () {
+  			dispatch(
+  				createAlert(
+  					"Project request accepted",
+  					selectedProjectRequest.project.owner.username +
+  						"'s project request for the project: " +
+  						selectedProjectRequest.project.name +
+  						" has been accepted",
+  					"success",
+  					true
+  				)
+  			);
+  			toggleRefresh();
+  			setAcceptModalOpen(false);
+  		})
+  		.catch(() => {
+  			dispatch(
+  				createAlert(
+  					"Project request accepting failed",
+  					"Couldn't accept the project application for the given project, " +
+  						selectedProjectRequest.project.name,
+  					"error",
+  					true
+  				)
+  			);
+  			setAcceptModalOpen(false);
+  		});
+  };
 
-  // const declineRequest = (selectedProjectRequest) => {
-  // 	axios({
-  // 		method: "post",
-  // 		url:
-  // 			process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/declineProjectRequest",
-  // 		headers: {
-  // 			Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-  // 		},
-  // 		data: {
-  // 			organizationName: organizationName,
-  // 			projectRequestId: selectedProjectRequest.id,
-  // 			comment: declineComment,
-  // 		},
-  // 	})
-  // 		.then(function () {
-  // 			dispatch(
-  // 				createAlert(
-  // 					"Project request declined",
-  // 					'The request for the project "' + selectedProjectRequest.project.name + '" has been declined',
-  // 					"success",
-  // 					true
-  // 				)
-  // 			);
-  // 			toggleRefresh();
-  // 			setDeclineModalOpen(false);
-  // 		})
-  // 		.catch(() => {
-  // 			dispatch(
-  // 				createAlert(
-  // 					"Project rejection failed",
-  // 					"Couldn't decline the project request for the project " + selectedProjectRequest.project.name,
-  // 					"error",
-  // 					true
-  // 				)
-  // 			);
-  // 			setDeclineModalOpen(false);
-  // 		});
-  // };
+  const declineRequest = (selectedProjectRequest) => {
+  	axios({
+  		method: "post",
+  		url:
+  			process.env.REACT_APP_APPLICATION_URL + process.env.REACT_APP_API + "/organization/declineProjectRequest",
+  		headers: {
+  			// Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+  		},
+  		data: {
+  			organizationName: organizationName,
+  			projectRequestId: selectedProjectRequest.id,
+  			comment: declineComment,
+  		},
+  	})
+  		.then(function () {
+  			dispatch(
+  				createAlert(
+  					"Project request declined",
+  					'The request for the project "' + selectedProjectRequest.project.name + '" has been declined',
+  					"success",
+  					true
+  				)
+  			);
+  			toggleRefresh();
+  			setDeclineModalOpen(false);
+  		})
+  		.catch(() => {
+  			dispatch(
+  				createAlert(
+  					"Project rejection failed",
+  					"Couldn't decline the project request for the project " + selectedProjectRequest.project.name,
+  					"error",
+  					true
+  				)
+  			);
+  			setDeclineModalOpen(false);
+  		});
+  };
 
   const routes = [
     {

@@ -1,11 +1,10 @@
-import React, { useContext } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
+import { Button, Divider, Input, Modal, Typography } from 'antd';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-import { Typography, Button, Input, Divider, Modal } from 'antd';
-import { createAlert } from '../../../../../store/actions/generalActions';
-import axios from 'axios';
 import { useApi } from '../../../../../hooks/useApi';
-import { useAuth0 } from '@auth0/auth0-react';
+import { createAlert } from '../../../../../store/actions/generalActions';
 
 function GeneralSetting(props) {
   // State
@@ -17,8 +16,8 @@ function GeneralSetting(props) {
   const owner = props.project.owner;
   const projectName = props.project.name;
 
-  const { user, isAuthenticated, isLoading } = useAuth0();
-  const { get, _delete } = useApi();
+  const { user } = useAuth0();
+  const { _delete } = useApi();
 
   const dispatch = useDispatch();
 

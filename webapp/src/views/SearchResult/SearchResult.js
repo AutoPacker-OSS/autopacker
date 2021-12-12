@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { ApartmentOutlined, UserOutlined } from '@ant-design/icons';
 
-function SearchResult(props) {
+function SearchResult() {
   // State
   const [search, setSearch] = React.useState('');
   const [projectsList, setProjectsList] = React.useState([]);
@@ -100,7 +100,8 @@ function SearchResult(props) {
         style={{
           borderTop: '1px solid rgb(235, 237, 240)',
           backgroundColor: '#FFFFFF',
-        }}>
+        }}
+      >
         <Col span={14} offset={5}>
           <Title style={{ marginTop: 20 }} level={2}>
             Search
@@ -140,7 +141,8 @@ function SearchResult(props) {
                               marginTop: -10,
                               marginRight: 12,
                               cursor: 'pointer',
-                            }}>
+                            }}
+                          >
                             {project.name.charAt(0).toUpperCase()}
                           </Avatar>
 
@@ -149,12 +151,14 @@ function SearchResult(props) {
                               sessionStorage.setItem('selectedPublicUser', project.owner.username);
                               sessionStorage.setItem('selectedPublicProject', project.id);
                             }}
-                            to={'/account/' + project.owner.username + '/project/' + project.name}>
+                            to={'/account/' + project.owner.username + '/project/' + project.name}
+                          >
                             <Text
                               strong
                               style={{
                                 cursor: 'pointer',
-                              }}>
+                              }}
+                            >
                               {project.owner.username} / {project.name}
                             </Text>
                           </Link>
@@ -205,13 +209,15 @@ function SearchResult(props) {
 
                           <Link
                             onClick={() => sessionStorage.setItem('selectedPublicUser', user.username)}
-                            to={'/account/' + user.username}>
+                            to={'/account/' + user.username}
+                          >
                             <Text
                               strong
                               style={{
                                 cursor: 'pointer',
                                 verticalAlign: 'middle',
-                              }}>
+                              }}
+                            >
                               {user.username}
                             </Text>
                           </Link>
@@ -261,13 +267,15 @@ function SearchResult(props) {
                           <div>
                             <Link
                               onClick={() => sessionStorage.setItem('selectedPublicOrganization', organization.name)}
-                              to={'/organization/' + organization.name}>
+                              to={'/organization/' + organization.name}
+                            >
                               <Text
                                 strong
                                 style={{
                                   cursor: 'pointer',
                                   verticalAlign: 'middle',
-                                }}>
+                                }}
+                              >
                                 {organization.name}
                               </Text>
                             </Link>

@@ -1,10 +1,10 @@
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Layout, Tag, Tooltip } from 'antd';
+import axios from 'axios';
 import { TweenOneGroup } from 'rc-tween-one';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { createAlert } from '../../../../../store/actions/generalActions';
-import axios from 'axios';
-import { QuestionCircleOutlined } from '@ant-design/icons';
 
 // TODO - this should not be necessary - reuse project editing form
 function RequestEditForm(props) {
@@ -42,7 +42,6 @@ function RequestEditForm(props) {
       setLinks([]);
     }
     setComment(request.comment);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const removeTag = (removedTag) => {
@@ -62,49 +61,49 @@ function RequestEditForm(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    // axios({
-    // 	method: "post",
-    // 	url:
-    // 		process.env.REACT_APP_APPLICATION_URL +
-    // 		process.env.REACT_APP_API +
-    // 		"/organization/updateProjectSubmission",
-    // 	headers: {
-    // 		Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
-    // 	},
-    // 	data: {
-    // 		organizationName: organizationName,
-    // 		projectName: projectName,
-    // 		desc: desc,
-    // 		links: links,
-    // 		tags: tags,
-    // 		comment: comment,
-    // 		projectId: request.project.id,
-    // 	},
-    // })
-    // 	.then(function () {
-    // 		dispatch(
-    // 			createAlert(
-    // 				"Project request updated",
-    // 				"You have successfully updated the project information. You should notify the with the changes you have made in the comment section when accepting.",
-    // 				"success",
-    // 				true
-    // 			)
-    // 		);
-    // 		toggleRefresh();
-    // 		setOpenEditModal(false);
-    // 	})
-    // 	.catch(() => {
-    // 		dispatch(
-    // 			createAlert(
-    // 				"Project request update failed",
-    // 				"Something went wrong while trying to update the project.",
-    // 				"error",
-    // 				true
-    // 			)
-    // 		);
-    // 		toggleRefresh();
-    // 		setOpenEditModal(false);
-    // 	});
+    axios({
+    	method: "post",
+    	url:
+    		process.env.REACT_APP_APPLICATION_URL +
+    		process.env.REACT_APP_API +
+    		"/organization/updateProjectSubmission",
+    	headers: {
+    		// Authorization: authState.accessToken !== null ? `Bearer ${authState.accessToken}` : undefined,
+    	},
+    	data: {
+    		organizationName: organizationName,
+    		projectName: projectName,
+    		desc: desc,
+    		links: links,
+    		tags: tags,
+    		comment: comment,
+    		projectId: request.project.id,
+    	},
+    })
+    	.then(function () {
+    		dispatch(
+    			createAlert(
+    				"Project request updated",
+    				"You have successfully updated the project information. You should notify the with the changes you have made in the comment section when accepting.",
+    				"success",
+    				true
+    			)
+    		);
+    		toggleRefresh();
+    		setOpenEditModal(false);
+    	})
+    	.catch(() => {
+    		dispatch(
+    			createAlert(
+    				"Project request update failed",
+    				"Something went wrong while trying to update the project.",
+    				"error",
+    				true
+    			)
+    		);
+    		toggleRefresh();
+    		setOpenEditModal(false);
+    	});
   };
 
   const formItemLayout = {
@@ -232,7 +231,7 @@ function RequestEditForm(props) {
           </Form.Item>
           {/* Button Section */}
           <div style={{ width: '100%', textAlign: 'center' }}>
-            <Button style={{ marginRight: 10 }} onClick={(e) => setOpenEditModal(false)}>
+            <Button style={{ marginRight: 10 }} onClick={() => setOpenEditModal(false)}>
               Cancel Edit
             </Button>
             <Button type="primary" onClick={(e) => handleSubmit(e)}>

@@ -1,12 +1,10 @@
+import { QuestionCircleOutlined } from '@ant-design/icons';
+import { useAuth0 } from '@auth0/auth0-react';
 import { Button, Col, Form, Input, message, PageHeader, Row, Select, Tooltip, Typography } from 'antd';
 import axios from 'axios';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import NTNU from '../../assets/image/ntnu.png';
-import { axiosRequest } from '../../util/axiosRequest';
-import { QuestionCircleOutlined } from '@ant-design/icons';
-import { useApi } from '../../hooks/useApi';
-import { useAuth0 } from '@auth0/auth0-react';
 
 function ProfileOrganizationForm() {
   // Form state
@@ -15,8 +13,7 @@ function ProfileOrganizationForm() {
   const [role, setRole] = React.useState('');
   const [comment, setComment] = React.useState('');
 
-  const { user, isAuthenticated, isLoading } = useAuth0();
-  const { get } = useApi();
+  const { user } = useAuth0();
 
   // State
   const [organization, setOrganization] = React.useState({});
@@ -38,7 +35,6 @@ function ProfileOrganizationForm() {
     axios.get(projectsUrl).then((response) => {
       setOrganization(response.data);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const formItemLayout = {
@@ -66,7 +62,7 @@ function ProfileOrganizationForm() {
         comment: comment,
       })
       .then(
-        (response) => {
+        () => {
           message.success('Successfully sent the member application');
           setRedirect(true);
         },
