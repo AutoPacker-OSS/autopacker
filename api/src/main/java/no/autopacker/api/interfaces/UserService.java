@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import org.springframework.security.core.Authentication;
 
 public interface UserService {
 
@@ -14,7 +15,7 @@ public interface UserService {
     List<User> findAllUsers();
 
     ResponseEntity<String> createNewUser(User user, String password, Locale locale);
-    User findOrCreateUser(User user, Locale locale);
+    User findOrCreateUser(Authentication authUser, Locale locale);
 
     // TODO THIS LOGIC HAS TO BE CHANGED AS THE PASSWORD IS NOW HANDLED BY THE KEYCLOAK SERVER
     //ResponseEntity<String> changePassword(String oldPassword, String newPassword, String confirmPassword);
