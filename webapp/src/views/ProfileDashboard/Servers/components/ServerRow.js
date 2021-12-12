@@ -1,19 +1,18 @@
-import { Avatar, Card, Typography } from "antd";
-import React from "react";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { PlayCircleOutlined } from '@ant-design/icons';
+import { Avatar, Card, Typography } from 'antd';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-import { PlayCircleOutlined } from "@ant-design/icons";
 
 function ServerRow(props) {
-	// Import sub components from antd
-	const { Text, Paragraph } = Typography;
+  // Import sub components from antd
+  const { Text, Paragraph } = Typography;
 
-	const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-	let statusIcon = { type: "play-circle", color: "green" };
-	let actions = "";
-	/* switch (props.status) {
+  let statusIcon = { type: 'play-circle', color: 'green' };
+  let actions = '';
+  /* switch (props.status) {
 		case "on":
 			statusIcon = { type: "play-circle", color: "green" };
 			actions = (
@@ -47,37 +46,36 @@ function ServerRow(props) {
 			break;
 	} */
 
-	return (
-		<Link to={"/profile/servers/overview/" + props.title}>
-			<Card
-				className="server-card"
-				hoverable
-				style={{ maxHeight: 100, height: "auto", marginTop: -10 }}
-				onClick={() => sessionStorage.setItem("selectedServer", props.id)}
-			>
-				<Avatar
-					icon={<PlayCircleOutlined style={{ color: statusIcon.color }} />}
-					style={{
-						marginTop: -25,
-						marginLeft: -20,
-						height: 86,
-						background: "none",
-						float: "left",
-						verticalAlign: "middle",
-					}}
-					size={96}
-				/>
-				<div style={{ marginTop: -3 }}>
-					<Text strong style={{ fontSize: 20 }}>
-						{props.title}
-					</Text>
-					<Text style={{ marginLeft: 20, fontSize: 20 }}>(Status: Unavailable{/*TODO props.status*/})</Text>
-					<Paragraph ellipsis>{props.desc}</Paragraph>
-					<Paragraph>{actions}</Paragraph>
-				</div>
-			</Card>
-		</Link>
-	);
+  return (
+    <Link to={'/profile/servers/overview/' + props.title}>
+      <Card
+        className="server-card"
+        hoverable
+        style={{ maxHeight: 100, height: 'auto', marginTop: -10 }}
+        onClick={() => sessionStorage.setItem('selectedServer', props.id)}>
+        <Avatar
+          icon={<PlayCircleOutlined style={{ color: statusIcon.color }} />}
+          style={{
+            marginTop: -25,
+            marginLeft: -20,
+            height: 86,
+            background: 'none',
+            float: 'left',
+            verticalAlign: 'middle',
+          }}
+          size={96}
+        />
+        <div style={{ marginTop: -3 }}>
+          <Text strong style={{ fontSize: 20 }}>
+            {props.title}
+          </Text>
+          <Text style={{ marginLeft: 20, fontSize: 20 }}>(Status: Unavailable{/*TODO props.status*/})</Text>
+          <Paragraph ellipsis>{props.desc}</Paragraph>
+          <Paragraph>{actions}</Paragraph>
+        </div>
+      </Card>
+    </Link>
+  );
 }
 
 export default ServerRow;

@@ -1,206 +1,188 @@
-import {
-	Card,
-	Col,
-	Empty,
-	PageHeader,
-	Row,
-	Tag,
-	Typography,
-	Avatar,
-	Pagination,
-	Divider,
-} from "antd";
-import axios from "axios";
-import React, { useEffect } from "react";
-import Identicon from "../../assets/image/download.png";
-import { GlobalOutlined, GitlabOutlined, FolderOutlined } from "@ant-design/icons";
-import {useParams} from "react-router-dom";
+import { Card, Col, Empty, PageHeader, Row, Tag, Typography, Avatar, Pagination, Divider } from 'antd';
+import axios from 'axios';
+import React, { useEffect } from 'react';
+import Identicon from '../../assets/image/download.png';
+import { GlobalOutlined, GitlabOutlined, FolderOutlined } from '@ant-design/icons';
+import { useParams } from 'react-router-dom';
 
 function ProfileProjectOverview() {
-	// State
-	const [project, setProject] = React.useState();
-	const [tags, setTags] = React.useState([]);
-	// Import sub components from antd
-	const { Title, Paragraph, Text } = Typography;
+  // State
+  const [project, setProject] = React.useState();
+  const [tags, setTags] = React.useState([]);
+  // Import sub components from antd
+  const { Paragraph, Text } = Typography;
 
-	// Pagination state for modules
-	const [minNumbModules, setMinNumbModules] = React.useState(0);
-	const [maxNumbModules, setMaxNumbModules] = React.useState(10);
+  // Pagination state for modules
+  const [minNumbModules, setMinNumbModules] = React.useState(0);
+  const [maxNumbModules, setMaxNumbModules] = React.useState(10);
 
-	const { username, projectName } = useParams();
+  const { username, projectName } = useParams();
 
-	useEffect(() => {
-		if (username && projectName) {
-			const url =
-				process.env.REACT_APP_APPLICATION_URL +
-				process.env.REACT_APP_API +
-				"/project-overview/" +
-				username +
-				"/" +
-				projectName;
+  useEffect(() => {
+    if (username && projectName) {
+      const url =
+        process.env.REACT_APP_APPLICATION_URL +
+        process.env.REACT_APP_API +
+        '/project-overview/' +
+        username +
+        '/' +
+        projectName;
 
-			axios.get(url).then((response) => {
-				setProject(response.data);
-				if (response.data.tags) {
-					setTags(response.data.tags.split(","));
-				} else {
-					setTags([]);
-				}
-			});
-		}
-	}, [username, projectName]);
+      axios.get(url).then((response) => {
+        setProject(response.data);
+        if (response.data.tags) {
+          setTags(response.data.tags.split(','));
+        } else {
+          setTags([]);
+        }
+      });
+    }
+  }, [username, projectName]);
 
-	const handleProjectsPaginationChange = (value) => {
-		if (value <= 1) {
-			setMinNumbModules(0);
-			setMaxNumbModules(10);
-		} else {
-			setMinNumbModules((value - 1) * 10);
-			setMaxNumbModules(value * 10);
-		}
-	};
+  const handleProjectsPaginationChange = (value) => {
+    if (value <= 1) {
+      setMinNumbModules(0);
+      setMaxNumbModules(10);
+    } else {
+      setMinNumbModules((value - 1) * 10);
+      setMaxNumbModules(value * 10);
+    }
+  };
 
-	return project ? (
-		<React.Fragment>
-			<Row style={{
-				borderTop: "1px solid rgb(235, 237, 240)",
-				backgroundColor: "#FFFFFF",
-			}}/>
-			<Row style={{ marginTop: 20 }}>
-				<Col span={14} offset={5}>
-					<Row style={{ maxWidth: 1100 }} gutter={[24, 0]}>
-						{/* Profile details */}
-						<Col xs={24} md={7}>
-							<div style={{ textAlign: "center" }}>
-								<img
-									style={{
-										border: "1px solid black",
-										padding: 5,
-										backgroundColor: "white",
-									}}
-									className="identicon"
-									src={Identicon}
-									alt="identicon"
-								/>
-								{/*<Title level={4}>{project.owner.username}</Title>*/}
-							</div>
-						</Col>
-						{/* Profile Content */}
-						<Col xs={24} md={17}>
-							<PageHeader
-								style={{
-									border: "1px solid rgb(235, 237, 240)",
-									backgroundColor: "#FFFFFF",
-									paddingBottom: 40,
-								}}
-								onBack={() => window.history.back()}
-								title={
-									<div>
-										{project.name}
-										<GlobalOutlined style={{ marginLeft: 20 }} />
-										{project.private ? " Private" : " Public"}
-									</div>
-								}
-							>
-								<Paragraph>{project.description}</Paragraph>
-								<Paragraph style={{ color: "blue" }}>
-									{project.website !== "" ? (
-										<a
-											href={project.website}
-											rel="noopener noreferrer"
-											target="_blank"
-										>
-											<GitlabOutlined /> {project.website}
-										</a>
-									) : (
-										<div />
-									)}
-								</Paragraph>
-								<div>
-									<div style={{ float: "left" }}>
-										{tags.length > 1 ? (
-											tags.map((tag) => (
-												<span key={tag} style={{ display: "inline-block" }}>
-													<Tag color="blue">{tag}</Tag>
-												</span>
-											))
-										) : (
-											<div />
-										)}
-									</div>
-									{/* <Paragraph style={{ float: "right" }}>
+  return project ? (
+    <React.Fragment>
+      <Row
+        style={{
+          borderTop: '1px solid rgb(235, 237, 240)',
+          backgroundColor: '#FFFFFF',
+        }}
+      />
+      <Row style={{ marginTop: 20 }}>
+        <Col span={14} offset={5}>
+          <Row style={{ maxWidth: 1100 }} gutter={[24, 0]}>
+            {/* Profile details */}
+            <Col xs={24} md={7}>
+              <div style={{ textAlign: 'center' }}>
+                <img
+                  style={{
+                    border: '1px solid black',
+                    padding: 5,
+                    backgroundColor: 'white',
+                  }}
+                  className="identicon"
+                  src={Identicon}
+                  alt="identicon"
+                />
+                {/*<Title level={4}>{project.owner.username}</Title>*/}
+              </div>
+            </Col>
+            {/* Profile Content */}
+            <Col xs={24} md={17}>
+              <PageHeader
+                style={{
+                  border: '1px solid rgb(235, 237, 240)',
+                  backgroundColor: '#FFFFFF',
+                  paddingBottom: 40,
+                }}
+                onBack={() => window.history.back()}
+                title={
+                  <div>
+                    {project.name}
+                    <GlobalOutlined style={{ marginLeft: 20 }} />
+                    {project.private ? ' Private' : ' Public'}
+                  </div>
+                }
+              >
+                <Paragraph>{project.description}</Paragraph>
+                <Paragraph style={{ color: 'blue' }}>
+                  {project.website !== '' ? (
+                    <a href={project.website} rel="noopener noreferrer" target="_blank">
+                      <GitlabOutlined /> {project.website}
+                    </a>
+                  ) : (
+                    <div />
+                  )}
+                </Paragraph>
+                <div>
+                  <div style={{ float: 'left' }}>
+                    {tags.length > 1 ? (
+                      tags.map((tag) => (
+                        <span key={tag} style={{ display: 'inline-block' }}>
+                          <Tag color="blue">{tag}</Tag>
+                        </span>
+                      ))
+                    ) : (
+                      <div />
+                    )}
+                  </div>
+                  {/* <Paragraph style={{ float: "right" }}>
 												{format(project.lastUpdated, "dd/MM/yyyy")}
 											</Paragraph> */}
-								</div>
-							</PageHeader>
-							<Card style={{ marginTop: 20 }}>
-								{project.modules != null ? (
-									<Row style={{ marginTop: 10 }} gutter={[0, 24]}>
-										{project.modules
-											.slice(minNumbModules, maxNumbModules)
-											.map((module) => (
-												<Col style={{ padding: 0 }} xs={24} key={module.id}>
-													<div key={module.id}>
-														<Col style={{ padding: 0 }}>
-															<Avatar
-																shape="square"
-																size={64}
-																icon={<FolderOutlined />}
-																style={{
-																	backgroundColor: "#ff99f7",
-																	float: "left",
-																	verticalAlign: "middle",
-																	marginBottom: 0,
-																	marginRight: 12,
-																	cursor: "pointer",
-																}}
-															/>
+                </div>
+              </PageHeader>
+              <Card style={{ marginTop: 20 }}>
+                {project.modules != null ? (
+                  <Row style={{ marginTop: 10 }} gutter={[0, 24]}>
+                    {project.modules.slice(minNumbModules, maxNumbModules).map((module) => (
+                      <Col style={{ padding: 0 }} xs={24} key={module.id}>
+                        <div key={module.id}>
+                          <Col style={{ padding: 0 }}>
+                            <Avatar
+                              shape="square"
+                              size={64}
+                              icon={<FolderOutlined />}
+                              style={{
+                                backgroundColor: '#ff99f7',
+                                float: 'left',
+                                verticalAlign: 'middle',
+                                marginBottom: 0,
+                                marginRight: 12,
+                                cursor: 'pointer',
+                              }}
+                            />
 
-															<Text strong>{module.name}</Text>
+                            <Text strong>{module.name}</Text>
 
-															<Paragraph ellipsis>
-																{module.desc}
-															</Paragraph>
-															<p>Type: {module.configType}</p>
-														</Col>
-														{project.modules.length > 1 ? (
-															project.modules.indexOf(module) <
-															project.modules.length - 1 ? (
-																<Divider />
-															) : (
-																<div />
-															)
-														) : (
-															<div />
-														)}
-													</div>
-												</Col>
-											))}
-										{project.modules.length > 10 ? (
-											<Pagination
-												style={{
-													marginBottom: 20,
-													textAlign: "center",
-												}}
-												defaultCurrent={1}
-												defaultPageSize={10}
-												onChange={handleProjectsPaginationChange}
-												total={project.modules.length}
-											/>
-										) : (
-											<div />
-										)}
-									</Row>
-								) : (
-									<Empty />
-								)}
-							</Card>
-						</Col>
-					</Row>
-				</Col>
-			</Row>
-		</React.Fragment>
-	) : null;
+                            <Paragraph ellipsis>{module.desc}</Paragraph>
+                            <p>Type: {module.configType}</p>
+                          </Col>
+                          {project.modules.length > 1 ? (
+                            project.modules.indexOf(module) < project.modules.length - 1 ? (
+                              <Divider />
+                            ) : (
+                              <div />
+                            )
+                          ) : (
+                            <div />
+                          )}
+                        </div>
+                      </Col>
+                    ))}
+                    {project.modules.length > 10 ? (
+                      <Pagination
+                        style={{
+                          marginBottom: 20,
+                          textAlign: 'center',
+                        }}
+                        defaultCurrent={1}
+                        defaultPageSize={10}
+                        onChange={handleProjectsPaginationChange}
+                        total={project.modules.length}
+                      />
+                    ) : (
+                      <div />
+                    )}
+                  </Row>
+                ) : (
+                  <Empty />
+                )}
+              </Card>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </React.Fragment>
+  ) : null;
 }
 
 export default ProfileProjectOverview;

@@ -1,19 +1,16 @@
-import { Layout, Menu, Button } from 'antd';
-import React, { Suspense, useEffect } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
+import { Button, Layout, Menu } from 'antd';
+import axios from 'axios';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, NavLink, Navigate, Route, useNavigate, Outlet } from 'react-router-dom';
+import { Navigate, NavLink, Outlet } from 'react-router-dom';
 import NTNU from '../../assets/image/ntnu.png';
 import ProfileAlert from '../../components/CustomAlerts/ProfileAlert';
 import Navbar from '../../components/Navbar/Navbar';
-import { createAlert } from '../../store/actions/generalActions';
-import { getMenu } from './menu';
-import axios from 'axios';
-// Import custom components
-import { selectMenuOption, toggleSubMenuOption } from '../../store/actions/generalActions';
+import { createAlert, toggleSubMenuOption } from '../../store/actions/generalActions';
 // Import styles
 import '../RouteOutlet.scss';
-import { FolderOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
-import { useAuth0 } from '@auth0/auth0-react';
+import { getMenu } from './menu';
 
 /**
  * The default layout for a organization dashboard route
@@ -25,11 +22,9 @@ function OrganizationDashboardLayout({ children }) {
   const { Sider, Content } = Layout;
   const { SubMenu } = Menu;
 
-  const { user, isAuthenticated, isLoading } = useAuth0();
-
   // Get state from redux store
   const organizationName = sessionStorage.getItem('selectedOrganizationName');
-  const selectedMenuItem = useSelector((state) => state.general.selectedMenuOption);
+  // const selectedMenuItem = useSelector((state) => state.general.selectedMenuOption);
   const openedSubMenus = useSelector((state) => state.general.openedSubMenus);
   const dispatch = useDispatch();
 
@@ -65,22 +60,21 @@ function OrganizationDashboardLayout({ children }) {
                 ),
               );
             });
-        }}
-      >
+        }}>
         Click here to resend
       </Button>
     </div>
   );
 
   React.useEffect(() => {
-    // TODO FIX THIS
+    console.debug(text);
     // if (keycloak.idTokenParsed.email_verified === false) {
     // 	dispatch(createAlert("Please verify your email address", text, "warning", true));
     // }
   }, []);
 
   if (organizationName == null) {
-		return <Navigate to="/profile/organizations" />
+    return <Navigate to="/profile/organizations" />;
   } else {
     return (
       <Layout>
@@ -93,15 +87,13 @@ function OrganizationDashboardLayout({ children }) {
             style={{ background: '#fff', padding: 0 }}
             collapsible
             collapsed={collapsed}
-            onCollapse={() => setCollapsed(!collapsed)}
-          >
+            onCollapse={() => setCollapsed(!collapsed)}>
             <Menu
               theme="dark"
               mode="inline"
               openKeys={openedSubMenus}
               // Called when a menu item is clicked
-              style={{ height: '100%', borderRight: 0 }}
-            >
+              style={{ height: '100%', borderRight: 0 }}>
               <div style={{ textAlign: 'center' }}>
                 {/* // TODO Need to change NTNU to use image of organization later on */}
                 <img style={{ backgroundColor: 'white' }} className="identicon" src={NTNU} alt="identicon" />
@@ -117,8 +109,7 @@ function OrganizationDashboardLayout({ children }) {
                       {menuItem.icon}
                       {collapsed ? null : menuItem.text}
                     </span>
-                  }
-                >
+                  }>
                   {/* Submenu items */}
                   {menuItem.items !== null
                     ? menuItem.items.map((childItem) => {
@@ -142,8 +133,7 @@ function OrganizationDashboardLayout({ children }) {
                             activeClassName="ant-menu-item-selected"
                             to={childItem.to}
                             className="ant-menu-item ant-menu-item-only-child"
-                            style={{ paddingLeft: 48 }}
-                          >
+                            style={{ paddingLeft: 48 }}>
                             {childItem.text}
                           </NavLink>
                         );
@@ -166,14 +156,16 @@ function OrganizationDashboardLayout({ children }) {
 /**
  * The route itself that is used for the profile dashboard related routes
  */
-function OrganizationOutlet({ component: Component, ...rest }) {
+function OrganizationOutlet() {
   const { isAuthenticated } = useAuth0();
 
   return isAuthenticated ? (
-		<OrganizationDashboardLayout>
-			<Outlet />
-		</OrganizationDashboardLayout>
-  ) : <Navigate to="" />;
+    <OrganizationDashboardLayout>
+      <Outlet />
+    </OrganizationDashboardLayout>
+  ) : (
+    <Navigate to="" />
+  );
 }
 
 export default OrganizationOutlet;
