@@ -27,3 +27,8 @@ debug.log
 .idea/
 
 keycloak.json
+
+# Cypress
+cypress/videos
+cypress/screenshots
+cypress.env.json
