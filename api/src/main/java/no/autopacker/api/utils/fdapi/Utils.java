@@ -49,16 +49,16 @@ public class Utils {
 	/**
 	 * Return absolute path of the project directory of the user.
 	 *
-	 * @param user          the owners username of the project
+	 * @param userId        the owners id of the project
 	 * @param projectName   name of the project
 	 * @return              project directory
 	 */
-	public String getUserProjectDir(String user, String projectName) {
-		return userWorkspace + user + File.separator + projectName + File.separator;
+	public String getUserProjectDir(String userId, String projectName) {
+		return userWorkspace + userId + File.separator + projectName + File.separator;
 	}
 
-	public void validateUserWorkspace(String username) {
-		String userWorkspacePath = userWorkspace.concat(username);
+	public void validateUserWorkspace(String userId) {
+		String userWorkspacePath = userWorkspace.concat(userId);
 		if (!Files.exists(new File(userWorkspacePath).toPath(), LinkOption.NOFOLLOW_LINKS)) {
 			new File(userWorkspacePath).mkdir();
 		}

@@ -152,9 +152,10 @@ public class ProjectController {
 
                 if (matcher.matches()) {
                     String username = authUser.getUsername();
+                    String userId = authUser.getId();
                     // Check if userspace exists or create one, then assign a file directory (that hasn't been created yet)
-                    Utils.instance().validateUserWorkspace(username);
-                    String projectPath = Utils.instance().getUserProjectDir(username, pm.getName());
+                    Utils.instance().validateUserWorkspace(userId);
+                    String projectPath = Utils.instance().getUserProjectDir(userId, pm.getName());
                     File projectFolder = new File(projectPath);
                     if (projectFolder.exists() ||
                             projectRepo.findByOwnerAndName(authUser, pm.getName()) != null) {
