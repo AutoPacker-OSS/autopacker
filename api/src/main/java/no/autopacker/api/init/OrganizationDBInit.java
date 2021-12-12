@@ -139,7 +139,7 @@ public class OrganizationDBInit implements CommandLineRunner {
         Project p = new Project(name, owner, isPrivate);
         p.setWebsite(website);
         p.setDescription(description);
-        String location = Utils.instance().getUserProjectDir(owner.getUsername(), name);
+        String location = Utils.instance().getUserProjectDir(owner.getId(), name);
         p.setLocation(location);
         p.setOrganization(organization);
         return p;

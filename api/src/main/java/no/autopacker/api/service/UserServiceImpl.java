@@ -1,15 +1,23 @@
 package no.autopacker.api.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import javax.security.sasl.AuthenticationException;
 import lombok.SneakyThrows;
 import no.autopacker.api.entity.User;
 import no.autopacker.api.repository.UserRepository;
 import no.autopacker.api.interfaces.UserService;
+import no.autopacker.api.security.Oauth2UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,26 +90,44 @@ public class UserServiceImpl implements UserService {
 
     @SneakyThrows
     @Override
-    public User findOrCreateUser(User user, Locale locale) {
+    public User findOrCreateUser(Authentication authUser, Locale locale) {
         User dbUser = null;
 
+        var token = ((JwtAuthenticationToken) authUser).getToken().getTokenValue();
+
+        HttpRequest req = HttpRequest
+            .newBuilder()
+            .header("Authorization", String.format("Bearer %s", token))
+            .uri(new URI("https://dev-0t37hfrq.us.auth0.com/userinfo"))
+            .GET()
+            .build();
+
+        HttpResponse<String> resp = HttpClient.newHttpClient().send(req, BodyHandlers.ofString());
+
+        var userInfo = new ObjectMapper().readValue(resp.body(), Oauth2UserInfo.class);
         // search in db for user
-        if (user.getUsername() != null) {
-            dbUser = this.userRepository.findByUsername(user.getUsername());
+        if (userInfo.getEmail() != null) {
+            dbUser = this.userRepository.findByEmailIgnoreCase(userInfo.getEmail());
         }
 
-        if (dbUser == null && user.getEmail() != null) {
-            dbUser = this.userRepository.findByEmailIgnoreCase(user.getEmail());
+        if (dbUser == null && userInfo.getName() != null) {
+            dbUser = this.userRepository.findByUsername(userInfo.getName());
         }
 
         if (dbUser != null) return dbUser;
 
         // create user if it doesnt exist
-        if (user.getUsername() == null || user.getEmail() == null) {
+        if (userInfo.getName() == null || userInfo.getEmail() == null) {
             throw new AuthenticationException("User is missing email or username.");
         }
 
-        return this.userRepository.save(user);
+        return this.userRepository.save(
+            new User(
+                userInfo.getName(),
+                userInfo.getEmail(),
+                userInfo.getPicture()
+            )
+        );
     }
 
     @Override
@@ -227,17 +253,6 @@ public class UserServiceImpl implements UserService {
 
         if (authenticatedUser == null) return null;
 
-        String username = authenticatedUser.getName();
-
-        // TODO email is not preset [i <3 php]
-        // auth0 identity is too long
-        if (username.contains("auth0|")) {
-            username = username.replaceAll("auth0\\|", "");
-        }
-
-        // identity does not have email yet
-        String email = username + "@auth0.oauth";
-
-        return this.findOrCreateUser(new User(username, email), Locale.getDefault());
+        return this.findOrCreateUser(authenticatedUser, Locale.getDefault());
     }
 }
