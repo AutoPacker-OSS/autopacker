@@ -3,8 +3,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Avatar, Input, Layout, Menu, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-// Import styles
-import './NavbarStyle.scss';
 
 /**
  * Represents the navigation bar at the top of the homepage
@@ -23,6 +21,7 @@ function Navbar() {
   const { Search } = Input;
 
   useEffect(() => {
+    console.log(user);
     setSearchAction(false);
   }, [searchAction]);
 
@@ -51,6 +50,7 @@ function Navbar() {
       {isAuthenticated ? (
         <Menu mode="horizontal" style={{ lineHeight: '64px', float: 'right' }}>
           <SubMenu
+            key={0}
             id="user-menu-link"
             title={
               <div>
@@ -62,32 +62,32 @@ function Navbar() {
                 <Typography.Text style={{ marginLeft: 10 }}>{user.email}</Typography.Text>
               </div>
             }>
-            <Menu.Item>
+            <Menu.Item key={1}>
               <Link to="/profile/projects">
                 <FolderOutlined />
                 Your projects
               </Link>
             </Menu.Item>
-            <Menu.Item>
+            <Menu.Item key={2}>
               <Link to="/profile/servers">
                 <HddOutlined />
                 Your servers
               </Link>
             </Menu.Item>
-            <Menu.Item>
+            <Menu.Item key={3}>
               <Link to="/profile/organizations">
                 <ApartmentOutlined />
                 Your Organizations
               </Link>
             </Menu.Item>
             <Menu.Divider />
-            <Menu.Item>
+            <Menu.Item key={4}>
               <Link to="/profile/settings">
                 <SettingOutlined />
                 Settings
               </Link>
             </Menu.Item>
-            <Menu.Item onClick={() => logout({ returnTo: window.location.origin })} id="logout-link">
+            <Menu.Item key={5} onClick={() => logout({ returnTo: window.location.origin })} id="logout-link">
               <LogoutOutlined />
               Logout
             </Menu.Item>
@@ -95,7 +95,7 @@ function Navbar() {
         </Menu>
       ) : (
         <Menu mode="horizontal" style={{ lineHeight: '64px', float: 'right' }}>
-          <Menu.Item>
+          <Menu.Item key={2}>
             <div id="sign-in-link" onClick={() => loginWithRedirect()}>
               Sign in
             </div>

@@ -54,8 +54,7 @@ function App() {
             </Suspense>
           )}
         />
-        {/* This route is on the bottom of the list */}
-        <Route exact path="/" element={<Home />} />
+        
 
         <Route path="/organization" element={<OrganizationOutlet />}>
           <Route path="submissions/:organizationName" element={<Submissions />} />
@@ -85,6 +84,7 @@ function App() {
         </Route>
 
         <Route path="/" element={<PublicOutlet />}>
+          <Route exact path="/" element={<Home />} />
           <Route path="organization/:organizationName/membership" element={<ProfileOrganizationForm />} />
           <Route exact path="organization/:organizationName" element={<ProfileOrganizationOverview />} />
           <Route path="account/:username/project/:projectName" element={<ProfileProjectOverview />} />
@@ -96,10 +96,10 @@ function App() {
   } else {
     router = (
       <React.Fragment>
-        <Route exact path="/" element={<Home />} />
 
         {/*Public views, no sign-in required*/}
         <Route path="/" element={<PublicOutlet />}>
+          <Route exact path="/" element={<Home />} />
           <Route path="organization/:organizationName/membership" element={<ProfileOrganizationForm />} />
           <Route exact path="organization/:organizationName" element={<ProfileOrganizationOverview />} />
           <Route path="account/:username/project/:projectName" element={<ProfileProjectOverview />} />

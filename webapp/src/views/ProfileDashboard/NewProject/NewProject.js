@@ -1,5 +1,5 @@
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { useAuth0 } from '@auth0/auth0-react';
+// import { useAuth0 } from '@auth0/auth0-react';
 import { Button, Form, Input, Layout, PageHeader, Radio, Tag, Tooltip, Typography } from 'antd';
 import { TweenOneGroup } from 'rc-tween-one';
 import React from 'react';
@@ -32,7 +32,7 @@ function NewProject() {
   const { Paragraph } = Typography;
 
   const { post } = useApi();
-  const { user } = useAuth0();
+  // const { user } = useAuth0();
 
   const dispatch = useDispatch();
 
@@ -108,7 +108,6 @@ function NewProject() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (user.email_verified) {
       post(`/projects`, {
         name: newProjectName,
         description: newProjectDescription,
@@ -140,16 +139,14 @@ function NewProject() {
             ),
           );
         });
-    } else {
-      dispatch(
-        createAlert(
-          'Project Creation failed',
-          "You can't create a project without verifying your account. Please check your email inbox for a verification email, and follow the instructions.",
-          'warning',
-          true,
-        ),
-      );
-    }
+      // dispatch(
+      //   createAlert(
+      //     'Project Creation failed',
+      //     "You can't create a project without verifying your account. Please check your email inbox for a verification email, and follow the instructions.",
+      //     'warning',
+      //     true,
+      //   ),
+      // );
   };
 
   const validateName = (value) => {

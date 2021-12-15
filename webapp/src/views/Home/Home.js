@@ -2,7 +2,6 @@ import { Carousel, Col, Layout, Row, Typography } from 'antd';
 import React from 'react';
 import Banner from '../../components/Banner/Banner';
 // Components
-import Navbar from '../../components/Navbar/Navbar';
 // Import styles
 import './HomeStyle.scss';
 
@@ -24,8 +23,6 @@ function Home() {
   return (
     <React.Fragment>
       <Layout>
-        {/* Navigation bar */}
-        <Navbar />
         {/* Banner */}
         <Banner />
         {/* Information section */}
